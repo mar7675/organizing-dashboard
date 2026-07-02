@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Import Spike — Organizing Dashboard</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Dash Spike">
+<style>
+  :root {
+    --ink: #26221f;
+    --muted: #6b645e;
+    --card: #ffffff;
+    --bg: #f5f4f2;
+    --line: #ddd8d3;
+    --maroon: #5b1f24;
+    --pass: #1e7a3c;
+    --pass-bg: #e6f4ea;
+    --fail: #b3261e;
+    --fail-bg: #fdecea;
+    --warn: #8a6d1a;
+    --warn-bg: #fdf6e3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px 48px;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.45 -apple-system, "Segoe UI", system-ui, sans-serif;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  h1 { font-size: 22px; margin: 8px 0 2px; color: var(--maroon); }
+  .sub { color: var(--muted); font-size: 14px; margin: 0 0 16px; }
+  section {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin: 0 0 14px;
+  }
+  h2 { font-size: 16px; margin: 0 0 6px; }
+  p { margin: 6px 0; }
+  .hint { color: var(--muted); font-size: 14px; }
+  button {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    margin: 10px 0 0;
+    padding: 12px 14px;
+    font: inherit;
+    font-weight: 600;
+    color: #fff;
+    background: var(--maroon);
+    border: 0;
+    border-radius: 10px;
+  }
+  button.secondary { background: #fff; color: var(--maroon); border: 2px solid var(--maroon); }
+  textarea {
+    width: 100%;
+    min-height: 90px;
+    margin-top: 10px;
+    padding: 10px;
+    font: 14px/1.4 ui-monospace, Menlo, Consolas, monospace;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fbfaf9;
+    color: var(--ink);
+  }
+  .hidden { display: none; }
+  .banner { border-radius: 10px; padding: 10px 12px; font-weight: 600; }
+  .banner.ok { background: var(--pass-bg); color: var(--pass); }
+  .banner.warn { background: var(--warn-bg); color: var(--warn); }
+  .banner.err { background: var(--fail-bg); color: var(--fail); }
+  #errbar { margin-bottom: 14px; white-space: pre-wrap; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .chip {
+    flex: 1 1 30%;
+    text-align: center;
+    border-radius: 10px;
+    padding: 10px 6px;
+    font-size: 14px;
+    font-weight: 700;
+    background: #eeebe8;
+    color: var(--muted);
+    border: 1px solid var(--line);
+  }
+  .chip small { display: block; font-weight: 400; font-size: 11px; margin-top: 2px; }
+  .chip.pass { background: var(--pass-bg); color: var(--pass); border-color: var(--pass); }
+  .chip.fail { background: var(--fail-bg); color: var(--fail); border-color: var(--fail); }
+  .chip.warn { background: var(--warn-bg); color: var(--warn); border-color: var(--warn); }
+  .result { margin-top: 8px; font-size: 14px; border-radius: 8px; padding: 8px 10px; white-space: pre-wrap; }
+  .result.ok { background: var(--pass-bg); color: var(--pass); }
+  .result.bad { background: var(--fail-bg); color: var(--fail); }
+  .meta { font-size: 13px; color: var(--muted); margin-top: 10px; }
+  a.reset { color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<h1>Import Spike</h1>
+<p class="sub">Organizing Dashboard · dummy data only · nothing here is member data</p>
+
+<div id="errbar" class="banner err hidden"></div>
+
+<section>
+  <div id="modeBanner" class="banner warn">Checking display mode…</div>
+  <p class="hint" id="modeHint"></p>
+</section>
+
+<section>
+  <h2>Results</h2>
+  <div class="chips">
+    <div class="chip" id="chipPicker">Picker<small id="chipPickerNote">untested</small></div>
+    <div class="chip" id="chipClip">Clipboard<small id="chipClipNote">untested</small></div>
+    <div class="chip" id="chipPersist">Persistence<small id="chipPersistNote">untested</small></div>
+  </div>
+  <button class="secondary" id="btnCopyResults">Copy results summary</button>
+</section>
+
+<section>
+  <h2>Test 1 — File picker</h2>
+  <p class="hint">Tap, choose <b>Browse / Files</b>, go to <b>OneDrive → Documents → Cowork OS → dashboard</b>, pick <b>spike-test-data.json</b>.</p>
+  <button id="btnPick">Pick spike-test-data.json</button>
+  <button class="secondary" id="btnPickAny">File greyed out? Pick with no type filter</button>
+  <input type="file" id="filePick" accept=".json,application/json,text/plain" class="hidden">
+  <input type="file" id="filePickAny" class="hidden">
+  <div id="outPicker"></div>
+</section>
+
+<section>
+  <h2>Test 2 — Clipboard</h2>
+  <p class="hint">In the OneDrive app, open spike-test-data.json, select all the text, Copy. Come back here and tap the button (allow the Paste prompt).</p>
+  <button id="btnClipRead">Read clipboard &amp; import</button>
+  <p class="hint">Or paste manually below and tap Import:</p>
+  <textarea id="pasteBox" placeholder='{"schemaVersion": 1, ...}'></textarea>
+  <button class="secondary" id="btnPasteImport">Import pasted text</button>
+  <div id="outClip"></div>
+</section>
+
+<section>
+  <h2>Test 3 — Persistence</h2>
+  <p class="hint">After a successful import: swipe this app away (fully close it), relaunch from the Home Screen icon. If the import below is still shown, persistence passes automatically.</p>
+  <div id="outPersist" class="hint">No import stored yet.</div>
+  <p class="meta" id="metaLine"></p>
+  <p><a href="#" class="reset" id="btnReset">Reset spike data (start over)</a></p>
+</section>
+
+<script>
+(function () {
+  'use strict';
+
+  var KEY = 'spike.state';
+
+  function showErr(msg) {
+    var el = document.getElementById('errbar');
+    el.textContent = 'Page error — screenshot this: ' + msg;
+    el.classList.remove('hidden');
+  }
+  window.addEventListener('error', function (e) {
+    showErr((e.message || 'unknown') + (e.lineno ? ' (line ' + e.lineno + ')' : ''));
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    var r = e.reason;
+    showErr('Promise: ' + ((r && r.message) ? r.message : String(r)));
+  });
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) { return JSON.parse(raw); }
+    } catch (e) { /* corrupted or unavailable: start fresh */ }
+    return { firstSeen: new Date().toISOString(), launches: 0, tests: {}, lastImport: null };
+  }
+  function save() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(state));
+    } catch (e) {
+      showErr('localStorage write failed: ' + e.message);
+    }
+  }
+
+  var state = loadState();
+  state.launches = (state.launches || 0) + 1;
+
+  var standalone = (navigator.standalone === true) ||
+    (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+  if (standalone) { state.standaloneSeen = true; }
+  save();
+
+  function now() { return new Date().toISOString().replace('T', ' ').slice(0, 19); }
+
+  function record(source, ok, detail) {
+    state.tests[source] = { ok: ok, standalone: standalone, at: now(), detail: detail };
+    save();
+    render();
+  }
+
+  function handleImport(text, source, label) {
+    try {
+      if (!text || !text.trim()) { throw new Error('nothing to import (empty)'); }
+      var data = JSON.parse(text);
+      if (typeof data.schemaVersion === 'undefined') {
+        throw new Error('valid JSON but no schemaVersion field — wrong file?');
+      }
+      state.lastImport = {
+        source: source, at: now(), launch: state.launches,
+        schemaVersion: data.schemaVersion,
+        snapshotDate: data.snapshotDate || null,
+        probe: data.probe || null,
+        bytes: text.length
+      };
+      record(source, true, label + ' OK — schemaVersion ' + data.schemaVersion +
+        (data.probe ? ', probe "' + data.probe + '"' : '') + ', ' + text.length + ' bytes');
+    } catch (e) {
+      record(source, false, label + ' FAILED — ' + e.message);
+    }
+  }
+
+  function wireFileInput(inputId, source, label) {
+    var input = document.getElementById(inputId);
+    input.addEventListener('change', function () {
+      var f = input.files && input.files[0];
+      if (!f) { return; }
+      var reader = new FileReader();
+      reader.onload = function () { handleImport(String(reader.result), source, label + ' (' + f.name + ')'); };
+      reader.onerror = function () { record(source, false, label + ' FAILED — could not read "' + f.name + '"'); };
+      reader.readAsText(f);
+      input.value = '';
+    });
+  }
+
+  wireFileInput('filePick', 'picker', 'File picker');
+  wireFileInput('filePickAny', 'picker-any', 'File picker, no filter');
+
+  document.getElementById('btnPick').addEventListener('click', function () {
+    document.getElementById('filePick').click();
+  });
+  document.getElementById('btnPickAny').addEventListener('click', function () {
+    document.getElementById('filePickAny').click();
+  });
+
+  document.getElementById('btnClipRead').addEventListener('click', function () {
+    if (!navigator.clipboard || !navigator.clipboard.readText) {
+      record('clip-api', false, 'Clipboard read FAILED — API not available in this mode');
+      return;
+    }
+    navigator.clipboard.readText().then(function (t) {
+      handleImport(t, 'clip-api', 'Clipboard read');
+    }).catch(function (e) {
+      record('clip-api', false, 'Clipboard read FAILED — ' + e.message);
+    });
+  });
+
+  document.getElementById('btnPasteImport').addEventListener('click', function () {
+    handleImport(document.getElementById('pasteBox').value, 'clip-paste', 'Manual paste');
+  });
+
+  document.getElementById('btnReset').addEventListener('click', function (e) {
+    e.preventDefault();
+    localStorage.removeItem(KEY);
+    location.reload();
+  });
+
+  function best(sources) {
+    var i, t, chosen = null;
+    for (i = 0; i < sources.length; i++) {
+      t = state.tests[sources[i]];
+      if (t && t.ok && (!chosen || !chosen.ok)) { chosen = t; }
+      if (t && !chosen) { chosen = t; }
+      if (t && t.ok && t.standalone) { return t; }
+    }
+    return chosen;
+  }
+
+  function setChip(id, noteId, t, extraWarn) {
+    var chip = document.getElementById(id);
+    var note = document.getElementById(noteId);
+    chip.classList.remove('pass', 'fail', 'warn');
+    if (!t) { note.textContent = 'untested'; return; }
+    if (t.ok && (t.standalone || extraWarn === false)) {
+      chip.classList.add('pass');
+      note.textContent = 'PASS' + (t.standalone ? ' (standalone)' : '');
+    } else if (t.ok) {
+      chip.classList.add('warn');
+      note.textContent = 'passed in Safari — redo from icon';
+    } else {
+      chip.classList.add('fail');
+      note.textContent = 'FAIL';
+    }
+  }
+
+  function renderOut(elId, sources) {
+    var el = document.getElementById(elId);
+    var html = '', i, t;
+    for (i = 0; i < sources.length; i++) {
+      t = state.tests[sources[i]];
+      if (t) {
+        html += '<div class="result ' + (t.ok ? 'ok' : 'bad') + '">' + t.at + ' — ' + t.detail +
+          (t.standalone ? '' : ' [browser-tab mode]') + '</div>';
+      }
+    }
+    el.innerHTML = html;
+  }
+
+  function persistState() {
+    if (!state.lastImport) { return null; }
+    if (state.launches > state.lastImport.launch) {
+      return { ok: true, standalone: standalone, detail: 'import from launch ' + state.lastImport.launch + ' still here at launch ' + state.launches };
+    }
+    return { ok: true, pending: true };
+  }
+
+  function render() {
+    var mode = document.getElementById('modeBanner');
+    var hint = document.getElementById('modeHint');
+    if (standalone) {
+      mode.className = 'banner ok';
+      mode.textContent = 'Standalone mode ✓ — launched from the Home Screen icon';
+      hint.textContent = 'This is the real test environment. Run all three tests here.';
+    } else {
+      mode.className = 'banner warn';
+      mode.textContent = 'Browser tab — not the real test yet';
+      hint.textContent = 'Tap Share → Add to Home Screen, then launch from the icon. Results earned here don’t count for the spike.';
+    }
+
+    setChip('chipPicker', 'chipPickerNote', best(['picker', 'picker-any']));
+    setChip('chipClip', 'chipClipNote', best(['clip-api', 'clip-paste']));
+
+    var p = persistState();
+    var chip = document.getElementById('chipPersist');
+    var note = document.getElementById('chipPersistNote');
+    chip.classList.remove('pass', 'fail', 'warn');
+    var outP = document.getElementById('outPersist');
+    if (!p) {
+      note.textContent = 'untested';
+      outP.textContent = 'No import stored yet.';
+    } else if (p.pending) {
+      chip.classList.add('warn');
+      note.textContent = 'now close & relaunch';
+      outP.innerHTML = '<div class="result ok">Import saved (launch ' + state.lastImport.launch + ', via ' + state.lastImport.source + '). Now fully close the app and relaunch to prove it sticks.</div>';
+    } else {
+      chip.classList.add('pass');
+      note.textContent = 'PASS';
+      outP.innerHTML = '<div class="result ok">PASS — ' + p.detail + '. Last import: ' + state.lastImport.at + ' via ' + state.lastImport.source + ' (schemaVersion ' + state.lastImport.schemaVersion + ').</div>';
+    }
+
+    renderOut('outPicker', ['picker', 'picker-any']);
+    renderOut('outClip', ['clip-api', 'clip-paste']);
+
+    document.getElementById('metaLine').textContent =
+      'Launch #' + state.launches + ' · first seen ' + state.firstSeen.slice(0, 10) +
+      ' · standalone ever: ' + (state.standaloneSeen ? 'yes' : 'no');
+  }
+
+  function summaryText() {
+    var lines = ['Import spike results — ' + now(), 'Standalone now: ' + (standalone ? 'yes' : 'NO (browser tab)')];
+    var names = { 'picker': 'File picker (filtered)', 'picker-any': 'File picker (no filter)', 'clip-api': 'Clipboard read button', 'clip-paste': 'Manual paste' };
+    var k;
+    for (k in names) {
+      if (Object.prototype.hasOwnProperty.call(names, k)) {
+        var t = state.tests[k];
+        lines.push(names[k] + ': ' + (t ? ((t.ok ? 'PASS' : 'FAIL') + (t.standalone ? ' [standalone]' : ' [browser tab]') + ' — ' + t.detail) : 'untested'));
+      }
+    }
+    var p = persistState();
+    lines.push('Persistence: ' + (!p ? 'untested' : (p.pending ? 'saved, awaiting relaunch' : 'PASS — ' + p.detail)));
+    lines.push('Launches: ' + state.launches + ' · first seen ' + state.firstSeen);
+    return lines.join('\n');
+  }
+
+  document.getElementById('btnCopyResults').addEventListener('click', function () {
+    var text = summaryText();
+    var done = function () {
+      var b = document.getElementById('btnCopyResults');
+      b.textContent = 'Copied — paste it to Cowork';
+      setTimeout(function () { b.textContent = 'Copy results summary'; }, 2000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(function () {
+        document.getElementById('pasteBox').value = text;
+        done();
+      });
+    } else {
+      document.getElementById('pasteBox').value = text;
+      done();
+    }
+  });
+
+  render();
+}());
+</script>
+</body>
+</html>

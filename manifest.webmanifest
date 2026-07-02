@@ -1,0 +1,11 @@
+{
+  "name": "Organizing Dashboard — Import Spike",
+  "short_name": "Dash Spike",
+  "description": "Spike page: verifies file-picker and clipboard JSON import in iOS standalone mode. Dummy data only — no member content is ever hosted here.",
+  "display": "standalone",
+  "start_url": "./",
+  "scope": "./",
+  "background_color": "#f5f4f2",
+  "theme_color": "#5b1f24",
+  "icons": []
+}
