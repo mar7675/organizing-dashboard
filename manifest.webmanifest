@@ -1,11 +1,11 @@
 {
-  "name": "Organizing Dashboard — Import Spike",
-  "short_name": "Dash Spike",
-  "description": "Spike page: verifies file-picker and clipboard JSON import in iOS standalone mode. Dummy data only — no member content is ever hosted here.",
+  "name": "Organizing Dashboard",
+  "short_name": "Dashboard",
+  "description": "Data-free shell for a WTU organizer's dashboard. Loads dashboard-data.json by on-device import; no member data is ever hosted.",
   "display": "standalone",
   "start_url": "./",
   "scope": "./",
-  "background_color": "#f5f4f2",
-  "theme_color": "#5b1f24",
+  "background_color": "#FBF6F4",
+  "theme_color": "#88292B",
   "icons": []
 }

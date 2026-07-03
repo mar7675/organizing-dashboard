@@ -2,398 +2,1049 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Import Spike — Organizing Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Organizing Dashboard</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Dash Spike">
+<meta name="apple-mobile-web-app-title" content="Dashboard">
+<meta name="theme-color" content="#88292B">
 <style>
-  :root {
-    --ink: #26221f;
-    --muted: #6b645e;
-    --card: #ffffff;
-    --bg: #f5f4f2;
-    --line: #ddd8d3;
-    --maroon: #5b1f24;
-    --pass: #1e7a3c;
-    --pass-bg: #e6f4ea;
-    --fail: #b3261e;
-    --fail-bg: #fdecea;
-    --warn: #8a6d1a;
-    --warn-bg: #fdf6e3;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px 48px;
-    background: var(--bg);
-    color: var(--ink);
-    font: 16px/1.45 -apple-system, "Segoe UI", system-ui, sans-serif;
-    max-width: 640px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  h1 { font-size: 22px; margin: 8px 0 2px; color: var(--maroon); }
-  .sub { color: var(--muted); font-size: 14px; margin: 0 0 16px; }
-  section {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 14px 16px;
-    margin: 0 0 14px;
-  }
-  h2 { font-size: 16px; margin: 0 0 6px; }
-  p { margin: 6px 0; }
-  .hint { color: var(--muted); font-size: 14px; }
-  button {
-    display: block;
-    width: 100%;
-    min-height: 48px;
-    margin: 10px 0 0;
-    padding: 12px 14px;
-    font: inherit;
-    font-weight: 600;
-    color: #fff;
-    background: var(--maroon);
-    border: 0;
-    border-radius: 10px;
-  }
-  button.secondary { background: #fff; color: var(--maroon); border: 2px solid var(--maroon); }
-  textarea {
-    width: 100%;
-    min-height: 90px;
-    margin-top: 10px;
-    padding: 10px;
-    font: 14px/1.4 ui-monospace, Menlo, Consolas, monospace;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: #fbfaf9;
-    color: var(--ink);
-  }
-  .hidden { display: none; }
-  .banner { border-radius: 10px; padding: 10px 12px; font-weight: 600; }
-  .banner.ok { background: var(--pass-bg); color: var(--pass); }
-  .banner.warn { background: var(--warn-bg); color: var(--warn); }
-  .banner.err { background: var(--fail-bg); color: var(--fail); }
-  #errbar { margin-bottom: 14px; white-space: pre-wrap; }
-  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
-  .chip {
-    flex: 1 1 30%;
-    text-align: center;
-    border-radius: 10px;
-    padding: 10px 6px;
-    font-size: 14px;
-    font-weight: 700;
-    background: #eeebe8;
-    color: var(--muted);
-    border: 1px solid var(--line);
-  }
-  .chip small { display: block; font-weight: 400; font-size: 11px; margin-top: 2px; }
-  .chip.pass { background: var(--pass-bg); color: var(--pass); border-color: var(--pass); }
-  .chip.fail { background: var(--fail-bg); color: var(--fail); border-color: var(--fail); }
-  .chip.warn { background: var(--warn-bg); color: var(--warn); border-color: var(--warn); }
-  .result { margin-top: 8px; font-size: 14px; border-radius: 8px; padding: 8px 10px; white-space: pre-wrap; }
-  .result.ok { background: var(--pass-bg); color: var(--pass); }
-  .result.bad { background: var(--fail-bg); color: var(--fail); }
-  .meta { font-size: 13px; color: var(--muted); margin-top: 10px; }
-  a.reset { color: var(--muted); font-size: 13px; }
+:root{
+  color-scheme: light;
+  --rose:#D2AEAF; --red:#BD2036; --maroon:#88292B; --ink:#0D0B0B;
+  --link:#1155CC; --rose-tint:#F3E7E7; --rose-line:#E2C9CA;
+  --card:#ffffff; --muted:#6b5f5f; --green:#2f7d4f; --amber:#B8860B;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#FBF6F4;color:var(--ink);
+  font-family:'Inter','Open Sans',-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  font-size:14px;line-height:1.45;}
+a{color:var(--link);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1120px;margin:0 auto;padding:18px 20px 60px}
+header.hero{background:linear-gradient(180deg,var(--rose) 0%, #C99FA0 100%);
+  border-radius:14px;padding:18px 22px;color:var(--ink);box-shadow:0 1px 0 var(--rose-line)}
+.hero h1{margin:0;font-size:30px;letter-spacing:.3px;color:#fff;
+  text-shadow:0 1px 0 var(--maroon),0 2px 6px rgba(0,0,0,.25);font-weight:800}
+.hero .sub{margin-top:2px;font-weight:700;color:var(--maroon);font-size:13px;letter-spacing:.4px;text-transform:uppercase}
+.hero .meta{margin-top:10px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:12.5px}
+.pill{background:rgba(255,255,255,.7);border:1px solid var(--rose-line);border-radius:999px;padding:3px 11px;font-weight:600;color:var(--ink)}
+.pill.live{background:var(--red);color:#fff;border-color:var(--maroon)}
+.pill.live .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#fff;margin-right:6px;animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+@media(max-width:820px){.cols{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--rose-line);border-radius:12px;
+  padding:14px 16px;box-shadow:0 1px 3px rgba(136,41,43,.06)}
+.card.full{grid-column:1 / -1}
+.card h2{margin:0 0 2px;font-size:15px;font-weight:800;color:var(--ink);
+  display:flex;align-items:center;gap:8px;border-bottom:2px solid var(--maroon);padding-bottom:7px}
+.card h2 .badge{margin-left:auto;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
+.badge.snap{background:var(--rose-tint);color:var(--maroon);border:1px solid var(--rose-line)}
+.badge.livebadge{background:var(--red);color:#fff}
+.sectnote{font-size:11.5px;color:var(--muted);margin:10px 0 0}
+.brief-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+@media(max-width:680px){.brief-grid{grid-template-columns:1fr}}
+.brief-block h3{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--maroon);font-weight:800}
+.ev{padding:8px 10px;border:1px solid var(--rose-line);border-radius:8px;margin-bottom:7px;background:#fff}
+.ev .t{font-weight:700}
+.ev .when{font-size:12px;color:var(--muted)}
+.empty{color:var(--muted);font-style:italic;padding:8px 0;font-size:13px}
+.attn li{margin:4px 0}
+.daystamp{font-size:11px;color:var(--muted);font-weight:600;text-transform:none;letter-spacing:0;margin-left:6px}
+.wk-day{display:flex;gap:10px;padding:6px 0;border-bottom:1px dotted var(--rose-line)}
+.wk-day:last-child{border-bottom:none}
+.wk-date{flex:none;width:80px;font-size:11.5px;font-weight:700;color:var(--maroon)}
+.wk-date.today{color:var(--ink);text-decoration:underline}
+.wk-ev{font-size:12.5px;margin:1px 0}
+.wk-ev .tm{color:var(--muted)}
+.wk-none{font-size:12.5px;color:#8a7d7d}
+/* buttons */
+.actionbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px;position:sticky;top:0;z-index:40;background:rgba(251,246,244,.96);padding:8px 0;border-bottom:1px solid var(--rose-line)}
+.actionbar .grp-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.actionbar .sep{width:1px;height:22px;background:var(--rose-line);margin:0 4px}
+.btn{display:inline-flex;align-items:center;gap:6px;cursor:pointer;border:1px solid var(--rose-line);background:#fff;color:var(--ink);border-radius:8px;padding:7px 13px;font-size:12.5px;font-weight:700;font-family:inherit;text-decoration:none}
+.btn:hover{background:var(--rose-tint)}
+.btn.primary{background:var(--maroon);color:#fff;border-color:var(--maroon)}
+.btn.primary:hover{background:#6f2123}
+@media print{
+  .actionbar,.toolbar,.calc,.pill{display:none !important}
+  .card{break-inside:avoid;box-shadow:none}
+  body{background:#fff}
+}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--rose-line);vertical-align:top}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--maroon);font-weight:800}
+tr:last-child td{border-bottom:none}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+.chip{cursor:pointer;border:1px solid var(--rose-line);background:#fff;border-radius:999px;
+  padding:4px 12px;font-size:12.5px;font-weight:600;color:var(--ink)}
+.chip.active{background:var(--maroon);color:#fff;border-color:#6f2123}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px}
+.kpi{background:#fff;border:1px solid var(--rose-line);border-radius:10px;padding:10px 16px;min-width:118px}
+.kpi .n{font-size:24px;font-weight:800;color:var(--maroon);line-height:1}
+.kpi .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:4px}
+/* schools detailed */
+.cluster-h{margin:18px 0 8px;font-weight:800;color:var(--maroon);font-size:13px;text-transform:uppercase;letter-spacing:.5px;border-left:4px solid var(--maroon);padding-left:8px}
+.cluster-h .ch-meta{font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0;font-size:12px;margin-left:6px}
+.cluster-toggle{cursor:pointer;border:1px solid var(--rose-line);background:#fff;color:var(--maroon);border-radius:6px;width:22px;height:22px;font-size:11px;line-height:1;padding:0;margin-right:8px;font-weight:700;transition:transform .15s;vertical-align:middle}
+.cluster-toggle:hover{background:var(--rose-tint)}
+.cluster-block.collapsed .cluster-toggle{transform:rotate(-90deg)}
+.cluster-block.collapsed .cluster-schools{display:none}
+details.sch{border:1px solid var(--rose-line);border-radius:9px;margin-bottom:7px;background:#fff;overflow:hidden}
+details.sch[open]{box-shadow:0 1px 4px rgba(136,41,43,.08)}
+details.sch>summary{list-style:none;cursor:pointer;padding:9px 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+details.sch>summary::-webkit-details-marker{display:none}
+.sch .snm{font-weight:700;font-size:13.5px}
+.sch .caret{color:var(--maroon);font-size:11px;transition:transform .15s}
+details.sch[open] .caret{transform:rotate(90deg)}
+.sch .mini{font-size:11px;color:var(--muted);margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.sch .mini b{color:var(--ink)}
+.sch .tag{font-size:10px;font-weight:700;padding:1px 7px;border-radius:999px;background:var(--rose-tint);color:var(--maroon)}
+.sch .tag.warn{background:#FBEAEA;color:var(--red)}
+.sch .tag.ok{background:#E8F3EC;color:var(--green)}
+.sch .tag.stage{background:#ECE7E7;color:#5f5757}
+.sch .tag.dl-grey{background:#EDEDED;color:#555;font-weight:600}
+.sch .tag.dl-amber{background:#F6E2BF;color:#8a5a00;font-weight:800}
+.sch .tag.dl-red{background:var(--red);color:#fff;font-weight:800;box-shadow:0 0 0 1px var(--maroon)}
+.sch-body{padding:8px 14px 13px;border-top:1px solid var(--rose-line);background:#FCF8F7}
+.ct-line{display:flex;font-size:12.5px;padding:3px 0;border-bottom:1px dotted var(--rose-line)}
+.ct-line:last-child{border-bottom:none}
+.ct-line .r{width:170px;color:var(--maroon);font-weight:600;flex:none}
+.ct-line .v.empty-v{color:#8a7d7d;font-style:italic}
+.sub-h{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--maroon);font-weight:800;margin:12px 0 4px}
+.notes-list{margin:4px 0 0 16px;padding:0}
+.notes-list li{margin:2px 0;font-size:12.5px}
+/* grievance tracker lines */
+.gr-line{display:flex;gap:12px;align-items:baseline;font-size:12.5px;padding:4px 0;border-bottom:1px dotted var(--rose-line)}
+.gr-line:last-child{border-bottom:none}
+.gr-line .r{flex:1;color:var(--ink)}
+.gr-line .v{flex:none;text-align:right;font-weight:600;white-space:nowrap}
+.gr-line .v.due{color:var(--maroon);font-weight:700}
+.gr-line .v.empty-v{color:#8a7d7d;font-weight:400;font-style:italic}
+.gr-grp{padding:4px 0;border-bottom:1px dotted var(--rose-line)}
+.gr-lbl{color:var(--maroon);font-weight:600;font-size:12.5px}
+.gr-note{font-size:12.5px;color:var(--ink);margin-top:2px}
+.gr-note .empty-v{color:#8a7d7d;font-style:italic}
+.gr-overview{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--rose-line)}
+.gr-overview .kpis{margin-top:0}
+.ov-schools{margin-top:10px;font-size:12.5px;color:var(--ink)}
+.ov-schools .ov-lbl{color:var(--maroon);font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:.4px;margin-right:8px}
+.ov-schools .empty-v{color:#8a7d7d;font-style:italic}
+.cov-yes{color:var(--green);font-weight:700}
+.cov-no{color:var(--red);font-weight:700;font-size:11px}
+.cov-amber{color:var(--amber);font-weight:700;font-size:11px}
+.cov-muted{color:var(--muted);font-weight:600;font-size:11px}
+.status-strip{margin-top:10px;background:rgba(255,255,255,.72);border:1px solid var(--rose-line);border-radius:8px;padding:7px 12px;font-size:13px;font-weight:600;display:flex;gap:8px;flex-wrap:wrap}
+.status-strip .seg-red{color:var(--red);font-weight:800}
+.status-strip .seg-amber{color:var(--amber);font-weight:700}
+.status-strip .seg-ok{color:var(--green);font-weight:700}
+.status-strip .seg-muted{color:var(--muted);font-weight:600}
+.pill.diag{font-size:10.5px;padding:2px 9px;opacity:.8;font-weight:600}
+.schfilter{padding:7px 10px;border:1px solid var(--rose-line);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;min-width:230px}
+.evlink{cursor:pointer}
+.evlink:hover{background:var(--rose-tint)}
+.attn-link{color:var(--link)}
+.count-detail{margin-top:8px;font-size:12.5px}
+.count-detail summary{cursor:pointer;color:var(--maroon);font-weight:700}
+.cd-line{padding:2px 0;border-bottom:1px dotted var(--rose-line)}
+.cd-gap{padding:2px 0;color:var(--muted);font-style:italic}
+.card{scroll-margin-top:64px}
+details.sch{scroll-margin-top:64px}
+/* calculator */
+.calc{margin-top:12px;border:1px solid var(--rose-line);border-radius:10px;padding:12px;background:var(--rose-tint)}
+.calc h3{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--maroon);font-weight:800}
+.calc .fields{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.calc label{display:block;font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.calc input,.calc select{padding:6px 8px;border:1px solid var(--rose-line);border-radius:7px;font-size:13px;font-family:inherit;background:#fff}
+.calc button{background:var(--maroon);color:#fff;border:none;border-radius:7px;padding:7px 14px;font-weight:700;cursor:pointer;font-size:13px}
+.calc button:hover{background:#6f2123}
+.calc .out{margin-top:10px;font-size:13px;font-weight:600;color:var(--ink)}
+.calc .out b{color:var(--maroon);font-size:15px}
+footer{margin-top:22px;font-size:11.5px;color:var(--muted);text-align:center;line-height:1.6}
+.err{color:var(--red);font-size:12px;margin-top:6px}
+/* school viewer modal */
+.modal{display:none;position:fixed;inset:0;background:rgba(13,11,11,.45);z-index:50;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+.modal-card{background:#fff;border:1px solid var(--rose-line);border-radius:12px;max-width:680px;width:100%;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.modal-head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:2px solid var(--maroon);position:sticky;top:0;background:#fff;border-radius:12px 12px 0 0}
+.modal-head span{font-weight:800;font-size:16px;color:var(--ink)}
+.modal-x{margin-left:auto;border:none;background:none;font-size:24px;line-height:1;cursor:pointer;color:var(--maroon);font-weight:700}
+.modal-x:hover{color:var(--red)}
+.modal-body{padding:6px 18px 18px}
+@media print{.modal{display:none !important}}
+/* data import (shell mode) */
+body.nodata .card:not(#panel-import){display:none}
+body.nodata .actionbar,body.nodata footer{display:none}
+.imp-ta{width:100%;min-height:110px;margin-top:8px;padding:10px;font:12.5px/1.4 ui-monospace,Consolas,monospace;border:1px solid var(--rose-line);border-radius:8px;background:#fff;color:var(--ink)}
+@media print{#panel-import{display:none !important}}
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<h1>Import Spike</h1>
-<p class="sub">Organizing Dashboard · dummy data only · nothing here is member data</p>
+  <header class="hero">
+    <h1>Organizing Dashboard</h1>
+    <div class="sub">Organizer · Clusters VII · VIII · IX</div>
+    <div class="meta">
+      <span class="pill" id="todayPill">—</span>
+      <span class="pill" id="snapPill">Snapshot: —</span>
+      <span class="pill diag" id="selftestPill">checking deadline math…</span>
+      <span class="pill diag" id="buildPill">build 2026-07-02.6</span>
+    </div>
+    <div class="status-strip" id="statusStrip">—</div>
+  </header>
 
-<div id="errbar" class="banner err hidden"></div>
-
-<section>
-  <div id="modeBanner" class="banner warn">Checking display mode…</div>
-  <p class="hint" id="modeHint"></p>
-</section>
-
-<section>
-  <h2>Results</h2>
-  <div class="chips">
-    <div class="chip" id="chipPicker">Picker<small id="chipPickerNote">untested</small></div>
-    <div class="chip" id="chipClip">Clipboard<small id="chipClipNote">untested</small></div>
-    <div class="chip" id="chipPersist">Persistence<small id="chipPersistNote">untested</small></div>
+  <div class="actionbar">
+    <span class="grp-label">Jump to</span>
+    <button class="btn" data-jump="panel-brief">Brief</button>
+    <button class="btn" data-jump="panel-griev">Grievances</button>
+    <button class="btn" data-jump="panel-schools">Schools</button>
+    <button class="btn" data-jump="panel-coverage">Coverage</button>
+    <button class="btn" data-jump="panel-visits">Visits</button>
+    <span class="sep"></span>
+    <span class="grp-label">Links</span>
+    <a class="btn" href="https://forms.office.com/pages/responsepage.aspx?id=IoYSinwSvUuHr7NbAxNAqGgTIQr_KFlBjtZ8J-XWr8hUQzBIVFRaNDBSQkMwSFNRMlhURVpUU0wyTi4u&route=shorturl" target="_blank" rel="noopener">Support Intake Form</a>
+    <a class="btn" href="https://www.wtulocal6.net/support" target="_blank" rel="noopener">Member Support</a>
+    <span class="sep"></span>
+    <button class="btn primary" id="printBtn">Print / Save PDF</button>
   </div>
-  <button class="secondary" id="btnCopyResults">Copy results summary</button>
-</section>
 
-<section>
-  <h2>Test 1 — File picker</h2>
-  <p class="hint">Tap, choose <b>Browse / Files</b>, go to <b>OneDrive → Documents → Cowork OS → dashboard</b>, pick <b>spike-test-data.json</b>.</p>
-  <button id="btnPick">Pick spike-test-data.json</button>
-  <button class="secondary" id="btnPickAny">File greyed out? Pick with no type filter</button>
-  <input type="file" id="filePick" accept=".json,application/json,text/plain" class="hidden">
-  <input type="file" id="filePickAny" class="hidden">
-  <div id="outPicker"></div>
-</section>
+  <div class="card full" id="panel-brief" style="margin-top:16px">
+    <h2>Today's Brief <span class="badge snap">SNAPSHOT</span></h2>
+    <div class="brief-grid">
+      <div class="brief-block">
+        <h3>Deadlines — Next 5 School Days</h3>
+        <div id="dueBox"></div>
+        <h3 style="margin-top:14px">Top 3 Needing Attention</h3>
+        <ul class="attn" id="attnBox"><li class="empty">Nothing flagged.</li></ul>
+      </div>
+      <div class="brief-block">
+        <h3>Today's Calendar <span class="daystamp" id="calDay"></span></h3>
+        <div id="calBox"></div>
+        <h3 style="margin-top:14px">Week at a Glance</h3>
+        <div id="weekBox"></div>
+      </div>
+    </div>
+  </div>
 
-<section>
-  <h2>Test 2 — Clipboard</h2>
-  <p class="hint">In the OneDrive app, open spike-test-data.json, select all the text, Copy. Come back here and tap the button (allow the Paste prompt).</p>
-  <button id="btnClipRead">Read clipboard &amp; import</button>
-  <p class="hint">Or paste manually below and tap Import:</p>
-  <textarea id="pasteBox" placeholder='{"schemaVersion": 1, ...}'></textarea>
-  <button class="secondary" id="btnPasteImport">Import pasted text</button>
-  <div id="outClip"></div>
-</section>
+  <div class="card full" id="panel-griev" style="margin-top:16px">
+      <h2>Grievance Deadlines <span class="badge snap">SNAPSHOT</span></h2>
+      <div id="grievBox"></div>
+      <div class="calc">
+        <h3>Grievance Deadline Calculator</h3>
+        <div class="fields">
+          <div><label>What am I counting?</label>
+            <select id="cMode">
+              <option value="filing">Filing deadline (violation → file)</option>
+              <option value="meeting">Step 1/Stage 1 meeting (filed → meet)</option>
+              <option value="count">Count school days between two dates</option>
+            </select>
+          </div>
+          <div><label id="cFromLbl">Violation date</label><input type="date" id="cFrom"></div>
+          <div id="nWrap"><label>School days</label><input type="number" id="cN" value="14" min="1" style="width:80px"></div>
+          <div id="toWrap" style="display:none"><label>To (end date)</label><input type="date" id="cTo"></div>
+          <button id="cGo">Calculate</button>
+        </div>
+        <div class="out" id="calcOut"></div>
+        <div class="sectnote">School (teacher working) days only — skips weekends, holidays, breaks, wellness days, and summer (SY25-26 → SY28-29). <b>Filing</b> = 14 school days, counting the violation day as day 1 (CBA 6.4.1.1.1; inclusive count lands the deadline sooner so you don't miss it — hard outer limit 30 school days, 6.5.3). <b>Step 1/Stage 1 meeting</b> = 5 school days "after receipt," counted from the day after filing (CBA 6.4.1.1.2). Always verify a real filing day-by-day; the CBA controls.<br><a href="../00_Resources/2026-06-26-grievance-timeline-playbook.md" target="_blank" rel="noopener">Open the grievance-timeline playbook →</a> (full counting rules + diagnostic checklist)</div>
+      </div>
+    </div>
 
-<section>
-  <h2>Test 3 — Persistence</h2>
-  <p class="hint">After a successful import: swipe this app away (fully close it), relaunch from the Home Screen icon. If the import below is still shown, persistence passes automatically.</p>
-  <div id="outPersist" class="hint">No import stored yet.</div>
-  <p class="meta" id="metaLine"></p>
-  <p><a href="#" class="reset" id="btnReset">Reset spike data (start over)</a></p>
-</section>
+  <div class="card full" id="panel-issues" style="margin-top:16px">
+      <h2>Member Issue Queue <span class="badge snap">SNAPSHOT</span></h2>
+      <div id="issueBox"></div>
+  </div>
 
+  <div class="card full" id="panel-schools" style="margin-top:16px">
+    <h2>Schools at a Glance <span class="badge snap">SNAPSHOT</span></h2>
+    <div class="kpis" id="schoolKpis"></div>
+    <div class="toolbar" id="clusterChips"></div>
+    <div class="toolbar">
+      <input type="search" id="schoolFilter" class="schfilter" placeholder="Type to filter schools…" aria-label="Filter schools by name">
+      <button class="btn" id="expandAll">Expand all</button>
+      <button class="btn" id="collapseAll">Collapse all</button>
+    </div>
+    <div id="schoolSections"></div>
+    <div class="sectnote">Each school expands to show its Key Contacts, School Notes, and Open Issues, grouped by cluster. Fields fill in as you log them on the school pages — ask me to "refresh" or "update" afterward.</div>
+  </div>
+
+  <div class="card full" id="panel-coverage" style="margin-top:16px">
+    <h2>Coverage Gaps <span class="badge snap">SNAPSHOT</span></h2>
+    <div class="kpis" id="coverageKpis"></div>
+    <div id="coverageBody"></div>
+    <div class="sectnote">Schools missing a Building Rep, an active SCAC committee, or an LSAT rep — your organizing target list. The Building Rep <em>is</em> the SCAC Chair (one person), but every school still needs a SCAC committee, tracked separately. A school drops off once all three are filled in on its page. Fills in as you log contacts; ask me to "refresh" after updating school pages.</div>
+  </div>
+
+  <div class="card full" id="panel-visits" style="margin-top:16px">
+    <h2>School Visits Attended <span class="badge snap">SNAPSHOT</span></h2>
+    <div class="kpis" id="visitKpis"></div>
+    <div id="visitClusters"></div>
+    <div class="cluster-h" style="margin-top:18px">Visit Log<span class="ch-meta">most recent, newest first</span></div>
+    <div id="visitLog"></div>
+  </div>
+
+  <div class="card full" id="panel-import" style="margin-top:16px">
+    <h2>Data on This Device <span class="badge snap" id="importBadge">IMPORT</span></h2>
+    <div class="sectnote" id="importStatus" style="margin-top:8px"></div>
+    <div class="toolbar">
+      <button class="btn primary" id="impPick">Import dashboard-data.json</button>
+      <button class="btn" id="impPasteToggle">Paste instead</button>
+    </div>
+    <div id="impPasteWrap" style="display:none">
+      <textarea class="imp-ta" id="impPaste" placeholder="Open dashboard-data.json in the OneDrive app, select all, copy — then paste here."></textarea>
+      <div class="toolbar"><button class="btn primary" id="impPasteGo">Import pasted text</button></div>
+    </div>
+    <input type="file" id="impFile" accept=".json,application/json,text/plain" style="display:none">
+    <div class="err" id="impErr"></div>
+    <div class="sectnote">Phone: tap Import → Browse / Files → OneDrive → Documents → Cowork OS → <b>dashboard-data.json</b>. The data stays on this device — nothing is uploaded anywhere.</div>
+  </div>
+
+  <div id="schModal" class="modal" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-head"><span id="schModalTitle"></span><button class="modal-x" id="schModalX" aria-label="Close">×</button></div>
+      <div class="modal-body" id="schModalBody"></div>
+    </div>
+  </div>
+
+  <footer>
+    Snapshot data: WTU workspace (school pages + Filed Grievances) + calendar entered from Outlook screenshots, captured <span id="snapFoot">—</span>. Ask to "refresh" or "update" anytime.<br>
+    This is a working-aid, not the official record. The CBA controls all grievance timelines — verify any deadline day-by-day before filing.
+  </footer>
+</div>
+
+<!-- DASHBOARD-DATA:BEGIN — the desktop build (dashboard/build-dashboard.ps1) injects <script>window.__DATA__={...}</script> between these markers from dashboard-data.json. The hosted shell ships this block EMPTY: zero member data lives in this file. -->
+<!-- DASHBOARD-DATA:END -->
 <script>
-(function () {
-  'use strict';
+/* ===== DATA BOOT =====
+   Data arrives from exactly one of:
+     1. window.__DATA__ — injected between the markers above by the desktop build (embedded mode);
+     2. localStorage    — imported on the phone from dashboard-data.json via the Data card (imported mode).
+   Embedded beats imported. With neither, the page shows only the import card (nodata mode).
+   CALDATA (the public DCPS calendar) stays in this file so deadline math and the self-test run
+   before any import; a data file's `calendar` key overrides it when present. */
+var SNAPSHOT_DATE='',EVENTS=[],SCHOOLS=[],GRIEVANCES=[];
+var DATA_MODE='none'; // 'embedded' | 'imported' | 'none'
+var DATA_META=null;   // {importedAt, source} for imported mode
+var SHELL_SCHEMA=1;   // highest dashboard-data.json schemaVersion this build understands
+var LS_DATA='dash.data',LS_META='dash.meta';
 
-  var KEY = 'spike.state';
 
-  function showErr(msg) {
-    var el = document.getElementById('errbar');
-    el.textContent = 'Page error — screenshot this: ' + msg;
-    el.classList.remove('hidden');
+const CALDATA={"duty":[["2025-08-18","2026-06-22"],["2026-08-17","2027-06-21"],["2027-08-16","2028-06-16"],["2028-08-14","2029-06-18"]],"nonWorking":["2025-09-01","2025-10-13","2025-11-11","2025-11-26","2025-11-27","2025-11-28","2025-12-22","2025-12-23","2025-12-24","2025-12-25","2025-12-26","2025-12-29","2025-12-30","2025-12-31","2026-01-01","2026-01-19","2026-01-27","2026-01-28","2026-02-16","2026-03-13","2026-04-13","2026-04-14","2026-04-15","2026-04-16","2026-04-17","2026-05-25","2026-06-16","2026-06-19","2026-09-07","2026-10-12","2026-11-03","2026-11-11","2026-11-25","2026-11-26","2026-11-27","2026-12-22","2026-12-23","2026-12-24","2026-12-25","2026-12-28","2026-12-29","2026-12-30","2026-12-31","2027-01-01","2027-01-18","2027-02-15","2027-03-22","2027-03-23","2027-03-24","2027-03-25","2027-03-26","2027-04-16","2027-05-14","2027-05-31","2027-06-18","2027-06-22","2027-06-23","2027-09-06","2027-10-11","2027-11-11","2027-11-24","2027-11-25","2027-11-26","2027-12-21","2027-12-22","2027-12-23","2027-12-24","2027-12-27","2027-12-28","2027-12-29","2027-12-30","2027-12-31","2028-01-17","2028-02-21","2028-04-10","2028-04-11","2028-04-12","2028-04-13","2028-04-14","2028-04-17","2028-05-12","2028-05-29","2028-06-06","2028-09-04","2028-10-09","2028-11-07","2028-11-10","2028-11-22","2028-11-23","2028-11-24","2028-12-19","2028-12-20","2028-12-21","2028-12-22","2028-12-25","2028-12-26","2028-12-27","2028-12-28","2028-12-29","2029-01-01","2029-01-15","2029-02-19","2029-03-26","2029-03-27","2029-03-28","2029-03-29","2029-03-30","2029-04-16","2029-05-11","2029-05-28"]};
+var NON_WORKING=new Set(CALDATA.nonWorking);
+var DUTY=CALDATA.duty;
+function validateData(d){
+  if(!d||typeof d!=='object')return 'not a JSON object';
+  if(typeof d.schemaVersion==='undefined')return 'no schemaVersion field — is this really dashboard-data.json?';
+  if(d.schemaVersion>SHELL_SCHEMA)return 'data is schemaVersion '+d.schemaVersion+' but this app understands up to '+SHELL_SCHEMA+' — update the app first';
+  if(!d.snapshotDate)return 'missing snapshotDate';
+  if(!Array.isArray(d.schools)||!Array.isArray(d.grievances))return 'missing the schools/grievances arrays';
+  return null;
+}
+function adoptData(d){
+  if(d.calendar&&Array.isArray(d.calendar.duty)&&Array.isArray(d.calendar.nonWorking)){NON_WORKING=new Set(d.calendar.nonWorking);DUTY=d.calendar.duty;}
+  SNAPSHOT_DATE=d.snapshotDate;EVENTS=d.events||[];SCHOOLS=d.schools||[];GRIEVANCES=d.grievances||[];
+}
+function resolveData(){
+  if(window.__DATA__){
+    var err=validateData(window.__DATA__);
+    if(!err){adoptData(window.__DATA__);DATA_MODE='embedded';return;}
+    console.error('embedded data invalid: '+err);
   }
-  window.addEventListener('error', function (e) {
-    showErr((e.message || 'unknown') + (e.lineno ? ' (line ' + e.lineno + ')' : ''));
-  });
-  window.addEventListener('unhandledrejection', function (e) {
-    var r = e.reason;
-    showErr('Promise: ' + ((r && r.message) ? r.message : String(r)));
-  });
-
-  function loadState() {
-    try {
-      var raw = localStorage.getItem(KEY);
-      if (raw) { return JSON.parse(raw); }
-    } catch (e) { /* corrupted or unavailable: start fresh */ }
-    return { firstSeen: new Date().toISOString(), launches: 0, tests: {}, lastImport: null };
-  }
-  function save() {
-    try {
-      localStorage.setItem(KEY, JSON.stringify(state));
-    } catch (e) {
-      showErr('localStorage write failed: ' + e.message);
-    }
-  }
-
-  var state = loadState();
-  state.launches = (state.launches || 0) + 1;
-
-  var standalone = (navigator.standalone === true) ||
-    (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
-  if (standalone) { state.standaloneSeen = true; }
-  save();
-
-  function now() { return new Date().toISOString().replace('T', ' ').slice(0, 19); }
-
-  function record(source, ok, detail) {
-    state.tests[source] = { ok: ok, standalone: standalone, at: now(), detail: detail };
-    save();
-    render();
-  }
-
-  function handleImport(text, source, label) {
-    try {
-      if (!text || !text.trim()) { throw new Error('nothing to import (empty)'); }
-      var data = JSON.parse(text);
-      if (typeof data.schemaVersion === 'undefined') {
-        throw new Error('valid JSON but no schemaVersion field — wrong file?');
+  try{
+    var raw=localStorage.getItem(LS_DATA);
+    if(raw){
+      var d=JSON.parse(raw),err2=validateData(d);
+      if(!err2){
+        adoptData(d);DATA_MODE='imported';
+        try{DATA_META=JSON.parse(localStorage.getItem(LS_META)||'null');}catch(e1){DATA_META=null;}
+        try{localStorage.removeItem('spike.state');}catch(e2){}
+        return;
       }
-      state.lastImport = {
-        source: source, at: now(), launch: state.launches,
-        schemaVersion: data.schemaVersion,
-        snapshotDate: data.snapshotDate || null,
-        probe: data.probe || null,
-        bytes: text.length
-      };
-      record(source, true, label + ' OK — schemaVersion ' + data.schemaVersion +
-        (data.probe ? ', probe "' + data.probe + '"' : '') + ', ' + text.length + ' bytes');
-    } catch (e) {
-      record(source, false, label + ' FAILED — ' + e.message);
+      console.error('stored data invalid: '+err2);
+    }
+  }catch(e){console.error('stored data unreadable',e);}
+  DATA_MODE='none';
+}
+
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+// iso() removed: engine standardized on localIso (local time) so date strings match the PWA build and never UTC-shift.
+function parseD(s){const a=s.split('-').map(Number);return new Date(a[0],a[1]-1,a[2]);}
+function inDuty(s){return DUTY.some(d=>s>=d[0]&&s<=d[1]);}
+function currentSYStart(){var t=todayIso();for(var i=0;i<DUTY.length;i++){if(t>=DUTY[i][0]&&t<=DUTY[i][1])return DUTY[i][0];}return null;}
+function isWorking(d){const s=localIso(d);if(d.getDay()===0||d.getDay()===6)return false;if(!inDuty(s))return false;if(NON_WORKING.has(s))return false;return true;}
+function workingDaysBetween(a,b){let A=parseD(a),B=parseD(b);if(B<A)return null;let n=0,c=new Date(A);c.setDate(c.getDate()+1);while(c<=B){if(isWorking(c))n++;c.setDate(c.getDate()+1);}return n;}
+function addWorkingDays(a,N){let c=parseD(a),l=N,g=0;while(l>0&&g<2000){c.setDate(c.getDate()+1);g++;if(isWorking(c))l--;}return l===0?localIso(c):null;}
+// Nth school day counting the start day as day 1 (if start isn't a school day, the first school day on/after it is day 1). Used for filing deadlines.
+function nthWorkingInclusive(a,N){let c=parseD(a),count=0,g=0;while(g<4000){if(isWorking(c)){count++;if(count===N)return localIso(c);}c.setDate(c.getDate()+1);g++;}return null;}
+function todayIso(){return localIso(new Date());}
+// A date counts as held/filed only once it has arrived. A FUTURE date on a "scheduled / held" or
+// "filed" line means scheduled/planned — it must not advance the stage or stop the countdown.
+function held(d){return !!d&&d<=todayIso();}
+function futureDate(d){return (d&&d>todayIso())?d:null;}
+// School working days remaining from `fromStr` up to (not counting) the deadline day. -1 = past due, 0 = due today.
+// Pure so the self-test can pin it to fixed dates; workingDaysLeft() is the live wrapper.
+function workingDaysLeftFrom(fromStr,deadlineStr){
+  var a=parseD(fromStr),b=parseD(deadlineStr);
+  if(b<a)return -1;
+  if(b.getTime()===a.getTime())return 0;
+  var n=0,c=new Date(a);c.setDate(c.getDate()+1);
+  while(c<b){if(isWorking(c))n++;c.setDate(c.getDate()+1);}
+  return n;
+}
+function workingDaysLeft(deadlineStr){return workingDaysLeftFrom(todayIso(),deadlineStr);}
+function pretty(s){return parseD(s).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});}
+function prettyNoYr(s){return parseD(s).toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+function lastVisit(s){return s.visits.length?s.visits.map(v=>v[0]).sort().slice(-1)[0]:null;}
+// Key by member + school + violation date so one member with two grievances never collides.
+function grId(g){return 'gr-'+String(g.member+'-'+(g.school||'')+'-'+(g.violationDate||'')).replace(/[^A-Za-z0-9]+/g,'-');}
+// Counted-day list for the calculator's "show the day-by-day count" (mirrors nthWorkingInclusive / addWorkingDays).
+function listCountedDays(startIso,N,inclusive){
+  var c=parseD(startIso),days=[],g=0;
+  if(!inclusive)c.setDate(c.getDate()+1);
+  while(days.length<N&&g<4000){if(isWorking(c))days.push(localIso(c));c.setDate(c.getDate()+1);g++;}
+  return days.length===N?days:null;
+}
+function countDetailHtml(days){
+  if(!days||!days.length)return '';
+  var rows='',prev=null;
+  for(var i=0;i<days.length;i++){
+    if(prev&&(parseD(days[i])-parseD(prev))/86400000>3)rows+='<div class="cd-gap">— clock paused (holiday / break / summer) —</div>';
+    rows+='<div class="cd-line">Day '+(i+1)+' — '+pretty(days[i])+'</div>';
+    prev=days[i];
+  }
+  return '<details class="count-detail"><summary>Show the day-by-day count</summary>'+rows+'</details>';
+}
+function renderStatusStrip(){
+  var el=document.getElementById('statusStrip');if(!el)return;
+  var urgent=0,route=0;
+  GRIEVANCES.forEach(function(g){
+    var act=activeDeadline(g);
+    if(act){var l=workingDaysLeft(act.date);if(act.escalated||l<=3)urgent++;}
+    else if(deadlineHealth(g))urgent++;
+    if(!g.outcome&&held(g.stage3FiledDate)&&!g.handedOff)route++;
+  });
+  var issues=SCHOOLS.reduce(function(a,s){return a+s.issues.length;},0);
+  var parts=[];
+  parts.push(urgent?'<span class="seg-red">⚠ '+urgent+' deadline'+(urgent===1?'':'s')+' within 3 school days or past due</span>':'<span class="seg-ok">no urgent deadlines</span>');
+  if(route)parts.push('<span class="seg-amber">'+route+' case'+(route===1?'':'s')+' needs routing to a Grievance Specialist</span>');
+  parts.push('<span class="seg-muted">'+issues+' open member issue'+(issues===1?'':'s')+'</span>');
+  el.innerHTML=parts.join('<span class="seg-muted">·</span>');
+}
+
+let activeCluster='All';
+let schoolFilterText='';
+let covHideEmpty=true; // build .5: Coverage Gaps hides schools with nothing recorded yet (identical all-missing rows are noise; a partially-filled school missing a rep is the real signal)
+const CLUSTER_ORDER=['VII','VIII','IX'];
+function orderedClusters(){
+  const present=new Set(SCHOOLS.map(s=>s.cluster));
+  const known=CLUSTER_ORDER.filter(c=>present.has(c));
+  const extra=Array.from(present).filter(c=>CLUSTER_ORDER.indexOf(c)===-1).sort();
+  return known.concat(extra);
+}
+
+function renderHeader(){
+  document.getElementById('todayPill').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  var sp=document.getElementById('snapPill');
+  sp.textContent='Snapshot: '+pretty(SNAPSHOT_DATE);
+  document.getElementById('snapFoot').textContent=pretty(SNAPSHOT_DATE);
+  // Stale-snapshot warning — same rule the phone app will use: countdowns are live, but WHICH cases
+  // exist comes from the snapshot, so flag >3 school days OR >7 calendar days old, whichever trips first.
+  var calDays=Math.round((parseD(todayIso())-parseD(SNAPSHOT_DATE))/86400000);
+  var schDays=calDays>0?(workingDaysBetween(SNAPSHOT_DATE,todayIso())||0):0;
+  if(schDays>3||calDays>7){
+    sp.textContent='Snapshot STALE: '+pretty(SNAPSHOT_DATE)+' — ask me to refresh';
+    sp.style.background='var(--red)';sp.style.color='#fff';sp.style.borderColor='var(--maroon)';
+  }else{sp.style.background='';sp.style.color='';sp.style.borderColor='';}
+}
+// On-load engine self-test against the known-good cases in the build plan's Verification Plan.
+// If any assertion fails after a future change, the header shows a red warning instead of a quiet checkmark.
+function renderSelfTest(){
+  var el=document.getElementById('selftestPill');if(!el)return;
+  var pass=false;
+  try{
+    pass=nthWorkingInclusive('2026-09-14',14)==='2026-10-01'
+      &&addWorkingDays('2026-10-01',5)==='2026-10-08'
+      &&nthWorkingInclusive('2026-06-15',14)==='2026-08-28'
+      &&addWorkingDays('2026-06-17',5)==='2026-08-19'
+      &&workingDaysBetween('2026-10-01','2026-10-08')===5
+      // 30-day outer limit + countdown fixtures, independently verified 2026-07-01 (PowerShell reimplementation)
+      &&nthWorkingInclusive('2026-06-15',30)==='2026-09-22'
+      &&nthWorkingInclusive('2026-09-14',30)==='2026-10-26'
+      &&workingDaysLeftFrom('2026-07-01','2026-08-19')===2
+      &&workingDaysLeftFrom('2026-08-17','2026-08-19')===1
+      &&workingDaysLeftFrom('2026-08-19','2026-08-19')===0
+      &&workingDaysLeftFrom('2026-08-20','2026-08-19')===-1;
+  }catch(e){pass=false;}
+  if(pass){el.textContent='deadline math ✓';}
+  else{el.classList.remove('diag');el.textContent='DEADLINE MATH CHECK FAILED — do not trust deadlines';el.style.background='var(--red)';el.style.color='#fff';el.style.borderColor='var(--maroon)';}
+}
+
+function localIso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function renderCalendar(){
+  // Anchored to the REAL today, matching the live countdowns — never to the snapshot date.
+  const box=document.getElementById('calBox');
+  const t=todayIso();
+  document.getElementById('calDay').textContent=pretty(t);
+  const today=EVENTS.filter(function(e){return e.date===t;});
+  box.innerHTML=today.length?today.map(function(e){return '<div class="ev"><div class="t">'+esc(e.summary)+'</div><div class="when">'+esc(e.time||'All day')+(e.location?' · '+esc(e.location):'')+'</div></div>';}).join(''):'<div class="empty">No events entered for today — events were last transcribed with the '+prettyNoYr(SNAPSHOT_DATE)+' snapshot. Send an Outlook screenshot and I\'ll fill it in.</div>';
+}
+function renderWeek(){
+  const box=document.getElementById('weekBox');
+  let html='';
+  for(let i=0;i<7;i++){
+    const d=parseD(todayIso());d.setDate(d.getDate()+i);
+    const ds=localIso(d);
+    const label=d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+    const evs=EVENTS.filter(function(e){return e.date===ds;});
+    const cell=evs.length?evs.map(function(e){return '<div class="wk-ev"><span class="tm">'+esc(e.time||'All day')+'</span> '+esc(e.summary)+'</div>';}).join(''):'<div class="wk-none">—</div>';
+    html+='<div class="wk-day"><div class="wk-date'+(i===0?' today':'')+'">'+label+'</div><div style="flex:1">'+cell+'</div></div>';
+  }
+  box.innerHTML=html;
+}
+
+function prettyMed(s){return parseD(s).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+function gFilingDue(g){return g.violationDate?nthWorkingInclusive(g.violationDate,14):'';}
+function gStage1Due(g){var d=g.stage1FiledDate||g.dateFiled;return d?addWorkingDays(d,5):'';}
+function gStage2Due(g){return g.stage2FiledDate?addWorkingDays(g.stage2FiledDate,10):'';}
+function gStage3Due(g){return g.stage3FiledDate?addWorkingDays(g.stage3FiledDate,14):'';}
+function grievStage(g){
+  if(g.outcome)return 'Resolved';
+  if(held(g.stage3FiledDate))return 'Stage 3';
+  if(held(g.stage2FiledDate))return 'Stage 2';
+  if(held(g.stage1FiledDate)||held(g.dateFiled))return 'Stage 1';
+  return 'Pre-filing';
+}
+function activeDeadline(g){
+  if(g.outcome)return null;
+  if(held(g.stage3FiledDate))return null; // past Step 1, Stage 2 = the Grievance Specialist's clock, not Mike's
+  if(!held(g.dateFiled)){
+    var due=gFilingDue(g);
+    if(!due)return null; // no violation date or beyond the calendar — deadlineHealth() shows a loud error instead
+    if(workingDaysLeft(due)>=0)return {label:'File by',date:due};
+    // 14-day date missed, but filing is still possible until the 30-school-day hard outer limit (6.5.3) — escalate.
+    var lim=nthWorkingInclusive(g.violationDate,30);
+    return {label:'Outer filing limit (6.5.3)',date:lim||due,escalated:true};
+  }
+  if(held(g.stage2FiledDate)&&!held(g.stage2MeetingHeld)&&gStage2Due(g))return {label:'Stage 2 meeting by',date:gStage2Due(g),scheduled:futureDate(g.stage2MeetingHeld)};
+  if(!held(g.stage2FiledDate)&&!held(g.stage1MeetingHeld)&&gStage1Due(g))return {label:'Stage 1 meeting by',date:gStage1Due(g),scheduled:futureDate(g.stage1MeetingHeld)};
+  return null;
+}
+// Loud error states: an open case whose clock can't be computed must NEVER read as "no open deadline".
+function deadlineHealth(g){
+  if(g.outcome||held(g.stage3FiledDate))return null;
+  if(!held(g.dateFiled)){
+    if(!g.violationDate)return 'no violation date — the filing clock is unknown; add it to the log';
+    if(!gFilingDue(g))return 'filing deadline uncomputable — check the violation date / calendar coverage';
+    return null;
+  }
+  if(!held(g.stage2FiledDate)&&!held(g.stage1MeetingHeld)&&!gStage1Due(g))return 'Stage 1 meeting deadline uncomputable — check the filed date';
+  if(held(g.stage2FiledDate)&&!held(g.stage2MeetingHeld)&&!gStage2Due(g))return 'Stage 2 meeting deadline uncomputable — check the Stage 2 filed date';
+  return null;
+}
+function schoolHref(name){
+  for(var i=0;i<SCHOOLS.length;i++){if(SCHOOLS[i].name===name)return '../Schools/'+encodeURIComponent('Cluster '+SCHOOLS[i].cluster)+'/'+encodeURIComponent(name+'.md');}
+  return '';
+}
+function schoolLink(name){
+  if(!name)return '';
+  return schoolHref(name)?'<a href="#" class="schlink" data-school="'+esc(name)+'">'+esc(name)+'</a>':esc(name);
+}
+function schoolCluster(name){for(var i=0;i<SCHOOLS.length;i++){if(SCHOOLS[i].name===name)return SCHOOLS[i].cluster;}return '';}
+function contactVal(s,role){for(var i=0;i<s.contacts.length;i++){if(s.contacts[i][0]===role)return s.contacts[i][1];}return '';}
+function openSchool(name){
+  var s=null;for(var i=0;i<SCHOOLS.length;i++){if(SCHOOLS[i].name===name){s=SCHOOLS[i];break;}}
+  if(!s)return;
+  var b='';
+  b+='<div class="sub-h">Key Contacts</div>';
+  b+=s.contacts.some(function(c){return c[1];})?s.contacts.map(function(c){return '<div class="ct-line"><div class="r">'+esc(c[0])+'</div><div class="v'+(c[1]?'':' empty-v')+'">'+(c[1]?esc(c[1]):'— not yet recorded')+'</div></div>';}).join(''):'<div class="ct-line"><div class="v empty-v">No contacts recorded yet — add them on the school page and refresh.</div></div>';
+  b+='<div class="sub-h">School Notes</div>';
+  b+=s.notes.length?'<ul class="notes-list">'+s.notes.map(function(n){return '<li>'+esc(n)+'</li>';}).join('')+'</ul>':'<div class="empty">No notes recorded.</div>';
+  b+='<div class="sub-h">Open Issues</div>';
+  b+=s.issues.length?('<table><tr><th>Issue</th><th>Status</th><th>Article</th><th>Opened</th></tr>'+s.issues.map(function(r){return '<tr><td>'+esc(r[0]||'')+'</td><td>'+esc(r[1]||'')+'</td><td>'+esc(r[2]||'')+'</td><td>'+esc(r[3]||'')+'</td></tr>';}).join('')+'</table>'):'<div class="empty">No open issues.</div>';
+  b+='<div class="sub-h">Visit &amp; Conversation Log</div>';
+  b+=s.visits.length?('<table><tr><th>Date</th><th>Notes</th></tr>'+s.visits.slice().sort(function(a,b2){return b2[0].localeCompare(a[0]);}).map(function(v){return '<tr><td>'+pretty(v[0])+'</td><td>'+esc(v[1])+'</td></tr>';}).join('')+'</table>'):'<div class="empty">No visits logged.</div>';
+  document.getElementById('schModalTitle').textContent=s.name+' — Cluster '+s.cluster;
+  document.getElementById('schModalBody').innerHTML=b;
+  document.getElementById('schModal').style.display='flex';
+}
+function closeSchool(){var m=document.getElementById('schModal');if(m)m.style.display='none';}
+function openSchoolFromUrl(){
+  var m=(location.hash||'').match(/school=(.+)$/);
+  if(!m)return;
+  var name=decodeURIComponent(m[1].replace(/\+/g,' '));
+  for(var i=0;i<SCHOOLS.length;i++){
+    if(SCHOOLS[i].name===name){
+      var el=document.getElementById('panel-schools');if(el)el.scrollIntoView({block:'start'});
+      openSchool(name);return;
     }
   }
-
-  function wireFileInput(inputId, source, label) {
-    var input = document.getElementById(inputId);
-    input.addEventListener('change', function () {
-      var f = input.files && input.files[0];
-      if (!f) { return; }
-      var reader = new FileReader();
-      reader.onload = function () { handleImport(String(reader.result), source, label + ' (' + f.name + ')'); };
-      reader.onerror = function () { record(source, false, label + ' FAILED — could not read "' + f.name + '"'); };
-      reader.readAsText(f);
-      input.value = '';
-    });
+}
+function grLine(label,value,opts){
+  opts=opts||{};
+  if(opts.text){
+    return '<div class="gr-grp"><div class="gr-lbl">'+esc(label)+'</div><div class="gr-note">'+(value?esc(value):'<span class="empty-v">—</span>')+'</div></div>';
   }
-
-  wireFileInput('filePick', 'picker', 'File picker');
-  wireFileInput('filePickAny', 'picker-any', 'File picker, no filter');
-
-  document.getElementById('btnPick').addEventListener('click', function () {
-    document.getElementById('filePick').click();
+  const v=value?'<span class="v'+(opts.due?' due':'')+'">'+esc(value)+'</span>':'<span class="v empty-v">—</span>';
+  return '<div class="gr-line"><span class="r">'+esc(label)+'</span>'+v+'</div>';
+}
+// Date display: append "(scheduled)"/"(planned)" when the recorded date hasn't arrived yet.
+function dWhen(d,futWord){return d?prettyMed(d)+(futureDate(d)?' ('+futWord+')':''):'';}
+function grievCard(g){
+  const act=activeDeadline(g);
+  const health=deadlineHealth(g);
+  let mini='<span class="tag stage">'+grievStage(g)+'</span>';
+  if(act){
+    const l=workingDaysLeft(act.date);
+    const dlCls=(act.escalated||l<=3)?'dl-red':(l<=5?'dl-amber':'dl-grey');
+    mini+='<span class="tag '+dlCls+'">'+(act.escalated?'14-day date missed — ':'')+act.label+' '+prettyMed(act.date)+' · '+(l<0?'past due':l+' school day'+(l===1?'':'s'))+'</span>';
+    if(act.scheduled)mini+='<span class="tag stage">meeting scheduled '+prettyMed(act.scheduled)+'</span>';
+  }else if(health){
+    mini+='<span class="tag dl-red">⚠ '+esc(health)+'</span>';
+  }else if(g.outcome){
+    var ocCls=g.outcome==='Favorable'?'ok':(g.outcome==='Unfavorable'?'dl-red':'dl-grey');
+    mini+='<span class="tag '+ocCls+'">'+esc(g.outcome)+'</span>';
+  }else if(held(g.stage3FiledDate)){
+    mini+='<span class="tag dl-grey">'+(g.handedOff?'with Grievance Specialist':'route to Grievance Specialist')+'</span>';
+  }else{mini+='<span class="tag ok">no open deadline</span>';}
+  const fd=gFilingDue(g),s1=gStage1Due(g),s2=gStage2Due(g),lim=g.violationDate?nthWorkingInclusive(g.violationDate,30):'';
+  let b='<div class="sch-body">';
+  b+='<div class="gr-line"><span class="r">School</span>'+(g.school?'<span class="v">'+schoolLink(g.school)+'</span>':'<span class="v empty-v">—</span>')+'</div>';
+  b+='<div class="sub-h">Filing</div>';
+  b+=grLine('Violation / notice date',g.violationDate?prettyMed(g.violationDate):'');
+  b+=grLine('Grievance filing due (14 school days, incl. notice day)',fd?prettyMed(fd):'',{due:true});
+  b+=grLine('Hard outer limit — never file after (30 school days, 6.5.3)',lim?prettyMed(lim):'');
+  b+=grLine('Date grievance filed',dWhen(g.dateFiled,'planned'));
+  b+='<div class="sub-h">Step 1, Stage 1</div>';
+  b+=grLine('Date Stage 1 grievance filed',dWhen(g.stage1FiledDate,'planned'));
+  b+=grLine('Stage 1 meeting due w/ Principal (5 school days)',s1?prettyMed(s1):'',{due:true});
+  b+=grLine('Date Stage 1 meeting scheduled / held',dWhen(g.stage1MeetingHeld,'scheduled'));
+  b+=grLine('Notes / outcome of meeting',g.stage1Notes||'',{text:true});
+  if(g.stage1Notes&&futureDate(g.stage1MeetingHeld))b+='<div class="gr-note" style="color:var(--amber)">⚠ Notes recorded but the Stage 1 meeting date is still in the future — check the log.</div>';
+  b+='<div class="sub-h">Step 1, Stage 2</div>';
+  b+=grLine('Date Stage 2 grievance filed',dWhen(g.stage2FiledDate,'planned'));
+  b+=grLine('Stage 2 meeting deadline w/ Inst. Supe (10 school days)',s2?prettyMed(s2):'',{due:true});
+  b+=grLine('Date Stage 2 meeting scheduled / held',dWhen(g.stage2MeetingHeld,'scheduled'));
+  b+=grLine('Stage 2 meeting results',g.stage2Results||'',{text:true});
+  if(g.stage2Results&&futureDate(g.stage2MeetingHeld))b+='<div class="gr-note" style="color:var(--amber)">⚠ Results recorded but the Stage 2 meeting date is still in the future — check the log.</div>';
+  b+='<div class="sub-h">Step 1, Stage 3</div>';
+  b+=grLine('Date Stage 3 grievance filed',dWhen(g.stage3FiledDate,'planned'));
+  b+=grLine('Stage 3 LMER meeting deadline (14 school days)',gStage3Due(g)?prettyMed(gStage3Due(g)):'',{due:true});
+  b+=grLine('Handed off to Grievance Specialist',g.handedOff?prettyMed(g.handedOff):'');
+  b+='<div class="sub-h">Outcome</div>';
+  b+=grLine('Outcome / resolution',g.outcome||'',{text:true});
+  b+='</div>';
+  return '<details class="sch" id="'+grId(g)+'"><summary><span class="caret">▶</span><span class="snm">'+esc(g.member)+'</span> <span class="cl">'+esc(g.article)+(g.school?' · '+schoolLink(g.school):'')+'</span><span class="mini">'+mini+'</span></summary>'+b+'</details>';
+}
+function renderGrievances(){
+  const box=document.getElementById('grievBox');
+  const due=document.getElementById('dueBox');
+  if(!GRIEVANCES.length){
+    box.innerHTML='<div class="empty">No grievances on file yet. When a case is logged in Filed Grievances, it shows here as an expandable Stage 1–3 tracker with its filing and meeting deadlines.</div>';
+    due.innerHTML='<div class="empty">No deadlines in the next 5 school days.</div>';
+    return;
+  }
+  const STAGES=[['Pre-filing','Not Yet Filed'],['Stage 1','Step 1, Stage 1'],['Stage 2','Step 1, Stage 2'],['Stage 3','Step 1, Stage 3 — with Grievance Specialist'],['Resolved','Resolved / Closed']];
+  const byDeadline=function(a,b){const da=activeDeadline(a),db=activeDeadline(b);const va=da?da.date:'9999-12-31',vb=db?db.date:'9999-12-31';return va<vb?-1:va>vb?1:0;};
+  let gh='';
+  STAGES.forEach(function(st){
+    const list=GRIEVANCES.filter(function(g){return grievStage(g)===st[0];}).sort(byDeadline);
+    if(!list.length)return;
+    gh+='<div class="cluster-h">'+st[1]+'<span class="ch-meta">'+list.length+' case'+(list.length===1?'':'s')+'</span></div>';
+    gh+=list.map(grievCard).join('');
   });
-  document.getElementById('btnPickAny').addEventListener('click', function () {
-    document.getElementById('filePickAny').click();
-  });
+  const filed=GRIEVANCES.filter(function(g){return g.dateFiled;});
+  const resolvedN=filed.filter(function(g){return g.outcome;}).length;
+  const favorableN=filed.filter(function(g){return g.outcome==='Favorable';}).length;
+  const openN=filed.length-resolvedN;
+  const CL=['VII','VIII','IX'];
+  const byCl={};CL.forEach(function(c){byCl[c]=0;});
+  const bySch={},byArt={};
+  filed.forEach(function(g){var c=schoolCluster(g.school);if(byCl[c]===undefined)byCl[c]=0;byCl[c]++;bySch[g.school]=(bySch[g.school]||0)+1;var a=g.article||'(unspecified)';byArt[a]=(byArt[a]||0)+1;});
+  function gkpi(n,l){return '<div class="kpi"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>';}
+  var ov='<div class="gr-overview"><div class="kpis">'+gkpi(filed.length,'Grievances filed')+gkpi(openN,'Open')+gkpi(resolvedN,'Resolved')+gkpi(favorableN,'Favorable')+'</div>';
+  ov+='<div class="ov-schools"><span class="ov-lbl">By cluster</span>'+CL.map(function(c){return 'Cluster '+c+' ('+(byCl[c]||0)+')';}).join(' &nbsp;·&nbsp; ')+'</div>';
+  var artKeys=Object.keys(byArt).sort();
+  ov+='<div class="ov-schools"><span class="ov-lbl">By article</span>'+(artKeys.length?artKeys.map(function(a){return esc(a)+' ('+byArt[a]+')';}).join(' &nbsp;·&nbsp; '):'<span class="empty-v">none filed yet</span>')+'</div>';
+  var schKeys=Object.keys(bySch).sort();
+  ov+='<div class="ov-schools"><span class="ov-lbl">By school</span>'+(schKeys.length?schKeys.map(function(s){return schoolLink(s)+' ('+bySch[s]+')';}).join(' &nbsp;·&nbsp; '):'<span class="empty-v">none filed yet</span>')+'</div></div>';
+  box.innerHTML=ov+gh+
+    '<div class="sectnote">Overview counts grievances that have a filing date (Not Yet Filed cases are excluded). Grouped by stage (Not Yet Filed → Step 1 Stage 1 → Stage 2 → Stage 3); a section appears only when it has a case. Within each, cases are ordered by soonest deadline. Dates in <span style="color:var(--maroon);font-weight:700">bold maroon</span> are auto-computed from the dates you enter (filing = 14 school days incl. the notice day; Stage 1 meeting = 5 and Stage 2 = 10 school days, counted from the day after filing). The tag shows the next active deadline with days-left recalculated live; "past due" means it has passed. A <b>future</b> date on a "scheduled / held" or "filed" line counts as scheduled/planned — it does not advance the stage or stop the countdown until the day arrives. If a filing\'s 14-day date is missed, the countdown escalates in red to the 30-school-day hard outer limit (6.5.3) while filing is still possible. Cases past Step 1, Stage 2 belong to a Grievance Specialist — they show no countdown here, and Top 3 flags any not yet routed.</div>';
+  const soon=GRIEVANCES.map(g=>({g:g,act:activeDeadline(g)})).filter(x=>{if(!x.act)return false;return x.act.escalated||workingDaysLeft(x.act.date)<=5;}).sort((a,b)=>a.act.date<b.act.date?-1:a.act.date>b.act.date?1:0);
+  due.innerHTML=soon.length?soon.map(x=>{const l=workingDaysLeft(x.act.date);const left=l<0?'<b style="color:var(--red)">PAST DUE</b>':(l===0?'<b style="color:var(--red)">due today</b>':l+' school day'+(l===1?'':'s')+' left');return '<div class="ev evlink" data-target="'+grId(x.g)+'" title="Open this case"><div class="t">'+esc(x.g.member)+' · '+esc(x.g.article)+'</div><div class="when">'+x.act.label+' '+prettyMed(x.act.date)+' · '+left+'</div></div>';}).join(''):'<div class="empty">No deadlines in the next 5 school days.</div>';
+}
 
-  document.getElementById('btnClipRead').addEventListener('click', function () {
-    if (!navigator.clipboard || !navigator.clipboard.readText) {
-      record('clip-api', false, 'Clipboard read FAILED — API not available in this mode');
+function renderIssues(){
+  const box=document.getElementById('issueBox');
+  const all=[];
+  SCHOOLS.forEach(s=>s.issues.forEach(row=>all.push({school:s.name,row:row})));
+  if(!all.length){
+    box.innerHTML='<div class="empty">No open member issues logged. Rows from the "Open Issues" table on any school page collect here automatically.</div>';
+    return;
+  }
+  // Oldest first — the queue is where filing clocks are born, so age must be visible.
+  all.sort((a,b)=>String(a.row[3]||'9999').localeCompare(String(b.row[3]||'9999')));
+  const t=todayIso();
+  const rows=all.map(x=>{
+    const opened=x.row[3]||'';
+    const openedIso=/^\d{4}-\d{2}-\d{2}$/.test(opened)?opened:null;
+    let ageTxt=opened?(openedIso?prettyMed(openedIso):esc(opened)):'—';
+    if(openedIso){const age=workingDaysBetween(openedIso,t);if(age&&age>0)ageTxt+=' · '+age+' school day'+(age===1?'':'s')+' ago';}
+    const art=x.row[2]||'';
+    const artCell=art?esc(art)+' <a href="#" class="attn-link" data-target="panel-griev" title="An article-tagged issue may be a violation with a live 14-school-day filing clock — run the date through the calculator">check filing clock →</a>':'';
+    return '<tr><td>'+schoolLink(x.school)+'</td><td>'+esc(x.row[0]||'')+'</td><td>'+esc(x.row[1]||'')+'</td><td>'+artCell+'</td><td>'+ageTxt+'</td></tr>';}).join('');
+  box.innerHTML='<table><tr><th>School</th><th>Issue</th><th>Status</th><th>Article</th><th>Opened</th></tr>'+rows+'</table>'+
+    '<div class="sectnote">Oldest first. An issue tagged with a CBA article may be a violation with a live 14-school-day filing clock — don\'t let it age in the queue.</div>';
+}
+
+function renderSchoolKpis(){
+  const k=document.getElementById('schoolKpis');
+  const totIssues=SCHOOLS.reduce((a,s)=>a+s.issues.length,0);
+  const withContacts=SCHOOLS.filter(s=>s.cf>0).length;
+  const visited=SCHOOLS.filter(s=>s.visits.length).length;
+  k.innerHTML=[['Schools',SCHOOLS.length],['Open issues',totIssues],['Profiles started',withContacts+' / '+SCHOOLS.length],['Visited',visited+' / '+SCHOOLS.length]]
+    .map(x=>'<div class="kpi"><div class="n">'+x[1]+'</div><div class="l">'+x[0]+'</div></div>').join('');
+}
+
+function renderChips(){
+  const clusters=['All'].concat(orderedClusters());
+  document.getElementById('clusterChips').innerHTML=clusters.map(c=>
+    '<span class="chip'+(c===activeCluster?' active':'')+'" data-c="'+c+'">'+(c==='All'?'All clusters':'Cluster '+c)+'</span>').join('');
+  Array.prototype.forEach.call(document.querySelectorAll('#clusterChips .chip'),ch=>ch.onclick=function(){activeCluster=ch.dataset.c;renderChips();renderSchools();});
+}
+
+function schoolCard(s){
+  const lv=lastVisit(s);
+  const issuesN=s.issues.length;
+  const tags=[];
+  tags.push('<span class="tag'+(s.cf>0?' ok':'')+'">'+s.cf+'/'+s.ct+' contacts</span>');
+  tags.push('<span class="tag'+(issuesN>0?' warn':'')+'">'+issuesN+' issue'+(issuesN===1?'':'s')+'</span>');
+  tags.push('<span class="tag">'+(lv?'visit '+prettyNoYr(lv):'no visits')+'</span>');
+  const contacts=s.cf>0?s.contacts.map(c=>'<div class="ct-line"><div class="r">'+esc(c[0])+'</div><div class="v'+(c[1]?'':' empty-v')+'">'+(c[1]?esc(c[1]):'— not yet recorded')+'</div></div>').join(''):'<div class="ct-line"><div class="v empty-v">No contacts recorded yet — add them on the school page and refresh.</div></div>';
+  const notes=s.notes.length?'<ul class="notes-list">'+s.notes.map(n=>'<li>'+esc(n)+'</li>').join('')+'</ul>':'<div class="empty" style="padding:2px 0">No notes recorded.</div>';
+  let issues;
+  if(issuesN){
+    issues='<table><tr><th>Issue</th><th>Status</th><th>Article</th><th>Opened</th></tr>'+
+      s.issues.map(r=>'<tr><td>'+esc(r[0]||'')+'</td><td>'+esc(r[1]||'')+'</td><td>'+esc(r[2]||'')+'</td><td>'+esc(r[3]||'')+'</td></tr>').join('')+'</table>';
+  }else{issues='<div class="empty" style="padding:2px 0">No open issues.</div>';}
+  return '<details class="sch"><summary><span class="caret">▶</span><span class="snm">'+esc(s.name)+'</span>'+
+    '<span class="mini">'+tags.join('')+'</span></summary>'+
+    '<div class="sch-body">'+
+      '<div class="sub-h">Key Contacts</div>'+contacts+
+      '<div class="sub-h">School Notes</div>'+notes+
+      '<div class="sub-h">Open Issues</div>'+issues+
+    '</div></details>';
+}
+
+function renderSchools(){
+  const wrap=document.getElementById('schoolSections');
+  const clusters=orderedClusters();
+  let html='';
+  clusters.forEach(c=>{
+    if(activeCluster!=='All'&&activeCluster!==c)return;
+    const list=SCHOOLS.filter(s=>s.cluster===c&&(!schoolFilterText||s.name.toLowerCase().indexOf(schoolFilterText)!==-1)).sort((a,b)=>a.name.localeCompare(b.name));
+    if(!list.length)return;
+    const issues=list.reduce((a,s)=>a+s.issues.length,0);
+    const visited=list.filter(s=>s.visits.length).length;
+    html+='<div class="cluster-block" data-cluster="'+c+'">';
+    html+='<div class="cluster-h"><button class="cluster-toggle" aria-expanded="true" title="Collapse or expand this cluster">▾</button>Cluster '+c+'<span class="ch-meta">'+list.length+' schools · '+visited+' visited · '+issues+' open issues</span></div>';
+    html+='<div class="cluster-schools">'+list.map(schoolCard).join('')+'</div>';
+    html+='</div>';
+  });
+  wrap.innerHTML=html||'<div class="empty">No schools match'+(schoolFilterText?' "'+esc(schoolFilterText)+'"':' this cluster')+'.</div>';
+}
+
+function renderCoverage(){
+  const k=document.getElementById('coverageKpis');
+  const body=document.getElementById('coverageBody');
+  const roles=[['Building Rep','Building Rep'],['SCAC Committee / Members','SCAC Committee'],['WTU LSAT Reps','LSAT Rep']];
+  const total=SCHOOLS.length;
+  k.innerHTML=roles.map(function(r){var n=SCHOOLS.filter(function(s){return contactVal(s,r[0]);}).length;return '<div class="kpi"><div class="n">'+n+' / '+total+'</div><div class="l">'+r[1]+'</div></div>';}).join('');
+  const hasData=function(s){return s.cf>0||s.notes.length>0||s.issues.length>0||s.visits.length>0;};
+  const missingRole=function(s){return roles.some(function(r){return !contactVal(s,r[0]);});};
+  const hiddenN=covHideEmpty?SCHOOLS.filter(function(s){return missingRole(s)&&!hasData(s);}).length:0;
+  let html='';
+  orderedClusters().forEach(function(c){
+    const list=SCHOOLS.filter(function(s){return s.cluster===c&&missingRole(s)&&(!covHideEmpty||hasData(s));}).sort(function(a,b){return a.name.localeCompare(b.name);});
+    if(!list.length)return;
+    html+='<div class="cluster-block" data-cluster="'+c+'">';
+    html+='<div class="cluster-h"><button class="cluster-toggle" aria-expanded="true" title="Collapse or expand this cluster">▾</button>Cluster '+c+'<span class="ch-meta">'+list.length+' school'+(list.length===1?'':'s')+' missing a rep</span></div>';
+    html+='<div class="cluster-schools"><table><tr><th>School</th><th>Building Rep</th><th>SCAC Committee</th><th>LSAT Rep</th></tr>'+list.map(function(s){
+      return '<tr><td>'+schoolLink(s.name)+'</td>'+roles.map(function(r){return '<td>'+(contactVal(s,r[0])?'<span class="cov-yes">✓</span>':'<span class="cov-no">missing</span>')+'</td>';}).join('')+'</tr>';
+    }).join('')+'</table></div>';
+    html+='</div>';
+  });
+  const toggleBtn=(hiddenN||!covHideEmpty)?'<button class="btn" id="covToggleEmpty">'+(covHideEmpty?'Show '+hiddenN+' hidden school'+(hiddenN===1?'':'s')+' (nothing recorded yet)':'Hide schools with nothing recorded yet')+'</button>':'';
+  if(html){
+    body.innerHTML='<div class="toolbar"><button class="btn" id="covExpandAll">Expand all</button><button class="btn" id="covCollapseAll">Collapse all</button>'+toggleBtn+'</div>'+html;
+  }else if(hiddenN){
+    body.innerHTML='<div class="toolbar">'+toggleBtn+'</div><div class="empty">'+hiddenN+' school'+(hiddenN===1?' is':'s are')+' missing a Building Rep, SCAC committee, or LSAT rep — but nothing is recorded on '+(hiddenN===1?'its page':'their pages')+' yet, so they\'re hidden to keep real gaps visible. They\'ll surface here as school pages fill in.</div>';
+  }else{
+    body.innerHTML='<div class="empty">Every school has a Building Rep, an active SCAC committee, and an LSAT rep.</div>';
+  }
+}
+function setAllCoverage(collapsed){
+  Array.prototype.forEach.call(document.querySelectorAll('#coverageBody .cluster-block'),function(b){
+    b.classList.toggle('collapsed',collapsed);
+    var t=b.querySelector('.cluster-toggle');if(t)t.setAttribute('aria-expanded',String(!collapsed));
+  });
+}
+function renderVisitClusters(){
+  const box=document.getElementById('visitClusters');
+  if(!box)return;
+  const t=todayIso();
+  const inSession=inDuty(t);
+  const sy=currentSYStart();
+  let html='';
+  orderedClusters().forEach(function(c){
+    const list=SCHOOLS.filter(function(s){return s.cluster===c;}).sort(function(a,b){return a.name.localeCompare(b.name);});
+    if(!list.length)return;
+    const visitedN=list.filter(function(s){return s.visits.length;}).length;
+    html+='<div class="cluster-block" data-cluster="'+c+'">';
+    html+='<div class="cluster-h"><button class="cluster-toggle" aria-expanded="true" title="Collapse or expand this cluster">▾</button>Cluster '+c+'<span class="ch-meta">'+list.length+' school'+(list.length===1?'':'s')+' · '+visitedN+' visited</span></div>';
+    html+='<div class="cluster-schools"><table><tr><th>School</th><th>Last visit</th><th>Visits</th><th>Status</th></tr>'+list.map(function(s){
+      var lv=lastVisit(s);
+      var status,cls;
+      if(!inSession){status='Summer recess';cls='cov-muted';}
+      else if(!lv){
+        var sd0=sy?(workingDaysBetween(sy,t)||0):0;
+        if(sd0>=60){status='No visit this SY';cls='cov-no';}
+        else if(sd0>=30){status='No visit this SY';cls='cov-amber';}
+        else{status='No visit yet this SY';cls='cov-muted';}
+      }else{
+        var sd=workingDaysBetween(lv,t);if(sd===null)sd=0;
+        if(sd>=60){status=sd+' school days ago';cls='cov-no';}
+        else if(sd>=30){status=sd+' school days ago';cls='cov-amber';}
+        else{status=(sd===0?'today':sd+' school day'+(sd===1?'':'s')+' ago');cls='cov-yes';}
+      }
+      return '<tr><td>'+schoolLink(s.name)+'</td><td>'+(lv?prettyMed(lv):'—')+'</td><td>'+s.visits.length+'</td><td><span class="'+cls+'">'+status+'</span></td></tr>';
+    }).join('')+'</table></div>';
+    html+='</div>';
+  });
+  if(!html){box.innerHTML='';return;}
+  box.innerHTML='<div class="cluster-h" style="margin-top:14px">Visit Coverage by Cluster<span class="ch-meta">every school · staleness counts school days, so the clock pauses over breaks and summer</span></div><div class="toolbar"><button class="btn" id="visExpandAll">Expand all</button><button class="btn" id="visCollapseAll">Collapse all</button></div>'+html;
+}
+function setAllVisitClusters(collapsed){
+  Array.prototype.forEach.call(document.querySelectorAll('#visitClusters .cluster-block'),function(b){
+    b.classList.toggle('collapsed',collapsed);
+    var t=b.querySelector('.cluster-toggle');if(t)t.setAttribute('aria-expanded',String(!collapsed));
+  });
+}
+function renderVisits(){
+  const k=document.getElementById('visitKpis');
+  const log=document.getElementById('visitLog');
+  const all=[];
+  SCHOOLS.forEach(s=>s.visits.forEach(v=>all.push({school:s.name,cluster:s.cluster,date:v[0],note:v[1]})));
+  const byCluster={};
+  SCHOOLS.forEach(s=>{byCluster[s.cluster]=(byCluster[s.cluster]||0)+s.visits.length;});
+  const kpis=[['Total visits',all.length]].concat(orderedClusters().filter(c=>byCluster[c]!==undefined).map(c=>['Cluster '+c,byCluster[c]]));
+  k.innerHTML=kpis.map(x=>'<div class="kpi"><div class="n">'+x[1]+'</div><div class="l">'+x[0]+'</div></div>').join('');
+  if(!all.length){log.innerHTML='<div class="sectnote">No visits logged yet. Each dated entry in a school’s "Visit & Conversation Log" counts here, newest first.</div>';return;}
+  all.sort((a,b)=>b.date.localeCompare(a.date));
+  log.innerHTML='<table><tr><th>Date</th><th>School</th><th>Notes</th></tr>'+
+    all.slice(0,25).map(v=>'<tr><td>'+pretty(v.date)+'</td><td>'+schoolLink(v.school)+'</td><td>'+esc(v.note)+'</td></tr>').join('')+'</table>'+
+    (all.length>25?'<div class="sectnote">Showing the latest 25 of '+all.length+' visits — the full log lives on the school pages.</div>':'');
+}
+
+function renderAttention(){
+  const box=document.getElementById('attnBox');
+  const items=[];
+  GRIEVANCES.forEach(g=>{const act=activeDeadline(g);
+    if(act){const l=workingDaysLeft(act.date);
+      if(act.escalated)items.push('<a href="#" class="attn-link" data-target="'+grId(g)+'">'+esc('FILING WINDOW CLOSING: '+g.member+' missed the 14-day date — outer limit '+prettyMed(act.date)+(l<0?' has PASSED':''))+'</a>');
+      else if(l<0||l<=3)items.push('<a href="#" class="attn-link" data-target="'+grId(g)+'">'+esc((l<0?'Grievance PAST DUE: ':'Grievance deadline near: ')+g.member+' — '+act.label+' '+prettyMed(act.date))+'</a>');
+    }else{const h=deadlineHealth(g);if(h)items.push('<a href="#" class="attn-link" data-target="'+grId(g)+'">'+esc('Check case data: '+g.member+' — '+h)+'</a>');}
+  });
+  GRIEVANCES.forEach(g=>{if(!g.outcome&&held(g.stage3FiledDate)&&!g.handedOff)items.push('<a href="#" class="attn-link" data-target="'+grId(g)+'">'+esc('Out of lane: '+g.member+' is past Step 1, Stage 2 — route to a Grievance Specialist')+'</a>');});
+  const openIssues=SCHOOLS.reduce((a,s)=>a+s.issues.length,0);
+  if(openIssues)items.push('<a href="#" class="attn-link" data-target="panel-issues">'+openIssues+' open member issue'+(openIssues>1?'s':'')+' in the queue</a>');
+  const noVisit=SCHOOLS.filter(s=>!s.visits.length).length;
+  if(noVisit===SCHOOLS.length&&inDuty(todayIso()))items.push('<a href="#" class="attn-link" data-target="panel-visits">No school visits logged yet — start filling Visit &amp; Conversation Logs</a>');
+  if(!items.length){box.innerHTML='<li class="empty">Nothing flagged for today.</li>';return;}
+  box.innerHTML=items.slice(0,3).map(t=>'<li>'+t+'</li>').join('');
+}
+
+function wireCalc(){
+  const modeEl=document.getElementById('cMode');
+  const lbl=document.getElementById('cFromLbl');
+  const nEl=document.getElementById('cN');
+  function sync(){
+    const m=modeEl.value;
+    document.getElementById('toWrap').style.display=(m==='count')?'block':'none';
+    document.getElementById('nWrap').style.display=(m==='count')?'none':'block';
+    lbl.textContent=(m==='filing')?'Violation date':(m==='meeting')?'Date filed':'From (start date)';
+  }
+  modeEl.onchange=function(){
+    if(modeEl.value==='filing')nEl.value=14;
+    else if(modeEl.value==='meeting')nEl.value=5;
+    sync();
+  };
+  document.getElementById('cFrom').value=todayIso();
+  sync();
+  document.getElementById('cGo').onclick=function(){
+    const out=document.getElementById('calcOut');
+    const from=document.getElementById('cFrom').value;
+    const m=modeEl.value;
+    if(!from){out.textContent='Pick a date.';return;}
+    if(m==='count'){
+      const to=document.getElementById('cTo').value;
+      if(!to){out.textContent='Pick an end date.';return;}
+      const n=workingDaysBetween(from,to);
+      if(n===null){out.textContent='End date is before the start date.';return;}
+      let detail='';
+      if(n>0&&n<=40){
+        const days=[];const c2=parseD(from);c2.setDate(c2.getDate()+1);const B=parseD(to);
+        while(c2<=B){if(isWorking(c2))days.push(localIso(c2));c2.setDate(c2.getDate()+1);}
+        detail=countDetailHtml(days);
+      }
+      out.innerHTML='<b>'+n+'</b> school day'+(n===1?'':'s')+' from '+pretty(from)+' to '+pretty(to)+' — counts the end day, not the start day.'+detail;
       return;
     }
-    navigator.clipboard.readText().then(function (t) {
-      handleImport(t, 'clip-api', 'Clipboard read');
-    }).catch(function (e) {
-      record('clip-api', false, 'Clipboard read FAILED — ' + e.message);
-    });
+    const N=parseInt(nEl.value,10);
+    if(!N||N<1){out.textContent='Enter a number of school days.';return;}
+    if(m==='filing'){
+      const d=nthWorkingInclusive(from,N);
+      if(!d){out.textContent='Falls beyond the published calendar — add the next school year first.';return;}
+      const note=isWorking(parseD(from))?'':' (the violation date isn’t a school day, so counting starts the next school day)';
+      out.innerHTML='File by <b>'+pretty(d)+'</b> — the '+N+'th school day, counting the violation day as day 1'+note+'.'+(N<=40?countDetailHtml(listCountedDays(from,N,true)):'');
+    }else{
+      const d=addWorkingDays(from,N);
+      if(!d){out.textContent='Falls beyond the published calendar — add the next school year first.';return;}
+      out.innerHTML='Meet by <b>'+pretty(d)+'</b> — '+N+' school days after filing, not counting the filing day.'+(N<=40?countDetailHtml(listCountedDays(from,N,false)):'');
+    }
+  };
+}
+
+function setAllSchools(open){
+  Array.prototype.forEach.call(document.querySelectorAll('#schoolSections details.sch'),function(d){d.open=open;});
+}
+function wireButtons(){
+  Array.prototype.forEach.call(document.querySelectorAll('[data-jump]'),function(b){
+    b.onclick=function(){var el=document.getElementById(b.dataset.jump);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});};
   });
-
-  document.getElementById('btnPasteImport').addEventListener('click', function () {
-    handleImport(document.getElementById('pasteBox').value, 'clip-paste', 'Manual paste');
+  var pb=document.getElementById('printBtn');if(pb)pb.onclick=function(){window.print();};
+  var ea=document.getElementById('expandAll');if(ea)ea.onclick=function(){setAllSchools(true);};
+  var ca=document.getElementById('collapseAll');if(ca)ca.onclick=function(){setAllSchools(false);};
+  var sf=document.getElementById('schoolFilter');if(sf)sf.oninput=function(){schoolFilterText=sf.value.trim().toLowerCase();renderSchools();};
+  document.addEventListener('click',function(e){
+    var t=e.target.closest&&e.target.closest('[data-target]');
+    if(!t)return;
+    if(t.tagName==='A')e.preventDefault();
+    var el=document.getElementById(t.getAttribute('data-target'));
+    if(!el)return;
+    if(el.tagName==='DETAILS')el.open=true;
+    el.scrollIntoView({behavior:'smooth',block:'start'});
   });
-
-  document.getElementById('btnReset').addEventListener('click', function (e) {
-    e.preventDefault();
-    localStorage.removeItem(KEY);
-    location.reload();
+  window.addEventListener('beforeprint',function(){setAllSchools(true);setAllCoverage(false);setAllVisitClusters(false);});
+  var ss=document.getElementById('schoolSections');
+  if(ss)ss.addEventListener('click',function(e){
+    var t=e.target.closest&&e.target.closest('.cluster-toggle');
+    if(!t)return;
+    var block=t.closest('.cluster-block');
+    if(!block)return;
+    var collapsed=block.classList.toggle('collapsed');
+    t.setAttribute('aria-expanded',String(!collapsed));
   });
+  var cov=document.getElementById('coverageBody');
+  if(cov)cov.addEventListener('click',function(e){
+    var t=e.target.closest&&e.target.closest('.cluster-toggle');
+    if(t){var block=t.closest('.cluster-block');if(block){var collapsed=block.classList.toggle('collapsed');t.setAttribute('aria-expanded',String(!collapsed));}return;}
+    if(e.target.closest&&e.target.closest('#covToggleEmpty')){covHideEmpty=!covHideEmpty;renderCoverage();return;}
+    if(e.target.closest&&e.target.closest('#covExpandAll')){setAllCoverage(false);return;}
+    if(e.target.closest&&e.target.closest('#covCollapseAll')){setAllCoverage(true);return;}
+  });
+  var vc=document.getElementById('visitClusters');
+  if(vc)vc.addEventListener('click',function(e){
+    var t=e.target.closest&&e.target.closest('.cluster-toggle');
+    if(t){var block=t.closest('.cluster-block');if(block){var collapsed=block.classList.toggle('collapsed');t.setAttribute('aria-expanded',String(!collapsed));}return;}
+    if(e.target.closest&&e.target.closest('#visExpandAll')){setAllVisitClusters(false);return;}
+    if(e.target.closest&&e.target.closest('#visCollapseAll')){setAllVisitClusters(true);return;}
+  });
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('.schlink');
+    if(a){e.preventDefault();e.stopPropagation();openSchool(a.getAttribute('data-school'));}
+  });
+  var mx=document.getElementById('schModalX');if(mx)mx.onclick=closeSchool;
+  var modal=document.getElementById('schModal');
+  if(modal)modal.addEventListener('click',function(e){if(e.target===modal)closeSchool();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSchool();});
+  window.addEventListener('hashchange',openSchoolFromUrl);
+}
 
-  function best(sources) {
-    var i, t, chosen = null;
-    for (i = 0; i < sources.length; i++) {
-      t = state.tests[sources[i]];
-      if (t && t.ok && (!chosen || !chosen.ok)) { chosen = t; }
-      if (t && !chosen) { chosen = t; }
-      if (t && t.ok && t.standalone) { return t; }
-    }
-    return chosen;
+function renderImport(){
+  document.body.classList.toggle('nodata',DATA_MODE==='none');
+  var card=document.getElementById('panel-import');if(!card)return;
+  if(DATA_MODE==='embedded'){card.style.display='none';return;}
+  card.style.display='';
+  var badge=document.getElementById('importBadge'),st=document.getElementById('importStatus');
+  if(DATA_MODE==='imported'){
+    badge.textContent='IMPORTED';
+    var when=DATA_META&&DATA_META.importedAt?new Date(DATA_META.importedAt).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'—';
+    st.innerHTML='Snapshot <b>'+(SNAPSHOT_DATE?esc(prettyMed(SNAPSHOT_DATE)):'—')+'</b> · imported '+esc(when)+(DATA_META&&DATA_META.source?' via '+esc(DATA_META.source):'')+' · '+GRIEVANCES.length+' case'+(GRIEVANCES.length===1?'':'s')+' · '+SCHOOLS.length+' school'+(SCHOOLS.length===1?'':'s')+'. Re-import anytime after a refresh lands in OneDrive.';
+  }else{
+    badge.textContent='NO DATA YET';
+    st.innerHTML='<b>First run:</b> this app ships data-free. Import <b>dashboard-data.json</b> from OneDrive to load your dashboard — it stays on this device.';
   }
-
-  function setChip(id, noteId, t, extraWarn) {
-    var chip = document.getElementById(id);
-    var note = document.getElementById(noteId);
-    chip.classList.remove('pass', 'fail', 'warn');
-    if (!t) { note.textContent = 'untested'; return; }
-    if (t.ok && (t.standalone || extraWarn === false)) {
-      chip.classList.add('pass');
-      note.textContent = 'PASS' + (t.standalone ? ' (standalone)' : '');
-    } else if (t.ok) {
-      chip.classList.add('warn');
-      note.textContent = 'passed in Safari — redo from icon';
-    } else {
-      chip.classList.add('fail');
-      note.textContent = 'FAIL';
-    }
-  }
-
-  function renderOut(elId, sources) {
-    var el = document.getElementById(elId);
-    var html = '', i, t;
-    for (i = 0; i < sources.length; i++) {
-      t = state.tests[sources[i]];
-      if (t) {
-        html += '<div class="result ' + (t.ok ? 'ok' : 'bad') + '">' + t.at + ' — ' + t.detail +
-          (t.standalone ? '' : ' [browser-tab mode]') + '</div>';
-      }
-    }
-    el.innerHTML = html;
-  }
-
-  function persistState() {
-    if (!state.lastImport) { return null; }
-    if (state.launches > state.lastImport.launch) {
-      return { ok: true, standalone: standalone, detail: 'import from launch ' + state.lastImport.launch + ' still here at launch ' + state.launches };
-    }
-    return { ok: true, pending: true };
-  }
-
-  function render() {
-    var mode = document.getElementById('modeBanner');
-    var hint = document.getElementById('modeHint');
-    if (standalone) {
-      mode.className = 'banner ok';
-      mode.textContent = 'Standalone mode ✓ — launched from the Home Screen icon';
-      hint.textContent = 'This is the real test environment. Run all three tests here.';
-    } else {
-      mode.className = 'banner warn';
-      mode.textContent = 'Browser tab — not the real test yet';
-      hint.textContent = 'Tap Share → Add to Home Screen, then launch from the icon. Results earned here don’t count for the spike.';
-    }
-
-    setChip('chipPicker', 'chipPickerNote', best(['picker', 'picker-any']));
-    setChip('chipClip', 'chipClipNote', best(['clip-api', 'clip-paste']));
-
-    var p = persistState();
-    var chip = document.getElementById('chipPersist');
-    var note = document.getElementById('chipPersistNote');
-    chip.classList.remove('pass', 'fail', 'warn');
-    var outP = document.getElementById('outPersist');
-    if (!p) {
-      note.textContent = 'untested';
-      outP.textContent = 'No import stored yet.';
-    } else if (p.pending) {
-      chip.classList.add('warn');
-      note.textContent = 'now close & relaunch';
-      outP.innerHTML = '<div class="result ok">Import saved (launch ' + state.lastImport.launch + ', via ' + state.lastImport.source + '). Now fully close the app and relaunch to prove it sticks.</div>';
-    } else {
-      chip.classList.add('pass');
-      note.textContent = 'PASS';
-      outP.innerHTML = '<div class="result ok">PASS — ' + p.detail + '. Last import: ' + state.lastImport.at + ' via ' + state.lastImport.source + ' (schemaVersion ' + state.lastImport.schemaVersion + ').</div>';
-    }
-
-    renderOut('outPicker', ['picker', 'picker-any']);
-    renderOut('outClip', ['clip-api', 'clip-paste']);
-
-    document.getElementById('metaLine').textContent =
-      'Launch #' + state.launches + ' · first seen ' + state.firstSeen.slice(0, 10) +
-      ' · standalone ever: ' + (state.standaloneSeen ? 'yes' : 'no');
-  }
-
-  function summaryText() {
-    var lines = ['Import spike results — ' + now(), 'Standalone now: ' + (standalone ? 'yes' : 'NO (browser tab)')];
-    var names = { 'picker': 'File picker (filtered)', 'picker-any': 'File picker (no filter)', 'clip-api': 'Clipboard read button', 'clip-paste': 'Manual paste' };
-    var k;
-    for (k in names) {
-      if (Object.prototype.hasOwnProperty.call(names, k)) {
-        var t = state.tests[k];
-        lines.push(names[k] + ': ' + (t ? ((t.ok ? 'PASS' : 'FAIL') + (t.standalone ? ' [standalone]' : ' [browser tab]') + ' — ' + t.detail) : 'untested'));
-      }
-    }
-    var p = persistState();
-    lines.push('Persistence: ' + (!p ? 'untested' : (p.pending ? 'saved, awaiting relaunch' : 'PASS — ' + p.detail)));
-    lines.push('Launches: ' + state.launches + ' · first seen ' + state.firstSeen);
-    return lines.join('\n');
-  }
-
-  document.getElementById('btnCopyResults').addEventListener('click', function () {
-    var text = summaryText();
-    var done = function () {
-      var b = document.getElementById('btnCopyResults');
-      b.textContent = 'Copied — paste it to Cowork';
-      setTimeout(function () { b.textContent = 'Copy results summary'; }, 2000);
+}
+function importText(text,source){
+  var errEl=document.getElementById('impErr');errEl.textContent='';
+  if(!text||!text.trim()){errEl.textContent='Nothing to import.';return;}
+  var d;
+  try{d=JSON.parse(text);}catch(e){errEl.textContent='Import failed: not valid JSON ('+e.message+'). Make sure you picked dashboard-data.json.';return;}
+  var err=validateData(d);
+  if(err){errEl.textContent='Import failed: '+err;return;}
+  try{
+    localStorage.setItem(LS_DATA,text);
+    localStorage.setItem(LS_META,JSON.stringify({importedAt:new Date().toISOString(),source:source}));
+  }catch(e){errEl.textContent='Import failed: could not save on this device ('+e.message+').';return;}
+  var st=document.getElementById('importStatus');if(st)st.textContent='Imported ✓ — loading…';
+  location.reload();
+}
+function wireImport(){
+  var pick=document.getElementById('impPick'),file=document.getElementById('impFile');
+  if(pick&&file){
+    pick.onclick=function(){file.click();};
+    file.onchange=function(){
+      var f=file.files&&file.files[0];if(!f)return;
+      var r=new FileReader();
+      r.onload=function(){importText(String(r.result),'file picker');};
+      r.onerror=function(){document.getElementById('impErr').textContent='Could not read "'+f.name+'" — try again or use Paste instead.';};
+      r.readAsText(f);file.value='';
     };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(done).catch(function () {
-        document.getElementById('pasteBox').value = text;
-        done();
-      });
-    } else {
-      document.getElementById('pasteBox').value = text;
-      done();
-    }
+  }
+  var tg=document.getElementById('impPasteToggle'),wrap=document.getElementById('impPasteWrap');
+  if(tg&&wrap)tg.onclick=function(){wrap.style.display=(wrap.style.display==='none')?'block':'none';};
+  var go=document.getElementById('impPasteGo');
+  if(go)go.onclick=function(){importText(document.getElementById('impPaste').value,'paste');};
+}
+function boot(){
+  resolveData();
+  var fns=DATA_MODE==='none'
+    ?[renderSelfTest,renderImport,wireImport]
+    :[renderHeader,renderSelfTest,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderIssues,renderSchoolKpis,renderChips,renderSchools,renderCoverage,renderVisitClusters,renderVisits,renderAttention,wireCalc,wireButtons,renderImport,wireImport,openSchoolFromUrl];
+  fns.forEach(function(fn){
+    try{fn();}catch(e){console.error('dash:'+fn.name,e);}
   });
-
-  render();
-}());
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+// The page can stay open for days (browser tab / Obsidian frame). Countdowns are computed against
+// "today", so when the date rolls over, re-render everything date-dependent — otherwise a deadline
+// can silently read one or more days too generous. Re-checked once a minute and on tab focus.
+let lastRenderedDay=todayIso();
+function rerenderForNewDay(){
+  if(DATA_MODE==='none')return;
+  if(todayIso()===lastRenderedDay)return;
+  lastRenderedDay=todayIso();
+  var openIds=Array.prototype.map.call(document.querySelectorAll('details.sch[open]'),function(d){return d.id;}).filter(Boolean);
+  [renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderIssues,renderVisitClusters,renderAttention].forEach(function(fn){
+    try{fn();}catch(e){console.error('rollover:'+fn.name,e);}
+  });
+  openIds.forEach(function(id){var el=document.getElementById(id);if(el)el.open=true;});
+}
+setInterval(rerenderForNewDay,60000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)rerenderForNewDay();});
+window.addEventListener('focus',rerenderForNewDay);
 </script>
 </body>
 </html>

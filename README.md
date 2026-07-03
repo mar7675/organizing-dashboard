@@ -1,45 +1,39 @@
-# Organizing Dashboard — iOS Import Spike
+# Organizing Dashboard — data-free shell (PWA)
 
-A 10-minute spike that answers one question before the real PWA gets built:
-**can an iOS standalone web app (added to the Home Screen) import a JSON file
-from OneDrive via the Files picker — and if not, does clipboard paste work?**
+The phone app for a WTU organizer's working dashboard: grievance-deadline
+countdowns, school coverage, visit staleness, and a school-day calculator.
 
-This repo hosts **no data**. The page is a data-free shell; the test file it
-imports (`spike-test-data.json`) lives in the owner's OneDrive and contains
-only dummy fields (`schemaVersion`, `snapshotDate`, `probe`). Member data is
-never hosted, committed, or transmitted — that is a hard rule carried forward
-from the build plan.
+**This repo hosts code only. No member data, case data, or school-page
+content is ever committed or served here.** The app is an empty shell until
+its owner imports `dashboard-data.json` (kept in their own OneDrive) on the
+device — via the iOS Files picker or clipboard paste, both proven by the
+import spike this page replaced. Imported data lives in `localStorage` on
+the device and nowhere else.
 
-## Run the spike (on the iPhone)
+## How it fits together (plan v4, "one template, two outputs")
 
-1. Open the GitHub Pages URL for this repo in Safari.
-2. Share → **Add to Home Screen** → Add.
-3. Launch from the new Home Screen icon. The page must show
-   **"Standalone mode ✓"** — results earned in a normal Safari tab don't count.
-4. **Test 1 — Picker:** tap *Pick spike-test-data.json* → Browse → OneDrive →
-   Documents → Cowork OS → dashboard → `spike-test-data.json`.
-   If the file is greyed out, use the second button (no type filter) — that
-   distinguishes "picker broken" from "type filter broken."
-5. **Test 2 — Clipboard:** in the OneDrive app, open the same file, select all,
-   Copy. Return and tap *Read clipboard & import* (allow the Paste prompt),
-   or paste into the box manually.
-6. **Test 3 — Persistence:** after any successful import, swipe the app fully
-   closed, relaunch from the icon. The Persistence chip flips to PASS by itself
-   if localStorage survived.
-7. Tap **Copy results summary** and paste it back into Cowork.
+- `index.html` here **is** the single source of truth for all dashboard code
+  (engine, renderers, self-test, import UI). It ships with an empty
+  `DASHBOARD-DATA` marker block.
+- The owner's private workspace generates the **desktop** dashboard from this
+  same template by injecting `window.__DATA__` between the markers
+  (`dashboard/build-dashboard.ps1` there). One codebase, two outputs — the
+  code never forks.
+- The **phone** gets this hosted shell via GitHub Pages + Add to Home Screen,
+  and loads data by import instead of injection.
 
-## Reading the result
+## Guard rails
 
-| Outcome | Meaning for the build |
-| --- | --- |
-| Picker PASS (standalone) | Go — build Step 2 (shell split) with picker as the primary import. |
-| Picker FAIL, clipboard PASS | Go, but clipboard paste becomes the primary import path. |
-| Both FAIL in standalone | Stop — rethink import before building anything. |
-| Persistence FAIL | Stop — localStorage model needs a rethink (IndexedDB / re-import per launch). |
+- On-load engine self-test (11 assertions over the CBA school-day counting
+  rules) shows a header pill: `deadline math ✓` or a loud red failure.
+- The public DCPS duty calendar (`CALDATA`) is built into the shell so
+  deadline math and the self-test run before any import; an imported file's
+  `calendar` key overrides it.
+- Imports validate `schemaVersion` (currently 1) and required fields before
+  anything is stored.
+- A stale-snapshot pill flags data older than 3 school days / 7 calendar days.
 
 ## Files
 
-- `index.html` — the whole spike (inline CSS/JS, no dependencies, error trap on page).
-- `manifest.webmanifest` — makes Add-to-Home-Screen launch standalone.
-
-This page gets replaced by the real app shell in Step 2 of the build plan.
+- `index.html` — the whole app (inline CSS/JS, no dependencies).
+- `manifest.webmanifest` — standalone display for Add to Home Screen.
