@@ -36,4 +36,11 @@ the device and nowhere else.
 ## Files
 
 - `index.html` — the whole app (inline CSS/JS, no dependencies).
-- `manifest.webmanifest` — standalone display for Add to Home Screen.
+- `manifest.webmanifest` — standalone display + icons for Add to Home Screen.
+- `sw.js` — offline cache (stale-while-revalidate): the shell opens instantly with
+  no signal, and a pushed code update arrives by the second launch after it lands.
+- `icon-180/192/512.png` — WTU shield on the brand maroon (180 is the iOS
+  home-screen icon; re-add to Home Screen to pick up an icon change).
+
+Everything here is generated/synced from the owner's private workspace by
+`dashboard/build-dashboard.ps1` — edit there, not here.

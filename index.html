@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Organizing Dashboard</title>
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -191,7 +192,7 @@ body.nodata .actionbar,body.nodata footer{display:none}
       <span class="pill" id="todayPill">—</span>
       <span class="pill" id="snapPill">Snapshot: —</span>
       <span class="pill diag" id="selftestPill">checking deadline math…</span>
-      <span class="pill diag" id="buildPill">build 2026-07-02.6</span>
+      <span class="pill diag" id="buildPill">build 2026-07-02.7</span>
     </div>
     <div class="status-strip" id="statusStrip">—</div>
   </header>
@@ -1045,6 +1046,11 @@ function rerenderForNewDay(){
 setInterval(rerenderForNewDay,60000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden)rerenderForNewDay();});
 window.addEventListener('focus',rerenderForNewDay);
+// Offline shell (Step 5): register the service worker on secure origins only. The desktop
+// artifact runs from file:// (and the Obsidian frame), where this is deliberately a no-op.
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){
+  navigator.serviceWorker.register('sw.js')['catch'](function(e){console.error('sw register failed',e);});
+}
 </script>
 </body>
 </html>
