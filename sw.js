@@ -32,11 +32,15 @@ self.addEventListener('fetch', function (e) {
   if (req.method !== 'GET') { return; }
   var url = new URL(req.url);
   if (url.origin !== self.location.origin) { return; }
+  // Navigation-mode Requests can't always be re-fetched or cache.put directly
+  // (browser-specific quirk) — use the plain URL for those, so the page itself
+  // always background-refreshes.
+  var key = (req.mode === 'navigate') ? req.url : req;
   e.respondWith(
     caches.open(CACHE).then(function (c) {
-      return c.match(req, { ignoreSearch: true }).then(function (hit) {
-        var refresh = fetch(req).then(function (res) {
-          if (res && res.ok) { c.put(req, res.clone()); }
+      return c.match(key, { ignoreSearch: true }).then(function (hit) {
+        var refresh = fetch(key).then(function (res) {
+          if (res && res.ok) { c.put(key, res.clone()); }
           return res;
         })['catch'](function () { return hit; });
         if (hit) { return hit; }

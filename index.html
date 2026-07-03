@@ -177,9 +177,31 @@ footer{margin-top:22px;font-size:11.5px;color:var(--muted);text-align:center;lin
 @media print{.modal{display:none !important}}
 /* data import (shell mode) */
 body.nodata .card:not(#panel-import){display:none}
-body.nodata .actionbar,body.nodata footer{display:none}
+body.nodata .actionbar,body.nodata footer,body.nodata .tabbar{display:none}
 .imp-ta{width:100%;min-height:110px;margin-top:8px;padding:10px;font:12.5px/1.4 ui-monospace,Consolas,monospace;border:1px solid var(--rose-line);border-radius:8px;background:#fff;color:var(--ink)}
-@media print{#panel-import{display:none !important}}
+.jot-lbl{display:block;font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px}
+/* field layer (Step 6): phone-width only */
+.tabbar{display:none}
+@media(max-width:700px){
+  body{font-size:15.5px}
+  .wrap{padding:14px 12px calc(env(safe-area-inset-bottom,0px) + 92px)}
+  .btn,.chip{min-height:44px;display:inline-flex;align-items:center}
+  .calc input,.calc select,.schfilter,.imp-ta{font-size:16px}
+  .actionbar .grp-label:first-child,.actionbar button[data-jump],.actionbar .sep:first-of-type{display:none}
+  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;background:#fff;border-top:2px solid var(--maroon);box-shadow:0 -2px 8px rgba(136,41,43,.12);padding:4px 2px calc(env(safe-area-inset-bottom,0px) + 4px)}
+  .tabbar button{flex:1;background:none;border:none;font:inherit;font-size:10.5px;font-weight:800;color:var(--maroon);padding:5px 2px;min-height:44px;cursor:pointer}
+  .tabbar button .ti{display:block;font-size:17px;line-height:1.15}
+  #issueBox table,#coverageBody table,#visitClusters table,#visitLog table,.sch-body table,#schModalBody table,
+  #issueBox tbody,#coverageBody tbody,#visitClusters tbody,#visitLog tbody,.sch-body tbody,#schModalBody tbody,
+  #issueBox tr,#coverageBody tr,#visitClusters tr,#visitLog tr,.sch-body tr,#schModalBody tr,
+  #issueBox td,#coverageBody td,#visitClusters td,#visitLog td,.sch-body td,#schModalBody td{display:block;width:100%;box-sizing:border-box}
+  #issueBox tr:first-child,#coverageBody tr:first-child,#visitClusters tr:first-child,#visitLog tr:first-child,.sch-body tr:first-child,#schModalBody tr:first-child{display:none}
+  #issueBox tr,#coverageBody tr,#visitClusters tr,#visitLog tr,.sch-body tr,#schModalBody tr{border:1px solid var(--rose-line);border-radius:9px;margin:0 0 8px;padding:4px 0;background:#fff}
+  #issueBox td,#coverageBody td,#visitClusters td,#visitLog td,.sch-body td,#schModalBody td{border-bottom:none;padding:4px 12px}
+  #issueBox td:empty,#coverageBody td:empty,.sch-body td:empty,#schModalBody td:empty{display:none}
+  #issueBox td::before,#coverageBody td::before,#visitClusters td::before,#visitLog td::before,.sch-body td::before,#schModalBody td::before{content:attr(data-label);display:block;font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--maroon);font-weight:800}
+}
+@media print{#panel-import,#panel-jot,.tabbar{display:none !important}}
 </style>
 </head>
 <body>
@@ -192,7 +214,7 @@ body.nodata .actionbar,body.nodata footer{display:none}
       <span class="pill" id="todayPill">—</span>
       <span class="pill" id="snapPill">Snapshot: —</span>
       <span class="pill diag" id="selftestPill">checking deadline math…</span>
-      <span class="pill diag" id="buildPill">build 2026-07-02.7</span>
+      <span class="pill diag" id="buildPill">build 2026-07-02.8</span>
     </div>
     <div class="status-strip" id="statusStrip">—</div>
   </header>
@@ -286,6 +308,22 @@ body.nodata .actionbar,body.nodata footer{display:none}
     <div id="visitLog"></div>
   </div>
 
+  <div class="card full" id="panel-jot" style="margin-top:16px">
+    <h2>Jot &amp; Share <span class="badge snap">FIELD NOTE</span></h2>
+    <div class="sectnote" style="margin-top:8px">Capture it before you forget. Share or Copy sends the note out (Mail, Messages, Notes) — nothing writes back to the dashboard. Paste it to Cowork at the desk to log it on the school page.</div>
+    <div class="toolbar" style="align-items:flex-end">
+      <div><label class="jot-lbl" for="jotSchool">School</label><select id="jotSchool" class="schfilter" style="min-width:200px"></select></div>
+      <div><label class="jot-lbl" for="jotType">Type</label><select id="jotType" class="schfilter" style="min-width:140px"><option>Visit note</option><option>Issue</option><option>Contact update</option><option>Reminder</option></select></div>
+    </div>
+    <textarea class="imp-ta" id="jotText" placeholder="e.g. Talked with the Building Rep about duty rotation — follow up Thursday."></textarea>
+    <div class="toolbar">
+      <button class="btn primary" id="jotShare">Share…</button>
+      <button class="btn" id="jotCopy">Copy</button>
+      <button class="btn" id="jotClear">Clear</button>
+    </div>
+    <div class="sectnote" id="jotStatus"></div>
+  </div>
+
   <div class="card full" id="panel-import" style="margin-top:16px">
     <h2>Data on This Device <span class="badge snap" id="importBadge">IMPORT</span></h2>
     <div class="sectnote" id="importStatus" style="margin-top:8px"></div>
@@ -308,6 +346,14 @@ body.nodata .actionbar,body.nodata footer{display:none}
       <div class="modal-body" id="schModalBody"></div>
     </div>
   </div>
+
+  <nav class="tabbar" id="tabbar">
+    <button data-jump="panel-brief"><span class="ti">📋</span>Brief</button>
+    <button data-jump="panel-griev"><span class="ti">⏱</span>Cases</button>
+    <button data-jump="panel-schools"><span class="ti">🏫</span>Schools</button>
+    <button data-jump="panel-jot"><span class="ti">✏️</span>Jot</button>
+    <button data-jump="panel-import"><span class="ti">📥</span>Data</button>
+  </nav>
 
   <footer>
     Snapshot data: WTU workspace (school pages + Filed Grievances) + calendar entered from Outlook screenshots, captured <span id="snapFoot">—</span>. Ask to "refresh" or "update" anytime.<br>
@@ -458,6 +504,7 @@ function renderHeader(){
     sp.textContent='Snapshot STALE: '+pretty(SNAPSHOT_DATE)+' — ask me to refresh';
     sp.style.background='var(--red)';sp.style.color='#fff';sp.style.borderColor='var(--maroon)';
   }else{sp.style.background='';sp.style.color='';sp.style.borderColor='';}
+  if(DATA_MODE==='imported'&&DATA_META&&DATA_META.importedAt){sp.textContent+=' · imported '+new Date(DATA_META.importedAt).toLocaleDateString('en-US',{month:'short',day:'numeric'});}
 }
 // On-load engine self-test against the known-good cases in the build plan's Verification Plan.
 // If any assertion fails after a future change, the header shows a red warning instead of a quiet checkmark.
@@ -559,13 +606,13 @@ function openSchool(name){
   if(!s)return;
   var b='';
   b+='<div class="sub-h">Key Contacts</div>';
-  b+=s.contacts.some(function(c){return c[1];})?s.contacts.map(function(c){return '<div class="ct-line"><div class="r">'+esc(c[0])+'</div><div class="v'+(c[1]?'':' empty-v')+'">'+(c[1]?esc(c[1]):'— not yet recorded')+'</div></div>';}).join(''):'<div class="ct-line"><div class="v empty-v">No contacts recorded yet — add them on the school page and refresh.</div></div>';
+  b+=s.contacts.some(function(c){return c[1];})?s.contacts.map(function(c){return '<div class="ct-line"><div class="r">'+esc(c[0])+'</div><div class="v'+(c[1]?'':' empty-v')+'">'+(c[1]?linkifyContact(c[1]):'— not yet recorded')+'</div></div>';}).join(''):'<div class="ct-line"><div class="v empty-v">No contacts recorded yet — add them on the school page and refresh.</div></div>';
   b+='<div class="sub-h">School Notes</div>';
   b+=s.notes.length?'<ul class="notes-list">'+s.notes.map(function(n){return '<li>'+esc(n)+'</li>';}).join('')+'</ul>':'<div class="empty">No notes recorded.</div>';
   b+='<div class="sub-h">Open Issues</div>';
-  b+=s.issues.length?('<table><tr><th>Issue</th><th>Status</th><th>Article</th><th>Opened</th></tr>'+s.issues.map(function(r){return '<tr><td>'+esc(r[0]||'')+'</td><td>'+esc(r[1]||'')+'</td><td>'+esc(r[2]||'')+'</td><td>'+esc(r[3]||'')+'</td></tr>';}).join('')+'</table>'):'<div class="empty">No open issues.</div>';
+  b+=s.issues.length?('<table><tr><th>Issue</th><th>Status</th><th>Article</th><th>Opened</th></tr>'+s.issues.map(function(r){return '<tr><td data-label="Issue">'+esc(r[0]||'')+'</td><td data-label="Status">'+esc(r[1]||'')+'</td><td data-label="Article">'+esc(r[2]||'')+'</td><td data-label="Opened">'+esc(r[3]||'')+'</td></tr>';}).join('')+'</table>'):'<div class="empty">No open issues.</div>';
   b+='<div class="sub-h">Visit &amp; Conversation Log</div>';
-  b+=s.visits.length?('<table><tr><th>Date</th><th>Notes</th></tr>'+s.visits.slice().sort(function(a,b2){return b2[0].localeCompare(a[0]);}).map(function(v){return '<tr><td>'+pretty(v[0])+'</td><td>'+esc(v[1])+'</td></tr>';}).join('')+'</table>'):'<div class="empty">No visits logged.</div>';
+  b+=s.visits.length?('<table><tr><th>Date</th><th>Notes</th></tr>'+s.visits.slice().sort(function(a,b2){return b2[0].localeCompare(a[0]);}).map(function(v){return '<tr><td data-label="Date">'+pretty(v[0])+'</td><td data-label="Notes">'+esc(v[1])+'</td></tr>';}).join('')+'</table>'):'<div class="empty">No visits logged.</div>';
   document.getElementById('schModalTitle').textContent=s.name+' — Cluster '+s.cluster;
   document.getElementById('schModalBody').innerHTML=b;
   document.getElementById('schModal').style.display='flex';
@@ -694,7 +741,7 @@ function renderIssues(){
     if(openedIso){const age=workingDaysBetween(openedIso,t);if(age&&age>0)ageTxt+=' · '+age+' school day'+(age===1?'':'s')+' ago';}
     const art=x.row[2]||'';
     const artCell=art?esc(art)+' <a href="#" class="attn-link" data-target="panel-griev" title="An article-tagged issue may be a violation with a live 14-school-day filing clock — run the date through the calculator">check filing clock →</a>':'';
-    return '<tr><td>'+schoolLink(x.school)+'</td><td>'+esc(x.row[0]||'')+'</td><td>'+esc(x.row[1]||'')+'</td><td>'+artCell+'</td><td>'+ageTxt+'</td></tr>';}).join('');
+    return '<tr><td data-label="School">'+schoolLink(x.school)+'</td><td data-label="Issue">'+esc(x.row[0]||'')+'</td><td data-label="Status">'+esc(x.row[1]||'')+'</td><td data-label="Article">'+artCell+'</td><td data-label="Opened">'+ageTxt+'</td></tr>';}).join('');
   box.innerHTML='<table><tr><th>School</th><th>Issue</th><th>Status</th><th>Article</th><th>Opened</th></tr>'+rows+'</table>'+
     '<div class="sectnote">Oldest first. An issue tagged with a CBA article may be a violation with a live 14-school-day filing clock — don\'t let it age in the queue.</div>';
 }
@@ -722,12 +769,12 @@ function schoolCard(s){
   tags.push('<span class="tag'+(s.cf>0?' ok':'')+'">'+s.cf+'/'+s.ct+' contacts</span>');
   tags.push('<span class="tag'+(issuesN>0?' warn':'')+'">'+issuesN+' issue'+(issuesN===1?'':'s')+'</span>');
   tags.push('<span class="tag">'+(lv?'visit '+prettyNoYr(lv):'no visits')+'</span>');
-  const contacts=s.cf>0?s.contacts.map(c=>'<div class="ct-line"><div class="r">'+esc(c[0])+'</div><div class="v'+(c[1]?'':' empty-v')+'">'+(c[1]?esc(c[1]):'— not yet recorded')+'</div></div>').join(''):'<div class="ct-line"><div class="v empty-v">No contacts recorded yet — add them on the school page and refresh.</div></div>';
+  const contacts=s.cf>0?s.contacts.map(c=>'<div class="ct-line"><div class="r">'+esc(c[0])+'</div><div class="v'+(c[1]?'':' empty-v')+'">'+(c[1]?linkifyContact(c[1]):'— not yet recorded')+'</div></div>').join(''):'<div class="ct-line"><div class="v empty-v">No contacts recorded yet — add them on the school page and refresh.</div></div>';
   const notes=s.notes.length?'<ul class="notes-list">'+s.notes.map(n=>'<li>'+esc(n)+'</li>').join('')+'</ul>':'<div class="empty" style="padding:2px 0">No notes recorded.</div>';
   let issues;
   if(issuesN){
     issues='<table><tr><th>Issue</th><th>Status</th><th>Article</th><th>Opened</th></tr>'+
-      s.issues.map(r=>'<tr><td>'+esc(r[0]||'')+'</td><td>'+esc(r[1]||'')+'</td><td>'+esc(r[2]||'')+'</td><td>'+esc(r[3]||'')+'</td></tr>').join('')+'</table>';
+      s.issues.map(r=>'<tr><td data-label="Issue">'+esc(r[0]||'')+'</td><td data-label="Status">'+esc(r[1]||'')+'</td><td data-label="Article">'+esc(r[2]||'')+'</td><td data-label="Opened">'+esc(r[3]||'')+'</td></tr>').join('')+'</table>';
   }else{issues='<div class="empty" style="padding:2px 0">No open issues.</div>';}
   return '<details class="sch"><summary><span class="caret">▶</span><span class="snm">'+esc(s.name)+'</span>'+
     '<span class="mini">'+tags.join('')+'</span></summary>'+
@@ -772,7 +819,7 @@ function renderCoverage(){
     html+='<div class="cluster-block" data-cluster="'+c+'">';
     html+='<div class="cluster-h"><button class="cluster-toggle" aria-expanded="true" title="Collapse or expand this cluster">▾</button>Cluster '+c+'<span class="ch-meta">'+list.length+' school'+(list.length===1?'':'s')+' missing a rep</span></div>';
     html+='<div class="cluster-schools"><table><tr><th>School</th><th>Building Rep</th><th>SCAC Committee</th><th>LSAT Rep</th></tr>'+list.map(function(s){
-      return '<tr><td>'+schoolLink(s.name)+'</td>'+roles.map(function(r){return '<td>'+(contactVal(s,r[0])?'<span class="cov-yes">✓</span>':'<span class="cov-no">missing</span>')+'</td>';}).join('')+'</tr>';
+      return '<tr><td data-label="School">'+schoolLink(s.name)+'</td>'+roles.map(function(r){return '<td data-label="'+r[1]+'">'+(contactVal(s,r[0])?'<span class="cov-yes">✓</span>':'<span class="cov-no">missing</span>')+'</td>';}).join('')+'</tr>';
     }).join('')+'</table></div>';
     html+='</div>';
   });
@@ -819,7 +866,7 @@ function renderVisitClusters(){
         else if(sd>=30){status=sd+' school days ago';cls='cov-amber';}
         else{status=(sd===0?'today':sd+' school day'+(sd===1?'':'s')+' ago');cls='cov-yes';}
       }
-      return '<tr><td>'+schoolLink(s.name)+'</td><td>'+(lv?prettyMed(lv):'—')+'</td><td>'+s.visits.length+'</td><td><span class="'+cls+'">'+status+'</span></td></tr>';
+      return '<tr><td data-label="School">'+schoolLink(s.name)+'</td><td data-label="Last visit">'+(lv?prettyMed(lv):'—')+'</td><td data-label="Visits">'+s.visits.length+'</td><td data-label="Status"><span class="'+cls+'">'+status+'</span></td></tr>';
     }).join('')+'</table></div>';
     html+='</div>';
   });
@@ -844,7 +891,7 @@ function renderVisits(){
   if(!all.length){log.innerHTML='<div class="sectnote">No visits logged yet. Each dated entry in a school’s "Visit & Conversation Log" counts here, newest first.</div>';return;}
   all.sort((a,b)=>b.date.localeCompare(a.date));
   log.innerHTML='<table><tr><th>Date</th><th>School</th><th>Notes</th></tr>'+
-    all.slice(0,25).map(v=>'<tr><td>'+pretty(v.date)+'</td><td>'+schoolLink(v.school)+'</td><td>'+esc(v.note)+'</td></tr>').join('')+'</table>'+
+    all.slice(0,25).map(v=>'<tr><td data-label="Date">'+pretty(v.date)+'</td><td data-label="School">'+schoolLink(v.school)+'</td><td data-label="Notes">'+esc(v.note)+'</td></tr>').join('')+'</table>'+
     (all.length>25?'<div class="sectnote">Showing the latest 25 of '+all.length+' visits — the full log lives on the school pages.</div>':'');
 }
 
@@ -973,6 +1020,64 @@ function wireButtons(){
   window.addEventListener('hashchange',openSchoolFromUrl);
 }
 
+var JOT_DRAFT='dash.jot.draft';
+function linkifyContact(v){
+  var out=esc(v);
+  out=out.replace(/(\(?\d{3}\)?[\s.-]?\d{3}[\s.-]\d{4})/g,function(m){return '<a href="tel:+1'+m.replace(/[^\d]/g,'')+'">'+m+'</a>';});
+  out=out.replace(/([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/g,'<a href="mailto:$1">$1</a>');
+  return out;
+}
+function jotCompose(){
+  var sch=document.getElementById('jotSchool').value;
+  var typ=document.getElementById('jotType').value;
+  var txt=document.getElementById('jotText').value.trim();
+  if(!txt)return null;
+  var n=new Date();
+  var stamp=n.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' '+n.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  return typ+' — '+(sch||'(no school)')+' — '+stamp+': '+txt;
+}
+function jotSaveDraft(){
+  try{localStorage.setItem(JOT_DRAFT,JSON.stringify({s:document.getElementById('jotSchool').value,t:document.getElementById('jotType').value,x:document.getElementById('jotText').value}));}catch(e){}
+}
+function jotClearDraft(){
+  document.getElementById('jotText').value='';
+  try{localStorage.removeItem(JOT_DRAFT);}catch(e){}
+}
+function jotStatus(msg){var el=document.getElementById('jotStatus');if(el)el.textContent=msg;}
+function renderJot(){
+  var card=document.getElementById('panel-jot');if(!card)return;
+  if(DATA_MODE==='embedded'){card.style.display='none';return;}
+  card.style.display='';
+  var sel=document.getElementById('jotSchool');
+  var html='<option value="">— no school —</option>';
+  orderedClusters().forEach(function(c){
+    html+='<optgroup label="Cluster '+c+'">'+SCHOOLS.filter(function(s){return s.cluster===c;}).sort(function(a,b){return a.name.localeCompare(b.name);}).map(function(s){return '<option>'+esc(s.name)+'</option>';}).join('')+'</optgroup>';
+  });
+  sel.innerHTML=html;
+  try{
+    var d=JSON.parse(localStorage.getItem(JOT_DRAFT)||'null');
+    if(d){sel.value=d.s||'';document.getElementById('jotType').value=d.t||'Visit note';document.getElementById('jotText').value=d.x||'';}
+  }catch(e){}
+}
+function wireJot(){
+  var txt=document.getElementById('jotText');if(!txt)return;
+  ['jotSchool','jotType','jotText'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('input',jotSaveDraft);});
+  document.getElementById('jotClear').onclick=function(){jotClearDraft();jotStatus('Cleared.');};
+  document.getElementById('jotCopy').onclick=function(){
+    var note=jotCompose();
+    if(!note){jotStatus('Nothing to copy yet — write the note first.');return;}
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(note).then(function(){jotStatus('Copied ✓ — paste it to Cowork at the desk. Clear when done.');})['catch'](function(){txt.value=note;txt.select();jotStatus('Copy blocked — the full note is in the box; select and copy it.');});
+    }else{txt.value=note;txt.select();jotStatus('Copy not available — the full note is in the box; select and copy it.');}
+  };
+  document.getElementById('jotShare').onclick=function(){
+    var note=jotCompose();
+    if(!note){jotStatus('Nothing to share yet — write the note first.');return;}
+    if(navigator.share){
+      navigator.share({text:note}).then(function(){jotClearDraft();jotStatus('Shared ✓');})['catch'](function(e){if(!e||e.name!=='AbortError'){jotStatus('Share failed — use Copy instead.');}});
+    }else{document.getElementById('jotCopy').onclick();}
+  };
+}
 function renderImport(){
   document.body.classList.toggle('nodata',DATA_MODE==='none');
   var card=document.getElementById('panel-import');if(!card)return;
@@ -1023,7 +1128,7 @@ function boot(){
   resolveData();
   var fns=DATA_MODE==='none'
     ?[renderSelfTest,renderImport,wireImport]
-    :[renderHeader,renderSelfTest,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderIssues,renderSchoolKpis,renderChips,renderSchools,renderCoverage,renderVisitClusters,renderVisits,renderAttention,wireCalc,wireButtons,renderImport,wireImport,openSchoolFromUrl];
+    :[renderHeader,renderSelfTest,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderIssues,renderSchoolKpis,renderChips,renderSchools,renderCoverage,renderVisitClusters,renderVisits,renderAttention,wireCalc,wireButtons,renderImport,wireImport,renderJot,wireJot,openSchoolFromUrl];
   fns.forEach(function(fn){
     try{fn();}catch(e){console.error('dash:'+fn.name,e);}
   });
