@@ -11,6 +11,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Dashboard">
 <meta name="theme-color" content="#88292B">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self'; manifest-src 'self'; worker-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
 <style>
 :root{
   color-scheme: light;
@@ -209,12 +212,12 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar{display:none}
 
   <header class="hero">
     <h1>Organizing Dashboard</h1>
-    <div class="sub">Organizer · Clusters VII · VIII · IX</div>
+    <div class="sub" id="heroSub">Organizer</div>
     <div class="meta">
       <span class="pill" id="todayPill">—</span>
       <span class="pill" id="snapPill">Snapshot: —</span>
       <span class="pill diag" id="selftestPill">checking deadline math…</span>
-      <span class="pill diag" id="buildPill">build 2026-07-02.8</span>
+      <span class="pill diag" id="buildPill">build 2026-07-03.1</span>
     </div>
     <div class="status-strip" id="statusStrip">—</div>
   </header>
@@ -336,6 +339,7 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar{display:none}
       <div class="toolbar"><button class="btn primary" id="impPasteGo">Import pasted text</button></div>
     </div>
     <input type="file" id="impFile" accept=".json,application/json,text/plain" style="display:none">
+    <div class="toolbar"><button class="btn" id="impClear">Clear data from this device</button></div>
     <div class="err" id="impErr"></div>
     <div class="sectnote">Phone: tap Import → Browse / Files → OneDrive → Documents → Cowork OS → <b>dashboard-data.json</b>. The data stays on this device — nothing is uploaded anywhere.</div>
   </div>
@@ -411,7 +415,7 @@ function resolveData(){
       }
       console.error('stored data invalid: '+err2);
     }
-  }catch(e){console.error('stored data unreadable',e);}
+  }catch(e){console.error('stored data unreadable ('+((e&&e.name)||'error')+')');}
   DATA_MODE='none';
 }
 
@@ -493,6 +497,9 @@ function orderedClusters(){
 
 function renderHeader(){
   document.getElementById('todayPill').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  // Cluster labels come from the data, not the markup — the hosted shell carries no identity (hardening item 8).
+  var hs=document.getElementById('heroSub');
+  if(hs&&SCHOOLS.length)hs.textContent='Organizer · Clusters '+orderedClusters().join(' · ');
   var sp=document.getElementById('snapPill');
   sp.textContent='Snapshot: '+pretty(SNAPSHOT_DATE);
   document.getElementById('snapFoot').textContent=pretty(SNAPSHOT_DATE);
@@ -1123,6 +1130,15 @@ function wireImport(){
   if(tg&&wrap)tg.onclick=function(){wrap.style.display=(wrap.style.display==='none')?'block':'none';};
   var go=document.getElementById('impPasteGo');
   if(go)go.onclick=function(){importText(document.getElementById('impPaste').value,'paste');};
+  var clr=document.getElementById('impClear');
+  if(clr){
+    clr.style.display=(DATA_MODE==='imported')?'':'none';
+    clr.onclick=function(){
+      if(!window.confirm('Remove the imported dashboard data (and any jot draft) from this device? The original stays in OneDrive — re-import anytime.'))return;
+      try{localStorage.removeItem(LS_DATA);localStorage.removeItem(LS_META);localStorage.removeItem(JOT_DRAFT);localStorage.removeItem('spike.state');}catch(e){}
+      location.reload();
+    };
+  }
 }
 function boot(){
   resolveData();
@@ -1130,7 +1146,8 @@ function boot(){
     ?[renderSelfTest,renderImport,wireImport]
     :[renderHeader,renderSelfTest,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderIssues,renderSchoolKpis,renderChips,renderSchools,renderCoverage,renderVisitClusters,renderVisits,renderAttention,wireCalc,wireButtons,renderImport,wireImport,renderJot,wireJot,openSchoolFromUrl];
   fns.forEach(function(fn){
-    try{fn();}catch(e){console.error('dash:'+fn.name,e);}
+    // Log the failure point but never the exception content — an error message must not echo member data (hardening).
+    try{fn();}catch(e){console.error('dash:'+fn.name+' failed ('+((e&&e.name)||'error')+')');}
   });
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
@@ -1144,7 +1161,7 @@ function rerenderForNewDay(){
   lastRenderedDay=todayIso();
   var openIds=Array.prototype.map.call(document.querySelectorAll('details.sch[open]'),function(d){return d.id;}).filter(Boolean);
   [renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderIssues,renderVisitClusters,renderAttention].forEach(function(fn){
-    try{fn();}catch(e){console.error('rollover:'+fn.name,e);}
+    try{fn();}catch(e){console.error('rollover:'+fn.name+' failed ('+((e&&e.name)||'error')+')');}
   });
   openIds.forEach(function(id){var el=document.getElementById(id);if(el)el.open=true;});
 }
@@ -1154,7 +1171,7 @@ window.addEventListener('focus',rerenderForNewDay);
 // Offline shell (Step 5): register the service worker on secure origins only. The desktop
 // artifact runs from file:// (and the Obsidian frame), where this is deliberately a no-op.
 if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){
-  navigator.serviceWorker.register('sw.js')['catch'](function(e){console.error('sw register failed',e);});
+  navigator.serviceWorker.register('sw.js')['catch'](function(e){console.error('sw register failed ('+((e&&e.name)||'error')+')');});
 }
 </script>
 </body>

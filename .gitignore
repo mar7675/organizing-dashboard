@@ -3,3 +3,7 @@ desktop.ini
 .DS_Store
 *.zip
 node_modules/
+
+# the data file must never be committed - it lives in OneDrive and on the phone only
+dashboard-data.json
+spike-test-data.json
