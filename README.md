@@ -32,6 +32,12 @@ the device and nowhere else.
 - Imports validate `schemaVersion` (currently 1) and required fields before
   anything is stored.
 - A stale-snapshot pill flags data older than 3 school days / 7 calendar days.
+- A page-level CSP (`connect-src 'none'`) structurally blocks any network egress
+  from page code — imported data cannot be sent anywhere, verified by test.
+- A "Clear data from this device" button wipes the imported data, its metadata,
+  and any jot draft; the originals stay in the owner's OneDrive.
+- Error logging is scrubbed: console output names the failure point and error
+  type only, never exception content.
 
 ## Files
 
