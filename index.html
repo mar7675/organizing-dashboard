@@ -74,7 +74,8 @@ header.hero{background:linear-gradient(180deg,var(--rose) 0%, #C99FA0 100%);
 .btn.primary{background:var(--maroon);color:#fff;border-color:var(--maroon)}
 .btn.primary:hover{background:#6f2123}
 @media print{
-  .actionbar,.toolbar,.calc,.pill{display:none !important}
+  .actionbar,.toolbar,.calc,.pill,.sidebar{display:none !important}
+  body.laptop .card.full{display:block !important} /* print is the full snapshot even when the laptop view shows one section */
   .card{break-inside:avoid;box-shadow:none}
   body{background:#fff}
 }
@@ -180,9 +181,17 @@ footer{margin-top:22px;font-size:11.5px;color:var(--muted);text-align:center;lin
 @media print{.modal{display:none !important}}
 /* data import (shell mode) */
 body.nodata .card:not(#panel-import){display:none}
-body.nodata .actionbar,body.nodata footer,body.nodata .tabbar{display:none}
+body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sidebar{display:none}
 .imp-ta{width:100%;min-height:110px;margin-top:8px;padding:10px;font:12.5px/1.4 ui-monospace,Consolas,monospace;border:1px solid var(--rose-line);border-radius:8px;background:#fff;color:var(--ink)}
 .jot-lbl{display:block;font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px}
+/* important links page (build .4) */
+.lnkrow{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--rose-line);min-height:44px}
+.lnkrow:last-child{border-bottom:none}
+.lnkrow .lnk{flex:1;display:flex;align-items:center;gap:10px;padding:8px 6px;text-decoration:none;color:var(--ink);font-weight:700;border-radius:8px;min-width:0}
+.lnkrow .lnk:hover{background:var(--rose-tint)}
+.lnk-e{flex:none;width:24px;text-align:center;font-size:17px}
+.lnk-t{line-height:1.3;overflow-wrap:anywhere}
+.lnk-copy{flex:none}
 /* field layer (Step 6): phone-width only */
 .tabbar{display:none}
 @media(max-width:700px){
@@ -204,10 +213,37 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar{display:none}
   #issueBox td:empty,#coverageBody td:empty,.sch-body td:empty,#schModalBody td:empty{display:none}
   #issueBox td::before,#coverageBody td::before,#visitClusters td::before,#visitLog td::before,.sch-body td::before,#schModalBody td::before{content:attr(data-label);display:block;font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--maroon);font-weight:800}
 }
-@media print{#panel-import,#panel-jot,.tabbar{display:none !important}}
+/* laptop layer: ≥1100px (screen only) gets a fixed left sidebar + one-section-at-a-time view.
+   ≤700px stays the phone layer above; 701–1099px keeps the classic long-scroll layout (Obsidian pane,
+   half-screen windows). body.laptop is set by JS from the SAME 1100px matchMedia, never in nodata mode. */
+.sidebar{display:none}
+.sb-brand{font-weight:800;font-size:15px;color:var(--maroon);line-height:1.25;padding:4px 10px 12px;border-bottom:2px solid var(--maroon);margin-bottom:8px}
+.sb-grp{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:8px 10px 4px}
+.sb-btn{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:8px;padding:8px 10px;margin:2px 0;font:inherit;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;text-decoration:none}
+.sb-btn:hover{background:var(--rose-tint);text-decoration:none}
+.sb-btn.active{background:var(--maroon);color:#fff;border-color:#6f2123}
+.sb-btn .sb-ic{flex:none;width:20px;text-align:center;font-size:15px}
+.sb-btn .sb-lbl{flex:1;min-width:0}
+.sb-badges{display:flex;gap:4px;flex:none}
+.sb-chip{font-size:10.5px;font-weight:800;padding:1px 7px;border-radius:999px;background:var(--rose-tint);color:var(--maroon);border:1px solid var(--rose-line)}
+.sb-btn.active .sb-chip{background:rgba(255,255,255,.22);color:#fff;border-color:rgba(255,255,255,.4)}
+.sb-chip.red{background:var(--red);color:#fff;border-color:var(--maroon)}
+.sb-foot{margin-top:auto;border-top:1px solid var(--rose-line);padding-top:8px}
+@media screen and (min-width:1100px){
+  body.laptop .sidebar{display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;width:224px;background:#fff;border-right:1px solid var(--rose-line);padding:14px 10px;overflow-y:auto;z-index:45}
+  body.laptop .wrap{margin:0 auto 0 224px}
+  body.laptop .actionbar{display:none}
+  body.laptop .card.full{display:none}
+  body.laptop .card.full.sect-active{display:block}
+}
+@media screen and (min-width:1400px){
+  body.laptop .wrap{max-width:1280px} /* use the width the retired long-scroll layout never had */
+}
+@media print{#panel-import,#panel-jot,.tabbar,.lnk-copy{display:none !important}}
 </style>
 </head>
 <body>
+<nav class="sidebar" id="sidebar" aria-label="Dashboard sections"><!-- built by renderSidebar(); ships empty — zero data lives in this markup --></nav>
 <div class="wrap">
 
   <header class="hero">
@@ -217,7 +253,7 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar{display:none}
       <span class="pill" id="todayPill">—</span>
       <span class="pill" id="snapPill">Snapshot: —</span>
       <span class="pill diag" id="selftestPill">checking deadline math…</span>
-      <span class="pill diag" id="buildPill">build 2026-07-03.1</span>
+      <span class="pill diag" id="buildPill">build 2026-07-03.5</span>
     </div>
     <div class="status-strip" id="statusStrip">—</div>
   </header>
@@ -229,8 +265,9 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar{display:none}
     <button class="btn" data-jump="panel-schools">Schools</button>
     <button class="btn" data-jump="panel-coverage">Coverage</button>
     <button class="btn" data-jump="panel-visits">Visits</button>
+    <button class="btn" data-jump="panel-links">Links</button>
     <span class="sep"></span>
-    <span class="grp-label">Links</span>
+    <span class="grp-label">Quick links</span>
     <a class="btn" href="https://forms.office.com/pages/responsepage.aspx?id=IoYSinwSvUuHr7NbAxNAqGgTIQr_KFlBjtZ8J-XWr8hUQzBIVFRaNDBSQkMwSFNRMlhURVpUU0wyTi4u&route=shorturl" target="_blank" rel="noopener">Support Intake Form</a>
     <a class="btn" href="https://www.wtulocal6.net/support" target="_blank" rel="noopener">Member Support</a>
     <span class="sep"></span>
@@ -311,6 +348,15 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar{display:none}
     <div id="visitLog"></div>
   </div>
 
+  <div class="card full" id="panel-links" style="margin-top:16px">
+    <h2>Important Links <span class="badge snap" id="lnkCount">LINKS</span></h2>
+    <div class="toolbar">
+      <input type="search" id="lnkFilter" class="schfilter" placeholder="Type to filter links…" aria-label="Filter links by name">
+    </div>
+    <div id="linksBox"></div>
+    <div class="sectnote">Every link opens in a new tab; <b>Copy</b> grabs the URL for texting or emailing a member. The list is maintained from <b>00_Resources/WTU Important Links.xlsx</b> — edit the spreadsheet, then ask me to "update links."</div>
+  </div>
+
   <div class="card full" id="panel-jot" style="margin-top:16px">
     <h2>Jot &amp; Share <span class="badge snap">FIELD NOTE</span></h2>
     <div class="sectnote" style="margin-top:8px">Capture it before you forget. Share or Copy sends the note out (Mail, Messages, Notes) — nothing writes back to the dashboard. Paste it to Cowork at the desk to log it on the school page.</div>
@@ -355,6 +401,7 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar{display:none}
     <button data-jump="panel-brief"><span class="ti">📋</span>Brief</button>
     <button data-jump="panel-griev"><span class="ti">⏱</span>Cases</button>
     <button data-jump="panel-schools"><span class="ti">🏫</span>Schools</button>
+    <button data-jump="panel-links" id="tabLinks"><span class="ti">🔗</span>Links</button>
     <button data-jump="panel-jot"><span class="ti">✏️</span>Jot</button>
     <button data-jump="panel-import"><span class="ti">📥</span>Data</button>
   </nav>
@@ -375,7 +422,7 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar{display:none}
    Embedded beats imported. With neither, the page shows only the import card (nodata mode).
    CALDATA (the public DCPS calendar) stays in this file so deadline math and the self-test run
    before any import; a data file's `calendar` key overrides it when present. */
-var SNAPSHOT_DATE='',EVENTS=[],SCHOOLS=[],GRIEVANCES=[];
+var SNAPSHOT_DATE='',EVENTS=[],SCHOOLS=[],GRIEVANCES=[],LINKS=[];
 var DATA_MODE='none'; // 'embedded' | 'imported' | 'none'
 var DATA_META=null;   // {importedAt, source} for imported mode
 var SHELL_SCHEMA=1;   // highest dashboard-data.json schemaVersion this build understands
@@ -396,6 +443,7 @@ function validateData(d){
 function adoptData(d){
   if(d.calendar&&Array.isArray(d.calendar.duty)&&Array.isArray(d.calendar.nonWorking)){NON_WORKING=new Set(d.calendar.nonWorking);DUTY=d.calendar.duty;}
   SNAPSHOT_DATE=d.snapshotDate;EVENTS=d.events||[];SCHOOLS=d.schools||[];GRIEVANCES=d.grievances||[];
+  LINKS=Array.isArray(d.links)?d.links:[]; // optional key (added build .4) — older data files simply hide the Links section
 }
 function resolveData(){
   if(window.__DATA__){
@@ -477,6 +525,8 @@ function renderStatusStrip(){
     if(!g.outcome&&held(g.stage3FiledDate)&&!g.handedOff)route++;
   });
   var issues=SCHOOLS.reduce(function(a,s){return a+s.issues.length;},0);
+  // Stash for the sidebar badges — the badges display THESE numbers, they never recount (one engine pass).
+  DASH_COUNTS.urgent=urgent;DASH_COUNTS.route=route;DASH_COUNTS.issues=issues;
   var parts=[];
   parts.push(urgent?'<span class="seg-red">⚠ '+urgent+' deadline'+(urgent===1?'':'s')+' within 3 school days or past due</span>':'<span class="seg-ok">no urgent deadlines</span>');
   if(route)parts.push('<span class="seg-amber">'+route+' case'+(route===1?'':'s')+' needs routing to a Grievance Specialist</span>');
@@ -631,7 +681,7 @@ function openSchoolFromUrl(){
   var name=decodeURIComponent(m[1].replace(/\+/g,' '));
   for(var i=0;i<SCHOOLS.length;i++){
     if(SCHOOLS[i].name===name){
-      var el=document.getElementById('panel-schools');if(el)el.scrollIntoView({block:'start'});
+      navTo('panel-schools');
       openSchool(name);return;
     }
   }
@@ -819,10 +869,11 @@ function renderCoverage(){
   const hasData=function(s){return s.cf>0||s.notes.length>0||s.issues.length>0||s.visits.length>0;};
   const missingRole=function(s){return roles.some(function(r){return !contactVal(s,r[0]);});};
   const hiddenN=covHideEmpty?SCHOOLS.filter(function(s){return missingRole(s)&&!hasData(s);}).length:0;
-  let html='';
+  let html='',gapsShown=0;
   orderedClusters().forEach(function(c){
     const list=SCHOOLS.filter(function(s){return s.cluster===c&&missingRole(s)&&(!covHideEmpty||hasData(s));}).sort(function(a,b){return a.name.localeCompare(b.name);});
     if(!list.length)return;
+    gapsShown+=list.length;
     html+='<div class="cluster-block" data-cluster="'+c+'">';
     html+='<div class="cluster-h"><button class="cluster-toggle" aria-expanded="true" title="Collapse or expand this cluster">▾</button>Cluster '+c+'<span class="ch-meta">'+list.length+' school'+(list.length===1?'':'s')+' missing a rep</span></div>';
     html+='<div class="cluster-schools"><table><tr><th>School</th><th>Building Rep</th><th>SCAC Committee</th><th>LSAT Rep</th></tr>'+list.map(function(s){
@@ -838,6 +889,9 @@ function renderCoverage(){
   }else{
     body.innerHTML='<div class="empty">Every school has a Building Rep, an active SCAC committee, and an LSAT rep.</div>';
   }
+  // Badge shows what the panel shows (respects the hide-empty toggle), so re-sync on every coverage render.
+  DASH_COUNTS.covGaps=gapsShown;
+  updateSidebarBadges();
 }
 function setAllCoverage(collapsed){
   Array.prototype.forEach.call(document.querySelectorAll('#coverageBody .cluster-block'),function(b){
@@ -851,7 +905,7 @@ function renderVisitClusters(){
   const t=todayIso();
   const inSession=inDuty(t);
   const sy=currentSYStart();
-  let html='';
+  let html='',staleN=0;
   orderedClusters().forEach(function(c){
     const list=SCHOOLS.filter(function(s){return s.cluster===c;}).sort(function(a,b){return a.name.localeCompare(b.name);});
     if(!list.length)return;
@@ -873,10 +927,12 @@ function renderVisitClusters(){
         else if(sd>=30){status=sd+' school days ago';cls='cov-amber';}
         else{status=(sd===0?'today':sd+' school day'+(sd===1?'':'s')+' ago');cls='cov-yes';}
       }
+      if(cls==='cov-no'||cls==='cov-amber')staleN++; // sidebar badge counts the same rows the table just classified
       return '<tr><td data-label="School">'+schoolLink(s.name)+'</td><td data-label="Last visit">'+(lv?prettyMed(lv):'—')+'</td><td data-label="Visits">'+s.visits.length+'</td><td data-label="Status"><span class="'+cls+'">'+status+'</span></td></tr>';
     }).join('')+'</table></div>';
     html+='</div>';
   });
+  DASH_COUNTS.staleVisits=staleN; // 0 over breaks/summer by design — every row reads "Summer recess"
   if(!html){box.innerHTML='';return;}
   box.innerHTML='<div class="cluster-h" style="margin-top:14px">Visit Coverage by Cluster<span class="ch-meta">every school · staleness counts school days, so the clock pauses over breaks and summer</span></div><div class="toolbar"><button class="btn" id="visExpandAll">Expand all</button><button class="btn" id="visCollapseAll">Collapse all</button></div>'+html;
 }
@@ -976,7 +1032,7 @@ function setAllSchools(open){
 }
 function wireButtons(){
   Array.prototype.forEach.call(document.querySelectorAll('[data-jump]'),function(b){
-    b.onclick=function(){var el=document.getElementById(b.dataset.jump);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});};
+    b.onclick=function(){navTo(b.dataset.jump);};
   });
   var pb=document.getElementById('printBtn');if(pb)pb.onclick=function(){window.print();};
   var ea=document.getElementById('expandAll');if(ea)ea.onclick=function(){setAllSchools(true);};
@@ -988,6 +1044,7 @@ function wireButtons(){
     if(t.tagName==='A')e.preventDefault();
     var el=document.getElementById(t.getAttribute('data-target'));
     if(!el)return;
+    revealSectionFor(el); // laptop mode: switch to the owning section first, or the scroll lands on a hidden panel
     if(el.tagName==='DETAILS')el.open=true;
     el.scrollIntoView({behavior:'smooth',block:'start'});
   });
@@ -1025,6 +1082,15 @@ function wireButtons(){
   if(modal)modal.addEventListener('click',function(e){if(e.target===modal)closeSchool();});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSchool();});
   window.addEventListener('hashchange',openSchoolFromUrl);
+  // Laptop mode: number keys switch sections (1 = Brief …) — never while typing in a field.
+  document.addEventListener('keydown',function(e){
+    if(!isLaptop()||e.altKey||e.ctrlKey||e.metaKey)return;
+    if(e.key<'1'||e.key>'9')return;
+    var tg=e.target,tag=(tg&&tg.tagName)||'';
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(tg&&tg.isContentEditable))return;
+    var vis=visibleSections(),i=e.key.charCodeAt(0)-49;
+    if(i<vis.length)showSection(vis[i].id);
+  });
 }
 
 var JOT_DRAFT='dash.jot.draft';
@@ -1140,11 +1206,144 @@ function wireImport(){
     };
   }
 }
+/* ===== IMPORTANT LINKS (build .4): rendered from the data file's optional `links` key =====
+   The shell ships ZERO link URLs (tokenized SharePoint sharing links must never enter the public
+   repo) — links ride dashboard-data.json like everything else. Source of truth for the list:
+   00_Resources/WTU Important Links.xlsx. With no links in the data, the section + nav entries hide. */
+var linkFilterText='';
+function renderLinks(){
+  var card=document.getElementById('panel-links'),tab=document.getElementById('tabLinks');
+  if(!card)return;
+  if(!LINKS.length){card.style.display='none';if(tab)tab.style.display='none';return;}
+  card.style.display='';if(tab)tab.style.display='';
+  var badge=document.getElementById('lnkCount');if(badge)badge.textContent=LINKS.length+' LINKS';
+  var q=linkFilterText.toLowerCase(),shown=0;
+  var h=LINKS.map(function(l){
+    if(q&&String(l.title||'').toLowerCase().indexOf(q)<0)return '';
+    shown++;
+    return '<div class="lnkrow"><a class="lnk" href="'+esc(l.url)+'" target="_blank" rel="noopener">'+
+      '<span class="lnk-e">'+esc(l.emoji||'🔗')+'</span><span class="lnk-t">'+esc(l.title)+'</span></a>'+
+      '<button class="btn lnk-copy" type="button" data-copy="'+esc(l.url)+'" title="Copy link URL">Copy</button></div>';
+  }).join('');
+  document.getElementById('linksBox').innerHTML=shown?h:'<div class="empty" style="padding:10px 6px">No links match “'+esc(linkFilterText)+'”.</div>';
+}
+function legacyCopy(t){
+  try{
+    var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();var ok=document.execCommand('copy');document.body.removeChild(ta);return ok;
+  }catch(e){return false;}
+}
+function wireLinks(){
+  var f=document.getElementById('lnkFilter');
+  if(f)f.oninput=function(){linkFilterText=f.value.trim();renderLinks();};
+  var box=document.getElementById('linksBox');
+  if(box)box.addEventListener('click',function(e){ // delegated: survives re-renders from the filter
+    var b=e.target.closest&&e.target.closest('.lnk-copy');if(!b)return;
+    var u=b.getAttribute('data-copy');
+    function done(ok){b.textContent=ok?'Copied ✓':'Copy failed';setTimeout(function(){b.textContent='Copy';},1400);}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(function(){done(true);},function(){done(legacyCopy(u));});
+    else done(legacyCopy(u));
+  });
+}
+
+/* ===== LAPTOP LAYER (build .2): fixed sidebar + one-section-at-a-time view =====
+   Active at ≥1100px only (the same query as the CSS) and only once data is loaded — never in nodata
+   mode, so the hosted shell's first-run import card stays full-page. Pure navigation/display: the
+   badges show counts the renderers already computed (DASH_COUNTS) — nothing here recounts a
+   deadline. Below 1100px every panel stays visible and the page behaves exactly as before. */
+var SECTIONS=[
+  {id:'panel-brief',icon:'📋',label:'Today\'s Brief'},
+  {id:'panel-griev',icon:'⏱',label:'Grievances'},
+  {id:'panel-issues',icon:'🗂',label:'Member Issues'},
+  {id:'panel-schools',icon:'🏫',label:'Schools'},
+  {id:'panel-coverage',icon:'🧭',label:'Coverage Gaps'},
+  {id:'panel-visits',icon:'🚶',label:'Visits'},
+  {id:'panel-links',icon:'🔗',label:'Important Links'},
+  {id:'panel-jot',icon:'✏️',label:'Jot &amp; Share',hosted:true},
+  {id:'panel-import',icon:'📥',label:'Data on This Device',hosted:true,util:true}
+];
+var ACTIVE_SECT='panel-brief'; // default on every open: the morning driver
+var DASH_COUNTS={urgent:0,route:0,issues:0,covGaps:0,staleVisits:0}; // stashed by renderStatusStrip / renderCoverage / renderVisitClusters
+var mqLaptop=window.matchMedia?window.matchMedia('(min-width:1100px)'):null;
+function isLaptop(){return !!(mqLaptop&&mqLaptop.matches&&DATA_MODE!=='none');}
+// Jot and the import card exist only on the hosted/phone build (renderJot/renderImport hide them when embedded).
+function visibleSections(){return SECTIONS.filter(function(s){
+  if(s.hosted&&DATA_MODE==='embedded')return false;
+  if(s.id==='panel-links'&&!LINKS.length)return false; // older data file without the links key
+  return true;
+});}
+function showSection(id,opts){
+  opts=opts||{};
+  var target=document.getElementById(id);
+  if(!target||!target.classList||!target.classList.contains('full'))return;
+  ACTIVE_SECT=id;
+  Array.prototype.forEach.call(document.querySelectorAll('.card.full'),function(c){c.classList.toggle('sect-active',c.id===id);});
+  Array.prototype.forEach.call(document.querySelectorAll('#sidebar .sb-btn[data-sect]'),function(b){b.classList.toggle('active',b.getAttribute('data-sect')===id);});
+  if(!opts.keepScroll)window.scrollTo(0,0);
+}
+// In laptop mode, switch to the section that contains `el` before scrolling to it; elsewhere a no-op.
+function revealSectionFor(el){
+  if(!isLaptop()||!el)return;
+  var p=(el.classList&&el.classList.contains('full'))?el:(el.closest?el.closest('.card.full'):null);
+  if(p&&p.id&&p.id!==ACTIVE_SECT)showSection(p.id,{keepScroll:true});
+}
+// The one nav entry point (sidebar, actionbar, tabbar): switch sections in laptop mode, scroll otherwise.
+function navTo(id){
+  var el=document.getElementById(id);if(!el)return;
+  if(isLaptop()&&el.classList&&el.classList.contains('full')){showSection(id);return;}
+  revealSectionFor(el);
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function sbBtnHtml(s){
+  return '<button class="sb-btn'+(s.id===ACTIVE_SECT?' active':'')+'" type="button" data-sect="'+s.id+'"><span class="sb-ic">'+s.icon+'</span><span class="sb-lbl">'+s.label+'</span><span class="sb-badges" id="sbb-'+s.id+'"></span></button>';
+}
+function renderSidebar(){
+  var sb=document.getElementById('sidebar');if(!sb)return;
+  var secs=visibleSections();
+  var h='<div class="sb-brand">Organizing Dashboard</div><div class="sb-grp">Sections</div>';
+  h+=secs.filter(function(s){return !s.util;}).map(sbBtnHtml).join('');
+  // Support Intake Form + Member Support removed from the sidebar (build .5): both live in the
+  // Important Links section now, so the footer keeps only the genuine tools (Print, Data).
+  h+='<div class="sb-foot"><div class="sb-grp">Tools</div>';
+  h+='<button class="sb-btn" type="button" id="sbPrint"><span class="sb-ic">🖨</span><span class="sb-lbl">Print / Save PDF</span></button>';
+  h+=secs.filter(function(s){return s.util;}).map(sbBtnHtml).join('');
+  h+='</div>';
+  sb.innerHTML=h;
+  Array.prototype.forEach.call(sb.querySelectorAll('.sb-btn[data-sect]'),function(b){b.onclick=function(){navTo(b.getAttribute('data-sect'));};});
+  var pr=document.getElementById('sbPrint');if(pr)pr.onclick=function(){window.print();};
+}
+// Numbers only — badge markup must never carry member names or school names (the shell stays data-free).
+function updateSidebarBadges(){
+  function put(pid,html){var el=document.getElementById('sbb-'+pid);if(el)el.innerHTML=html;}
+  function chip(n){return n?'<span class="sb-chip">'+n+'</span>':'';}
+  var urg=DASH_COUNTS.urgent;
+  var urgChip=urg?'<span class="sb-chip red" title="deadlines within 3 school days, past due, or escalated">⚠ '+urg+'</span>':'';
+  put('panel-brief',urgChip);
+  put('panel-griev',chip(GRIEVANCES.filter(function(g){return !g.outcome;}).length)+urgChip);
+  put('panel-issues',chip(DASH_COUNTS.issues));
+  put('panel-schools',chip(SCHOOLS.length));
+  put('panel-coverage',chip(DASH_COUNTS.covGaps));
+  put('panel-visits',DASH_COUNTS.staleVisits?'<span class="sb-chip" title="schools not visited in 30+ school days">'+DASH_COUNTS.staleVisits+'</span>':'');
+  put('panel-links',chip(LINKS.length));
+}
+function applyLaptopMode(){
+  var on=isLaptop();
+  document.body.classList.toggle('laptop',on);
+  if(on)showSection(ACTIVE_SECT,{keepScroll:true});
+}
+if(mqLaptop){
+  if(mqLaptop.addEventListener)mqLaptop.addEventListener('change',applyLaptopMode);
+  else if(mqLaptop.addListener)mqLaptop.addListener(applyLaptopMode);
+}
+// Belt-and-braces: some webviews (Obsidian pane drags, emulated viewports) resize without firing
+// the matchMedia change event — re-check on plain window resize too (applyLaptopMode is idempotent).
+window.addEventListener('resize',applyLaptopMode);
+
 function boot(){
   resolveData();
   var fns=DATA_MODE==='none'
     ?[renderSelfTest,renderImport,wireImport]
-    :[renderHeader,renderSelfTest,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderIssues,renderSchoolKpis,renderChips,renderSchools,renderCoverage,renderVisitClusters,renderVisits,renderAttention,wireCalc,wireButtons,renderImport,wireImport,renderJot,wireJot,openSchoolFromUrl];
+    :[renderHeader,renderSelfTest,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderIssues,renderSchoolKpis,renderChips,renderSchools,renderCoverage,renderVisitClusters,renderVisits,renderAttention,renderLinks,wireCalc,wireButtons,renderImport,wireImport,renderJot,wireJot,wireLinks,renderSidebar,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
   fns.forEach(function(fn){
     // Log the failure point but never the exception content — an error message must not echo member data (hardening).
     try{fn();}catch(e){console.error('dash:'+fn.name+' failed ('+((e&&e.name)||'error')+')');}
@@ -1160,7 +1359,7 @@ function rerenderForNewDay(){
   if(todayIso()===lastRenderedDay)return;
   lastRenderedDay=todayIso();
   var openIds=Array.prototype.map.call(document.querySelectorAll('details.sch[open]'),function(d){return d.id;}).filter(Boolean);
-  [renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderIssues,renderVisitClusters,renderAttention].forEach(function(fn){
+  [renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderIssues,renderVisitClusters,renderAttention,updateSidebarBadges].forEach(function(fn){
     try{fn();}catch(e){console.error('rollover:'+fn.name+' failed ('+((e&&e.name)||'error')+')');}
   });
   openIds.forEach(function(id){var el=document.getElementById(id);if(el)el.open=true;});
