@@ -199,7 +199,7 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
   .wrap{padding:14px 12px calc(env(safe-area-inset-bottom,0px) + 92px)}
   .btn,.chip{min-height:44px;display:inline-flex;align-items:center}
   .calc input,.calc select,.schfilter,.imp-ta{font-size:16px}
-  .actionbar .grp-label:first-child,.actionbar button[data-jump],.actionbar .sep:first-of-type{display:none}
+  .actionbar .grp-label,.actionbar button[data-jump],.actionbar .sep{display:none}
   .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;background:#fff;border-top:2px solid var(--maroon);box-shadow:0 -2px 8px rgba(136,41,43,.12);padding:4px 2px calc(env(safe-area-inset-bottom,0px) + 4px)}
   .tabbar button{flex:1;background:none;border:none;font:inherit;font-size:10.5px;font-weight:800;color:var(--maroon);padding:5px 2px;min-height:44px;cursor:pointer}
   .tabbar button .ti{display:block;font-size:17px;line-height:1.15}
@@ -253,7 +253,7 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
       <span class="pill" id="todayPill">—</span>
       <span class="pill" id="snapPill">Snapshot: —</span>
       <span class="pill diag" id="selftestPill">checking deadline math…</span>
-      <span class="pill diag" id="buildPill">build 2026-07-03.5</span>
+      <span class="pill diag" id="buildPill">build 2026-07-03.6</span>
     </div>
     <div class="status-strip" id="statusStrip">—</div>
   </header>
@@ -267,10 +267,8 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
     <button class="btn" data-jump="panel-visits">Visits</button>
     <button class="btn" data-jump="panel-links">Links</button>
     <span class="sep"></span>
-    <span class="grp-label">Quick links</span>
-    <a class="btn" href="https://forms.office.com/pages/responsepage.aspx?id=IoYSinwSvUuHr7NbAxNAqGgTIQr_KFlBjtZ8J-XWr8hUQzBIVFRaNDBSQkMwSFNRMlhURVpUU0wyTi4u&route=shorturl" target="_blank" rel="noopener">Support Intake Form</a>
-    <a class="btn" href="https://www.wtulocal6.net/support" target="_blank" rel="noopener">Member Support</a>
-    <span class="sep"></span>
+    <!-- Support Intake Form + Member Support removed from the top bar (build .6): both live in the
+         Important Links section (reachable via the Links button here and the phone's Links tab). -->
     <button class="btn primary" id="printBtn">Print / Save PDF</button>
   </div>
 
