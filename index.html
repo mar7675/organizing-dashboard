@@ -169,6 +169,7 @@ details.sch{scroll-margin-top:64px}
 .calc .out{margin-top:10px;font-size:13px;font-weight:600;color:var(--ink)}
 .calc .out b{color:var(--maroon);font-size:15px}
 footer{margin-top:22px;font-size:11.5px;color:var(--muted);text-align:center;line-height:1.6}
+.build-note{font-size:10px;opacity:.6}
 .err{color:var(--red);font-size:12px;margin-top:6px}
 /* school viewer modal */
 .modal{display:none;position:fixed;inset:0;background:rgba(13,11,11,.45);z-index:50;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
@@ -202,7 +203,8 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
   .actionbar .grp-label,.actionbar button[data-jump],.actionbar .sep{display:none}
   .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;background:#fff;border-top:2px solid var(--maroon);box-shadow:0 -2px 8px rgba(136,41,43,.12);padding:4px 2px calc(env(safe-area-inset-bottom,0px) + 4px)}
   .tabbar button{flex:1;background:none;border:none;font:inherit;font-size:10.5px;font-weight:800;color:var(--maroon);padding:5px 2px;min-height:44px;cursor:pointer}
-  .tabbar button .ti{display:block;font-size:17px;line-height:1.15}
+  .tabbar button .ti{display:block;line-height:1;color:var(--maroon)}
+  .tabbar button .ti .ic{width:21px;height:21px;margin:0 auto}
   #issueBox table,#coverageBody table,#visitClusters table,#visitLog table,.sch-body table,#schModalBody table,
   #issueBox tbody,#coverageBody tbody,#visitClusters tbody,#visitLog tbody,.sch-body tbody,#schModalBody tbody,
   #issueBox tr,#coverageBody tr,#visitClusters tr,#visitLog tr,.sch-body tr,#schModalBody tr,
@@ -217,12 +219,19 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
    ≤700px stays the phone layer above; 701–1099px keeps the classic long-scroll layout (Obsidian pane,
    half-screen windows). body.laptop is set by JS from the SAME 1100px matchMedia, never in nodata mode. */
 .sidebar{display:none}
-.sb-brand{font-weight:800;font-size:15px;color:var(--maroon);line-height:1.25;padding:4px 10px 12px;border-bottom:2px solid var(--maroon);margin-bottom:8px}
+.sb-brand{display:flex;align-items:center;gap:9px;padding:2px 8px 12px;border-bottom:2px solid var(--maroon);margin-bottom:8px}
+.sb-logo{color:var(--maroon);flex:none}
+.sb-shield{width:26px;height:26px;display:block}
+.sb-brand-txt{display:flex;flex-direction:column;line-height:1.1}
+.sb-kick{font-size:9px;letter-spacing:1.6px;color:var(--muted);font-weight:800}
+.sb-name{font-weight:800;font-size:14px;color:var(--maroon)}
+.ic{width:18px;height:18px;display:block}
 .sb-grp{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:8px 10px 4px}
 .sb-btn{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:8px;padding:8px 10px;margin:2px 0;font:inherit;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;text-decoration:none}
 .sb-btn:hover{background:var(--rose-tint);text-decoration:none}
 .sb-btn.active{background:var(--maroon);color:#fff;border-color:#6f2123}
-.sb-btn .sb-ic{flex:none;width:20px;text-align:center;font-size:15px}
+.sb-btn .sb-ic{flex:none;width:20px;display:flex;justify-content:center;color:var(--maroon)}
+.sb-btn.active .sb-ic{color:#fff}
 .sb-btn .sb-lbl{flex:1;min-width:0}
 .sb-badges{display:flex;gap:4px;flex:none}
 .sb-chip{font-size:10.5px;font-weight:800;padding:1px 7px;border-radius:999px;background:var(--rose-tint);color:var(--maroon);border:1px solid var(--rose-line)}
@@ -253,7 +262,6 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
       <span class="pill" id="todayPill">—</span>
       <span class="pill" id="snapPill">Snapshot: —</span>
       <span class="pill diag" id="selftestPill">checking deadline math…</span>
-      <span class="pill diag" id="buildPill">build 2026-07-03.6</span>
     </div>
     <div class="status-strip" id="statusStrip">—</div>
   </header>
@@ -273,7 +281,7 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
   </div>
 
   <div class="card full" id="panel-brief" style="margin-top:16px">
-    <h2>Today's Brief <span class="badge snap">SNAPSHOT</span></h2>
+    <h2>Today's Brief</h2>
     <div class="brief-grid">
       <div class="brief-block">
         <h3>Deadlines — Next 5 School Days</h3>
@@ -291,7 +299,7 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
   </div>
 
   <div class="card full" id="panel-griev" style="margin-top:16px">
-      <h2>Grievance Deadlines <span class="badge snap">SNAPSHOT</span></h2>
+      <h2>Grievance Deadlines</h2>
       <div id="grievBox"></div>
       <div class="calc">
         <h3>Grievance Deadline Calculator</h3>
@@ -314,12 +322,12 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
     </div>
 
   <div class="card full" id="panel-issues" style="margin-top:16px">
-      <h2>Member Issue Queue <span class="badge snap">SNAPSHOT</span></h2>
+      <h2>Member Issue Queue</h2>
       <div id="issueBox"></div>
   </div>
 
   <div class="card full" id="panel-schools" style="margin-top:16px">
-    <h2>Schools at a Glance <span class="badge snap">SNAPSHOT</span></h2>
+    <h2>Schools at a Glance</h2>
     <div class="kpis" id="schoolKpis"></div>
     <div class="toolbar" id="clusterChips"></div>
     <div class="toolbar">
@@ -332,14 +340,14 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
   </div>
 
   <div class="card full" id="panel-coverage" style="margin-top:16px">
-    <h2>Coverage Gaps <span class="badge snap">SNAPSHOT</span></h2>
+    <h2>Coverage Gaps</h2>
     <div class="kpis" id="coverageKpis"></div>
     <div id="coverageBody"></div>
     <div class="sectnote">Schools missing a Building Rep, an active SCAC committee, or an LSAT rep — your organizing target list. The Building Rep <em>is</em> the SCAC Chair (one person), but every school still needs a SCAC committee, tracked separately. A school drops off once all three are filled in on its page. Fills in as you log contacts; ask me to "refresh" after updating school pages.</div>
   </div>
 
   <div class="card full" id="panel-visits" style="margin-top:16px">
-    <h2>School Visits Attended <span class="badge snap">SNAPSHOT</span></h2>
+    <h2>School Visits Attended</h2>
     <div class="kpis" id="visitKpis"></div>
     <div id="visitClusters"></div>
     <div class="cluster-h" style="margin-top:18px">Visit Log<span class="ch-meta">most recent, newest first</span></div>
@@ -396,17 +404,18 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
   </div>
 
   <nav class="tabbar" id="tabbar">
-    <button data-jump="panel-brief"><span class="ti">📋</span>Brief</button>
-    <button data-jump="panel-griev"><span class="ti">⏱</span>Cases</button>
-    <button data-jump="panel-schools"><span class="ti">🏫</span>Schools</button>
-    <button data-jump="panel-links" id="tabLinks"><span class="ti">🔗</span>Links</button>
-    <button data-jump="panel-jot"><span class="ti">✏️</span>Jot</button>
-    <button data-jump="panel-import"><span class="ti">📥</span>Data</button>
+    <button data-jump="panel-brief"><span class="ti" data-ic="brief"></span>Brief</button>
+    <button data-jump="panel-griev"><span class="ti" data-ic="clock"></span>Cases</button>
+    <button data-jump="panel-schools"><span class="ti" data-ic="school"></span>Schools</button>
+    <button data-jump="panel-links" id="tabLinks"><span class="ti" data-ic="link"></span>Links</button>
+    <button data-jump="panel-jot"><span class="ti" data-ic="pencil"></span>Jot</button>
+    <button data-jump="panel-import"><span class="ti" data-ic="data"></span>Data</button>
   </nav>
 
   <footer>
     Snapshot data: WTU workspace (school pages + Filed Grievances) + calendar entered from Outlook screenshots, captured <span id="snapFoot">—</span>. Ask to "refresh" or "update" anytime.<br>
-    This is a working-aid, not the official record. The CBA controls all grievance timelines — verify any deadline day-by-day before filing.
+    This is a working-aid, not the official record. The CBA controls all grievance timelines — verify any deadline day-by-day before filing.<br>
+    <span class="build-note" id="buildPill">build 2026-07-03.8</span>
   </footer>
 </div>
 
@@ -1249,16 +1258,33 @@ function wireLinks(){
    mode, so the hosted shell's first-run import card stays full-page. Pure navigation/display: the
    badges show counts the renderers already computed (DASH_COUNTS) — nothing here recounts a
    deadline. Below 1100px every panel stays visible and the page behaves exactly as before. */
+/* Monochrome line icons (build .8): inherit currentColor so they're maroon in the sidebar/tabs and
+   white on the active button. One SVG set drives both the JS-rendered sidebar and the tab bar. */
+var ICONS={
+  brief:'<rect x="7" y="3" width="10" height="4" rx="1.5"/><path d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><path d="M8 12h8M8 16h5"/>',
+  clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  inbox:'<path d="M3 12h4l2 3h6l2-3h4"/><path d="M5.5 6h13l3 6v5a2 2 0 0 1-2 2H4.5a2 2 0 0 1-2-2v-5z"/>',
+  school:'<path d="M3 21h18"/><path d="M12 3 3 8h18z"/><path d="M5.5 10.5v8M10 10.5v8M14 10.5v8M18.5 10.5v8"/>',
+  target:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>',
+  pin:'<path d="M19 10.5c0 5.2-7 11-7 11s-7-5.8-7-11a7 7 0 0 1 14 0z"/><circle cx="12" cy="10.3" r="2.5"/>',
+  link:'<path d="M9.5 13.5a4 4 0 0 0 5.7 0l3-3a4 4 0 1 0-5.7-5.7l-1.2 1.2"/><path d="M14.5 10.5a4 4 0 0 0-5.7 0l-3 3a4 4 0 1 0 5.7 5.7l1.2-1.2"/>',
+  pencil:'<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  data:'<path d="M21 15v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3"/><path d="M7.5 11l4.5 4.5L16.5 11"/><path d="M12 15.5V3"/>',
+  printer:'<path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="13" width="12" height="8" rx="1"/>'
+};
+function icon(n){return '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}
+function paintTabIcons(){Array.prototype.forEach.call(document.querySelectorAll('.ti[data-ic]'),function(el){el.innerHTML=icon(el.getAttribute('data-ic'));});}
+var SHIELD='<svg viewBox="0 0 24 24" class="sb-shield" aria-hidden="true"><path d="M12 2 4 5v6.5c0 4.8 3.4 8.4 8 10.5 4.6-2.1 8-5.7 8-10.5V5z" fill="currentColor"/><text x="12" y="14.7" text-anchor="middle" font-size="8.5" font-weight="800" fill="#fff" font-family="Inter,Arial,sans-serif">W</text></svg>';
 var SECTIONS=[
-  {id:'panel-brief',icon:'📋',label:'Today\'s Brief'},
-  {id:'panel-griev',icon:'⏱',label:'Grievances'},
-  {id:'panel-issues',icon:'🗂',label:'Member Issues'},
-  {id:'panel-schools',icon:'🏫',label:'Schools'},
-  {id:'panel-coverage',icon:'🧭',label:'Coverage Gaps'},
-  {id:'panel-visits',icon:'🚶',label:'Visits'},
-  {id:'panel-links',icon:'🔗',label:'Important Links'},
-  {id:'panel-jot',icon:'✏️',label:'Jot &amp; Share',hosted:true},
-  {id:'panel-import',icon:'📥',label:'Data on This Device',hosted:true,util:true}
+  {id:'panel-brief',ic:'brief',label:'Today\'s Brief'},
+  {id:'panel-griev',ic:'clock',label:'Grievances'},
+  {id:'panel-issues',ic:'inbox',label:'Member Issues'},
+  {id:'panel-schools',ic:'school',label:'Schools'},
+  {id:'panel-coverage',ic:'target',label:'Coverage Gaps'},
+  {id:'panel-visits',ic:'pin',label:'Visits'},
+  {id:'panel-links',ic:'link',label:'Important Links'},
+  {id:'panel-jot',ic:'pencil',label:'Jot &amp; Share',hosted:true},
+  {id:'panel-import',ic:'data',label:'Data on This Device',hosted:true,util:true}
 ];
 var ACTIVE_SECT='panel-brief'; // default on every open: the morning driver
 var DASH_COUNTS={urgent:0,route:0,issues:0,covGaps:0,staleVisits:0}; // stashed by renderStatusStrip / renderCoverage / renderVisitClusters
@@ -1293,17 +1319,17 @@ function navTo(id){
   el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function sbBtnHtml(s){
-  return '<button class="sb-btn'+(s.id===ACTIVE_SECT?' active':'')+'" type="button" data-sect="'+s.id+'"><span class="sb-ic">'+s.icon+'</span><span class="sb-lbl">'+s.label+'</span><span class="sb-badges" id="sbb-'+s.id+'"></span></button>';
+  return '<button class="sb-btn'+(s.id===ACTIVE_SECT?' active':'')+'" type="button" data-sect="'+s.id+'"><span class="sb-ic">'+icon(s.ic)+'</span><span class="sb-lbl">'+s.label+'</span><span class="sb-badges" id="sbb-'+s.id+'"></span></button>';
 }
 function renderSidebar(){
   var sb=document.getElementById('sidebar');if(!sb)return;
   var secs=visibleSections();
-  var h='<div class="sb-brand">Organizing Dashboard</div><div class="sb-grp">Sections</div>';
+  var h='<div class="sb-brand"><span class="sb-logo">'+SHIELD+'</span><span class="sb-brand-txt"><span class="sb-kick">WTU</span><span class="sb-name">Organizing Dashboard</span></span></div><div class="sb-grp">Sections</div>';
   h+=secs.filter(function(s){return !s.util;}).map(sbBtnHtml).join('');
   // Support Intake Form + Member Support removed from the sidebar (build .5): both live in the
   // Important Links section now, so the footer keeps only the genuine tools (Print, Data).
   h+='<div class="sb-foot"><div class="sb-grp">Tools</div>';
-  h+='<button class="sb-btn" type="button" id="sbPrint"><span class="sb-ic">🖨</span><span class="sb-lbl">Print / Save PDF</span></button>';
+  h+='<button class="sb-btn" type="button" id="sbPrint"><span class="sb-ic">'+icon('printer')+'</span><span class="sb-lbl">Print / Save PDF</span></button>';
   h+=secs.filter(function(s){return s.util;}).map(sbBtnHtml).join('');
   h+='</div>';
   sb.innerHTML=h;
@@ -1339,6 +1365,7 @@ window.addEventListener('resize',applyLaptopMode);
 
 function boot(){
   resolveData();
+  paintTabIcons(); // phone tab-bar SVG icons (harmless when the tab bar is hidden)
   var fns=DATA_MODE==='none'
     ?[renderSelfTest,renderImport,wireImport]
     :[renderHeader,renderSelfTest,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderIssues,renderSchoolKpis,renderChips,renderSchools,renderCoverage,renderVisitClusters,renderVisits,renderAttention,renderLinks,wireCalc,wireButtons,renderImport,wireImport,renderJot,wireJot,wireLinks,renderSidebar,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
