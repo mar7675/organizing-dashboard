@@ -65,6 +65,54 @@ header.hero{background:linear-gradient(180deg,var(--rose) 0%, #C99FA0 100%);
 .wk-ev{font-size:12.5px;margin:1px 0}
 .wk-ev .tm{color:var(--muted)}
 .wk-none{font-size:12.5px;color:#8a7d7d}
+/* Brief status tiles (build 2026-07-11.1): numbers the sidebar/status strip already computed, tile-sized */
+.brief-tiles{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btile{flex:1 1 128px;min-width:118px;max-width:220px;background:#fff;border:1px solid var(--rose-line);border-radius:10px;padding:9px 12px}
+.btile[data-target]{cursor:pointer}
+.btile[data-target]:hover{background:var(--rose-tint)}
+.btile .n{font-size:22px;font-weight:800;color:var(--maroon);line-height:1.1}
+.btile .l{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:3px;font-weight:700}
+.btile .s{font-size:11px;color:var(--ink);margin-top:3px;font-weight:600}
+.btile.red{background:var(--red);border-color:var(--maroon)}
+.btile.red .n,.btile.red .s{color:#fff}
+.btile.red .l{color:#fff;opacity:.85}
+.btile.red[data-target]:hover{background:#a51b2f}
+/* Deadline runway: the next N school days as cells, each case chip on its due day */
+.rw-h3{margin:14px 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--maroon);font-weight:800}
+.rw-h3 .daystamp{text-transform:none;letter-spacing:0}
+.runway{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.rw-day{flex:1 0 88px;min-width:88px;border:1px solid var(--rose-line);border-radius:9px;background:#fff;padding:6px 7px;min-height:60px}
+.rw-day.today{border-color:var(--maroon);box-shadow:0 0 0 1px var(--maroon)}
+.rw-date{font-size:10.5px;font-weight:800;color:var(--maroon);letter-spacing:.3px;white-space:nowrap}
+.rw-day.today .rw-date{color:var(--ink)}
+.rw-pause{flex:0 0 150px;border:1px dashed var(--rose-line);border-radius:9px;background:var(--rose-tint);padding:6px 9px;font-size:11px;color:var(--maroon);font-weight:700;display:flex;align-items:center}
+.rw-over{flex:0 0 130px;border:1px solid var(--maroon);border-radius:9px;background:var(--red);padding:6px 9px;color:#fff}
+.rw-over .rw-date{color:#fff}
+.rw-chip{display:block;font-size:10px;font-weight:800;border-radius:6px;padding:2px 6px;margin-top:4px;cursor:pointer;background:#EDEDED;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.rw-chip.dl-amber{background:#F6E2BF;color:#8a5a00}
+.rw-chip.dl-red{background:var(--red);color:#fff;box-shadow:0 0 0 1px var(--maroon)}
+.rw-day.today .rw-chip.dl-red,.rw-over .rw-chip.dl-red{box-shadow:0 0 0 1px #fff}
+.rw-more{font-size:11.5px;color:var(--muted);margin-top:6px}
+.rw-more b{color:var(--ink)}
+/* Deadline-list urgency text (same thresholds as the case-card tags) */
+.days-red{color:var(--red)}
+.days-amber{color:var(--amber)}
+/* Collapsed calendar column: no events on file anywhere → one quiet line, Brief goes full-width */
+.brief-grid.no-cal{grid-template-columns:1fr}
+#briefCalCol.cal-empty{border-top:1px dotted var(--rose-line);padding-top:10px}
+#briefCalCol.cal-empty #weekH3,#briefCalCol.cal-empty #weekBox{display:none}
+#briefCalCol.cal-empty h3{display:inline}
+#briefCalCol.cal-empty #calBox,#briefCalCol.cal-empty #calBox .empty{display:inline;padding:0}
+/* Grievance stage pipeline (counts from grievStage — the engine's own classification) */
+.gr-pipe{display:flex;align-items:stretch;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.gp-seg{flex:1 1 92px;min-width:88px;border:1px solid var(--rose-line);border-radius:9px;padding:7px 10px;background:#FCF8F7;text-align:center;color:var(--muted)}
+.gp-seg.has{background:#fff;color:var(--ink);cursor:pointer}
+.gp-seg.has:hover{background:var(--rose-tint)}
+.gp-seg .gp-n{display:block;font-size:20px;font-weight:800;line-height:1.1;color:inherit}
+.gp-seg.has .gp-n{color:var(--maroon)}
+.gp-seg .gp-l{display:block;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.gp-arrow{align-self:center;color:var(--muted);font-weight:700;flex:none}
+@media(max-width:700px){.gp-arrow{display:none}}
 /* buttons */
 .actionbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px;position:sticky;top:0;z-index:40;background:rgba(251,246,244,.96);padding:8px 0;border-bottom:1px solid var(--rose-line)}
 .actionbar .grp-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
@@ -78,6 +126,7 @@ header.hero{background:linear-gradient(180deg,var(--rose) 0%, #C99FA0 100%);
   body.laptop .card.full{display:block !important} /* print is the full snapshot even when the laptop view shows one section */
   .card{break-inside:avoid;box-shadow:none}
   body{background:#fff}
+  .runway{flex-wrap:wrap;overflow:visible} /* a scrolled runway would clip on paper */
 }
 table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
 th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--rose-line);vertical-align:top}
@@ -114,6 +163,22 @@ details.sch[open] .caret{transform:rotate(90deg)}
 .sch .tag.dl-grey{background:#EDEDED;color:#555;font-weight:600}
 .sch .tag.dl-amber{background:#F6E2BF;color:#8a5a00;font-weight:800}
 .sch .tag.dl-red{background:var(--red);color:#fff;font-weight:800;box-shadow:0 0 0 1px var(--maroon)}
+.mem-line{font-size:12.5px;padding:4px 0;color:var(--ink)}
+.mem-src{color:#8a7d7d;font-style:italic;font-size:11px}
+.mem-pct{display:inline-block;font-size:10px;font-weight:800;padding:1px 7px;border-radius:999px;margin-right:7px}
+.mem-pct.lo{background:#EDEDED;color:#555}
+.mem-pct.mid{background:#F6E2BF;color:#8a5a00}
+.mem-pct.hi{background:var(--red);color:#fff;box-shadow:0 0 0 1px var(--maroon)}
+.mem-tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+.mem-tbl th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);border-bottom:1px solid var(--rose-line);padding:5px 8px;font-weight:700}
+.mem-tbl td{padding:5px 8px;border-bottom:1px solid var(--rose-line);white-space:nowrap}
+.mem-tbl tr:last-child td{border-bottom:none}
+.mem-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.mem-bar{display:inline-block;width:88px;height:8px;background:#EDEDED;border-radius:999px;overflow:hidden;vertical-align:middle}
+.mem-bar-fill{display:block;height:100%}
+.mem-bar-fill.lo{background:#C4C4C4}
+.mem-bar-fill.mid{background:#E0A93F}
+.mem-bar-fill.hi{background:var(--red)}
 .sch-body{padding:8px 14px 13px;border-top:1px solid var(--rose-line);background:#FCF8F7}
 .ct-line{display:flex;font-size:12.5px;padding:3px 0;border-bottom:1px dotted var(--rose-line)}
 .ct-line:last-child{border-bottom:none}
@@ -158,6 +223,7 @@ details.sch[open] .caret{transform:rotate(90deg)}
 .cd-gap{padding:2px 0;color:var(--muted);font-style:italic}
 .card{scroll-margin-top:64px}
 details.sch{scroll-margin-top:64px}
+.cluster-h{scroll-margin-top:64px} /* pipeline strip jumps to stage-group headers */
 /* calculator */
 .calc{margin-top:12px;border:1px solid var(--rose-line);border-radius:10px;padding:12px;background:var(--rose-tint)}
 .calc h3{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--maroon);font-weight:800}
@@ -282,17 +348,19 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
 
   <div class="card full" id="panel-brief" style="margin-top:16px">
     <h2>Today's Brief</h2>
-    <div class="brief-grid">
+    <div class="brief-tiles" id="briefTiles"><!-- built by renderBriefTiles() from engine counts --></div>
+    <div id="runwayBox"><!-- built by renderRunway() — heading + cells render together so an empty runway leaves no dangling header --></div>
+    <div class="brief-grid" id="briefGrid">
       <div class="brief-block">
         <h3>Deadlines — Next 5 School Days</h3>
         <div id="dueBox"></div>
         <h3 style="margin-top:14px">Top 3 Needing Attention</h3>
         <ul class="attn" id="attnBox"><li class="empty">Nothing flagged.</li></ul>
       </div>
-      <div class="brief-block">
+      <div class="brief-block" id="briefCalCol">
         <h3>Today's Calendar <span class="daystamp" id="calDay"></span></h3>
         <div id="calBox"></div>
-        <h3 style="margin-top:14px">Week at a Glance</h3>
+        <h3 style="margin-top:14px" id="weekH3">Week at a Glance</h3>
         <div id="weekBox"></div>
       </div>
     </div>
@@ -337,6 +405,12 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
     </div>
     <div id="schoolSections"></div>
     <div class="sectnote">Each school expands to show its Key Contacts, School Notes, and Open Issues, grouped by cluster. Fields fill in as you log them on the school pages — ask me to "refresh" or "update" afterward.</div>
+  </div>
+
+  <div class="card full" id="panel-membership" style="margin-top:16px">
+    <h2>Membership <span class="badge snap" id="memSnap">MEMBERSHIP</span></h2>
+    <div id="memBody"></div>
+    <div class="sectnote">Cluster-wide density and each school's non-member rate from the WTU database snapshot. Priorities are ranked by non-member rate (red ≥25%, amber 15–25%). Sourced from <b>Organizing/Membership Database (Restricted)</b> — ask me to "update membership" after importing a new snapshot.</div>
   </div>
 
   <div class="card full" id="panel-coverage" style="margin-top:16px">
@@ -415,7 +489,7 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
   <footer>
     Snapshot data: WTU workspace (school pages + Filed Grievances) + calendar entered from Outlook screenshots, captured <span id="snapFoot">—</span>. Ask to "refresh" or "update" anytime.<br>
     This is a working-aid, not the official record. The CBA controls all grievance timelines — verify any deadline day-by-day before filing.<br>
-    <span class="build-note" id="buildPill">build 2026-07-03.8</span>
+    <span class="build-note" id="buildPill">build 2026-07-11.1</span>
   </footer>
 </div>
 
@@ -430,6 +504,7 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
    CALDATA (the public DCPS calendar) stays in this file so deadline math and the self-test run
    before any import; a data file's `calendar` key overrides it when present. */
 var SNAPSHOT_DATE='',EVENTS=[],SCHOOLS=[],GRIEVANCES=[],LINKS=[];
+var MEMBERSHIP={},MEMBERSHIP_DATE='',MEMBERSHIP_HISTORY=[]; // optional overlay (bySchool map + snapshot date + trend history); absent in older data files
 var DATA_MODE='none'; // 'embedded' | 'imported' | 'none'
 var DATA_META=null;   // {importedAt, source} for imported mode
 var SHELL_SCHEMA=1;   // highest dashboard-data.json schemaVersion this build understands
@@ -451,6 +526,7 @@ function adoptData(d){
   if(d.calendar&&Array.isArray(d.calendar.duty)&&Array.isArray(d.calendar.nonWorking)){NON_WORKING=new Set(d.calendar.nonWorking);DUTY=d.calendar.duty;}
   SNAPSHOT_DATE=d.snapshotDate;EVENTS=d.events||[];SCHOOLS=d.schools||[];GRIEVANCES=d.grievances||[];
   LINKS=Array.isArray(d.links)?d.links:[]; // optional key (added build .4) — older data files simply hide the Links section
+  if(d.membership&&d.membership.bySchool){MEMBERSHIP=d.membership.bySchool;MEMBERSHIP_DATE=d.membership.snapshotDate||'';MEMBERSHIP_HISTORY=d.membership.history||[];}else{MEMBERSHIP={};MEMBERSHIP_DATE='';MEMBERSHIP_HISTORY=[];} // optional overlay — absent = membership UI simply hides
 }
 function resolveData(){
   if(window.__DATA__){
@@ -564,7 +640,12 @@ function renderHeader(){
   // exist comes from the snapshot, so flag >3 school days OR >7 calendar days old, whichever trips first.
   var calDays=Math.round((parseD(todayIso())-parseD(SNAPSHOT_DATE))/86400000);
   var schDays=calDays>0?(workingDaysBetween(SNAPSHOT_DATE,todayIso())||0):0;
-  if(schDays>3||calDays>7){
+  // A snapshot dated in the FUTURE means a refresh ran with a wrong clock (seen 2026-07-09, when an
+  // early-fired Aug-17 task stamped Aug 17). Never present it as normal — flag it like a stale one.
+  if(SNAPSHOT_DATE>todayIso()){
+    sp.textContent='Snapshot dated '+pretty(SNAPSHOT_DATE)+' — a FUTURE date; ask me to refresh';
+    sp.style.background='var(--red)';sp.style.color='#fff';sp.style.borderColor='var(--maroon)';
+  }else if(schDays>3||calDays>7){
     sp.textContent='Snapshot STALE: '+pretty(SNAPSHOT_DATE)+' — ask me to refresh';
     sp.style.background='var(--red)';sp.style.color='#fff';sp.style.borderColor='var(--maroon)';
   }else{sp.style.background='';sp.style.color='';sp.style.borderColor='';}
@@ -599,11 +680,22 @@ function renderCalendar(){
   const box=document.getElementById('calBox');
   const t=todayIso();
   document.getElementById('calDay').textContent=pretty(t);
+  // No events on file at all (summer, or between screenshot imports): collapse the whole calendar
+  // column to one quiet line so the deadline side gets the full Brief width. Any imported event
+  // restores the two-column layout automatically on the next render.
+  const noCal=!EVENTS.length;
+  const grid=document.getElementById('briefGrid');if(grid)grid.classList.toggle('no-cal',noCal);
+  const col=document.getElementById('briefCalCol');if(col)col.classList.toggle('cal-empty',noCal);
+  if(noCal){
+    box.innerHTML='<div class="empty">— no events on file. Send me an Outlook screenshot (or drop an exported .ics in the workspace) and I\'ll transcribe your week.</div>';
+    return;
+  }
   const today=EVENTS.filter(function(e){return e.date===t;});
   box.innerHTML=today.length?today.map(function(e){return '<div class="ev"><div class="t">'+esc(e.summary)+'</div><div class="when">'+esc(e.time||'All day')+(e.location?' · '+esc(e.location):'')+'</div></div>';}).join(''):'<div class="empty">No events entered for today — events were last transcribed with the '+prettyNoYr(SNAPSHOT_DATE)+' snapshot. Send an Outlook screenshot and I\'ll fill it in.</div>';
 }
 function renderWeek(){
   const box=document.getElementById('weekBox');
+  if(!EVENTS.length){box.innerHTML='';return;} // column is collapsed by renderCalendar — skip the 7 empty rows
   let html='';
   for(let i=0;i<7;i++){
     const d=parseD(todayIso());d.setDate(d.getDate()+i);
@@ -669,6 +761,7 @@ function openSchool(name){
   var s=null;for(var i=0;i<SCHOOLS.length;i++){if(SCHOOLS[i].name===name){s=SCHOOLS[i];break;}}
   if(!s)return;
   var b='';
+  b+=memBlock(name);
   b+='<div class="sub-h">Key Contacts</div>';
   b+=s.contacts.some(function(c){return c[1];})?s.contacts.map(function(c){return '<div class="ct-line"><div class="r">'+esc(c[0])+'</div><div class="v'+(c[1]?'':' empty-v')+'">'+(c[1]?linkifyContact(c[1]):'— not yet recorded')+'</div></div>';}).join(''):'<div class="ct-line"><div class="v empty-v">No contacts recorded yet — add them on the school page and refresh.</div></div>';
   b+='<div class="sub-h">School Notes</div>';
@@ -763,7 +856,7 @@ function renderGrievances(){
   STAGES.forEach(function(st){
     const list=GRIEVANCES.filter(function(g){return grievStage(g)===st[0];}).sort(byDeadline);
     if(!list.length)return;
-    gh+='<div class="cluster-h">'+st[1]+'<span class="ch-meta">'+list.length+' case'+(list.length===1?'':'s')+'</span></div>';
+    gh+='<div class="cluster-h" id="grp-'+st[0].replace(/\s+/g,'-')+'">'+st[1]+'<span class="ch-meta">'+list.length+' case'+(list.length===1?'':'s')+'</span></div>';
     gh+=list.map(grievCard).join('');
   });
   const filed=GRIEVANCES.filter(function(g){return g.dateFiled;});
@@ -781,10 +874,19 @@ function renderGrievances(){
   ov+='<div class="ov-schools"><span class="ov-lbl">By article</span>'+(artKeys.length?artKeys.map(function(a){return esc(a)+' ('+byArt[a]+')';}).join(' &nbsp;·&nbsp; '):'<span class="empty-v">none filed yet</span>')+'</div>';
   var schKeys=Object.keys(bySch).sort();
   ov+='<div class="ov-schools"><span class="ov-lbl">By school</span>'+(schKeys.length?schKeys.map(function(s){return schoolLink(s)+' ('+bySch[s]+')';}).join(' &nbsp;·&nbsp; '):'<span class="empty-v">none filed yet</span>')+'</div></div>';
-  box.innerHTML=ov+gh+
+  // Stage pipeline strip — one glance shows where every case sits. Counts come from grievStage()
+  // (the engine's own classification, never recounted); clicking a non-empty stage jumps to its group.
+  var pipeShort={'Pre-filing':'Not Yet Filed','Stage 1':'Stage 1','Stage 2':'Stage 2','Stage 3':'Stage 3 · Specialist','Resolved':'Resolved'};
+  var pipe='<div class="gr-pipe">'+STAGES.map(function(st){
+    var n=GRIEVANCES.filter(function(g){return grievStage(g)===st[0];}).length;
+    return '<div class="gp-seg'+(n?' has':'')+'"'+(n?' data-target="grp-'+st[0].replace(/\s+/g,'-')+'" title="Jump to '+st[1].replace(/"/g,'&quot;')+'"':'')+'><span class="gp-n">'+n+'</span><span class="gp-l">'+pipeShort[st[0]]+'</span></div>';
+  }).join('<span class="gp-arrow">→</span>')+'</div>';
+  box.innerHTML=pipe+ov+gh+
     '<div class="sectnote">Overview counts grievances that have a filing date (Not Yet Filed cases are excluded). Grouped by stage (Not Yet Filed → Step 1 Stage 1 → Stage 2 → Stage 3); a section appears only when it has a case. Within each, cases are ordered by soonest deadline. Dates in <span style="color:var(--maroon);font-weight:700">bold maroon</span> are auto-computed from the dates you enter (filing = 14 school days incl. the notice day; Stage 1 meeting = 5 and Stage 2 = 10 school days, counted from the day after filing). The tag shows the next active deadline with days-left recalculated live; "past due" means it has passed. A <b>future</b> date on a "scheduled / held" or "filed" line counts as scheduled/planned — it does not advance the stage or stop the countdown until the day arrives. If a filing\'s 14-day date is missed, the countdown escalates in red to the 30-school-day hard outer limit (6.5.3) while filing is still possible. Cases past Step 1, Stage 2 belong to a Grievance Specialist — they show no countdown here, and Top 3 flags any not yet routed.</div>';
   const soon=GRIEVANCES.map(g=>({g:g,act:activeDeadline(g)})).filter(x=>{if(!x.act)return false;return x.act.escalated||workingDaysLeft(x.act.date)<=5;}).sort((a,b)=>a.act.date<b.act.date?-1:a.act.date>b.act.date?1:0);
-  due.innerHTML=soon.length?soon.map(x=>{const l=workingDaysLeft(x.act.date);const left=l<0?'<b style="color:var(--red)">PAST DUE</b>':(l===0?'<b style="color:var(--red)">due today</b>':l+' school day'+(l===1?'':'s')+' left');return '<div class="ev evlink" data-target="'+grId(x.g)+'" title="Open this case"><div class="t">'+esc(x.g.member)+' · '+esc(x.g.article)+'</div><div class="when">'+x.act.label+' '+prettyMed(x.act.date)+' · '+left+'</div></div>';}).join(''):'<div class="empty">No deadlines in the next 5 school days.</div>';
+  // Urgency coloring matches the case-card tags (dl-red ≤3 or escalated, dl-amber ≤5) — the Brief
+  // was the one place the red ≤3 rule wasn't applied.
+  due.innerHTML=soon.length?soon.map(x=>{const l=workingDaysLeft(x.act.date);const left=l<0?'<b class="days-red">PAST DUE</b>':(l===0?'<b class="days-red">due today</b>':((x.act.escalated||l<=3)?'<b class="days-red">'+l+' school day'+(l===1?'':'s')+' left</b>':(l<=5?'<b class="days-amber">'+l+' school days left</b>':l+' school day'+(l===1?'':'s')+' left')));return '<div class="ev evlink" data-target="'+grId(x.g)+'" title="Open this case"><div class="t">'+esc(x.g.member)+' · '+esc(x.g.article)+'</div><div class="when">'+x.act.label+' '+prettyMed(x.act.date)+' · '+left+'</div></div>';}).join(''):'<div class="empty">No deadlines in the next 5 school days.</div>';
 }
 
 function renderIssues(){
@@ -826,6 +928,68 @@ function renderChips(){
   Array.prototype.forEach.call(document.querySelectorAll('#clusterChips .chip'),ch=>ch.onclick=function(){activeCluster=ch.dataset.c;renderChips();renderSchools();});
 }
 
+// ---- Membership overlay (optional; from the data's membership.bySchool key) ----
+function memOf(name){return (MEMBERSHIP&&MEMBERSHIP[name])?MEMBERSHIP[name]:null;}
+function memPctCls(r){return r>=0.25?'hi':(r>=0.15?'mid':'lo');} // priority in red, watch amber, healthy muted
+function memTags(name){
+  var m=memOf(name);if(!m)return '';
+  var pct=Math.round((m.nonRate||0)*100);
+  var t={lo:'dl-grey',mid:'dl-amber',hi:'dl-red'}[memPctCls(m.nonRate||0)];
+  return '<span class="tag">'+m.members+' members</span><span class="tag">'+m.potential+' potential</span>'+
+         '<span class="tag '+t+'">'+pct+'% non-member</span>';
+}
+function memBlock(name){
+  var m=memOf(name);if(!m)return '';
+  var pct=Math.round((m.nonRate||0)*100);
+  return '<div class="sub-h">Membership</div><div class="mem-line"><span class="mem-pct '+memPctCls(m.nonRate||0)+'">'+pct+'% non-member</span>'+
+    m.members+' members · '+m.potential+' potential · '+m.total+' staff'+
+    (MEMBERSHIP_DATE?' <span class="mem-src">(WTU snapshot '+esc(MEMBERSHIP_DATE)+')</span>':'')+'</div>';
+}
+
+// ---- Membership section (summary + recruitment priorities + trend) --------------
+// All cluster/overall rollups compute here from MEMBERSHIP (per-school) — nothing is
+// stored twice. The trend reads MEMBERSHIP_HISTORY (present once ≥2 snapshots exist).
+function memPct1(r){return (Math.round((r||0)*1000)/10).toFixed(1)+'%';}
+function renderMembership(){
+  var host=document.getElementById('memBody');if(!host)return;
+  var snap=document.getElementById('memSnap');if(snap)snap.textContent=MEMBERSHIP_DATE?('SNAPSHOT '+esc(MEMBERSHIP_DATE)):'MEMBERSHIP';
+  var names=Object.keys(MEMBERSHIP||{});
+  if(!names.length){DASH_COUNTS.recruit=0;host.innerHTML='<div class="empty">No membership snapshot in this data. Ask me to "update membership."</div>';return;}
+  var recs=names.map(function(n){var m=MEMBERSHIP[n]||{};return {name:n,cluster:schoolCluster(n),total:+m.total||0,members:+m.members||0,potential:+m.potential||0,nonRate:+m.nonRate||0};});
+  DASH_COUNTS.recruit=recs.filter(function(r){return r.nonRate>=0.15;}).length; // one count, shared by the sidebar badge + the Brief tile
+  function agg(list){var t=0,me=0,po=0;list.forEach(function(r){t+=r.total;me+=r.members;po+=r.potential;});return {total:t,members:me,potential:po,nonRate:t?po/t:0};}
+  function kc(n,l){return '<div class="kpi"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>';}
+  // Bars scale 0–30% (the red threshold zone), not 0–100%: cluster rates live in the 9–18% band,
+  // and on a 0–100 scale every bar reads as a near-empty sliver. The true % sits right beside it.
+  function bar(r){return '<span class="mem-bar"><span class="mem-bar-fill '+memPctCls(r)+'" style="width:'+Math.min(100,Math.round((r||0)/0.30*100))+'%"></span></span>';}
+  var all=agg(recs);
+  var h='<div class="kpis">'+kc(all.members,'members')+kc(all.potential,'potential (non-members)')+kc(memPct1(all.nonRate),'non-member rate')+kc(all.total,'staff')+'</div>';
+  h+='<div class="cluster-h" style="margin-top:16px">By cluster<span class="ch-meta">non-member rate · potential members to recruit · bar scale 0–30%</span></div>';
+  h+='<div class="mem-scroll"><table class="mem-tbl"><tr><th>Cluster</th><th>Members</th><th>Potential</th><th>Non-member %</th><th></th></tr>';
+  orderedClusters().forEach(function(c){var a=agg(recs.filter(function(r){return r.cluster===c;}));
+    h+='<tr><td><b>Cluster '+esc(c)+'</b></td><td>'+a.members+'</td><td>'+a.potential+'</td><td><span class="mem-pct '+memPctCls(a.nonRate)+'">'+memPct1(a.nonRate)+'</span></td><td>'+bar(a.nonRate)+'</td></tr>';});
+  h+='</table></div>';
+  var ranked=recs.slice().sort(function(a,b){return (b.nonRate-a.nonRate)||(b.potential-a.potential);});
+  h+='<div class="cluster-h" style="margin-top:18px">Recruitment priorities<span class="ch-meta">every school by non-member rate — red ≥25%, amber 15–25%</span></div>';
+  h+='<div class="mem-scroll"><table class="mem-tbl"><tr><th>#</th><th>School</th><th>Cl.</th><th>Members</th><th>Potential</th><th>Non-member %</th></tr>';
+  ranked.forEach(function(r,i){h+='<tr><td>'+(i+1)+'</td><td>'+esc(r.name)+'</td><td>'+esc(r.cluster)+'</td><td>'+r.members+'</td><td>'+r.potential+'</td><td><span class="mem-pct '+memPctCls(r.nonRate)+'">'+memPct1(r.nonRate)+'</span></td></tr>';});
+  h+='</table></div>';
+  var hist=(MEMBERSHIP_HISTORY||[]).slice().sort(function(a,b){return (a.date||'')<(b.date||'')?-1:1;});
+  h+='<div class="cluster-h" style="margin-top:18px">Trend<span class="ch-meta">membership over time</span></div>';
+  if(hist.length<2){
+    h+='<div class="sectnote">Baseline snapshot'+(MEMBERSHIP_DATE?' ('+esc(MEMBERSHIP_DATE)+')':'')+'. Movement appears here after the next database import (~Aug 2026): members gained/lost and rate change vs. the prior snapshot.</div>';
+  }else{
+    var sgn=function(n){return n>0?('+'+n):(''+n);};
+    var L=hist[hist.length-1],P=hist[hist.length-2];
+    var dM=(+L.members||0)-(+P.members||0),dR=Math.round(((+L.nonRate||0)-(+P.nonRate||0))*1000)/10;
+    h+='<div class="mem-line"><b>Since '+esc(P.date||'')+':</b> '+sgn(dM)+' members · '+sgn(dR)+' pp non-member rate</div>';
+    h+='<div class="mem-scroll"><table class="mem-tbl"><tr><th>Snapshot</th><th>Members</th><th>Potential</th><th>Non-member %</th><th>Members change</th></tr>';
+    hist.forEach(function(e,i){var chg=i>0?sgn((+e.members||0)-(+hist[i-1].members||0)):'—';
+      h+='<tr><td>'+esc(e.date||'')+'</td><td>'+(+e.members||0)+'</td><td>'+(+e.potential||0)+'</td><td><span class="mem-pct '+memPctCls(+e.nonRate||0)+'">'+memPct1(+e.nonRate||0)+'</span></td><td>'+chg+'</td></tr>';});
+    h+='</table></div>';
+  }
+  host.innerHTML=h;
+}
 function schoolCard(s){
   const lv=lastVisit(s);
   const issuesN=s.issues.length;
@@ -833,6 +997,7 @@ function schoolCard(s){
   tags.push('<span class="tag'+(s.cf>0?' ok':'')+'">'+s.cf+'/'+s.ct+' contacts</span>');
   tags.push('<span class="tag'+(issuesN>0?' warn':'')+'">'+issuesN+' issue'+(issuesN===1?'':'s')+'</span>');
   tags.push('<span class="tag">'+(lv?'visit '+prettyNoYr(lv):'no visits')+'</span>');
+  const memtag=memTags(s.name); if(memtag)tags.push(memtag);
   const contacts=s.cf>0?s.contacts.map(c=>'<div class="ct-line"><div class="r">'+esc(c[0])+'</div><div class="v'+(c[1]?'':' empty-v')+'">'+(c[1]?linkifyContact(c[1]):'— not yet recorded')+'</div></div>').join(''):'<div class="ct-line"><div class="v empty-v">No contacts recorded yet — add them on the school page and refresh.</div></div>';
   const notes=s.notes.length?'<ul class="notes-list">'+s.notes.map(n=>'<li>'+esc(n)+'</li>').join('')+'</ul>':'<div class="empty" style="padding:2px 0">No notes recorded.</div>';
   let issues;
@@ -843,6 +1008,7 @@ function schoolCard(s){
   return '<details class="sch"><summary><span class="caret">▶</span><span class="snm">'+esc(s.name)+'</span>'+
     '<span class="mini">'+tags.join('')+'</span></summary>'+
     '<div class="sch-body">'+
+      memBlock(s.name)+
       '<div class="sub-h">Key Contacts</div>'+contacts+
       '<div class="sub-h">School Notes</div>'+notes+
       '<div class="sub-h">Open Issues</div>'+issues+
@@ -899,6 +1065,7 @@ function renderCoverage(){
   // Badge shows what the panel shows (respects the hide-empty toggle), so re-sync on every coverage render.
   DASH_COUNTS.covGaps=gapsShown;
   updateSidebarBadges();
+  renderBriefTiles(); // the Brief's coverage tile mirrors the same count
 }
 function setAllCoverage(collapsed){
   Array.prototype.forEach.call(document.querySelectorAll('#coverageBody .cluster-block'),function(b){
@@ -981,6 +1148,84 @@ function renderAttention(){
   if(noVisit===SCHOOLS.length&&inDuty(todayIso()))items.push('<a href="#" class="attn-link" data-target="panel-visits">No school visits logged yet — start filling Visit &amp; Conversation Logs</a>');
   if(!items.length){box.innerHTML='<li class="empty">Nothing flagged for today.</li>';return;}
   box.innerHTML=items.slice(0,3).map(t=>'<li>'+t+'</li>').join('');
+}
+
+/* ---- Deadline runway (build 2026-07-11.1): the next 10 school days as cells, each case chip
+   sitting on its due day. Renders ONLY from activeDeadline() results — the same objects the list,
+   status strip, and case cards display; nothing here recounts a deadline. During breaks a pause
+   cell says when the clocks resume, which is what makes "2 school days left" in mid-July readable. */
+function memberInitials(m){return String(m||'').trim().split(/\s+/).map(function(w){return (w[0]||'').toUpperCase();}).join('');}
+function shortActLabel(l){
+  return l==='File by'?'file':l==='Stage 1 meeting by'?'S1 mtg':l==='Stage 2 meeting by'?'S2 mtg':l==='Outer filing limit (6.5.3)'?'outer limit':l;
+}
+function renderRunway(){
+  var host=document.getElementById('runwayBox');if(!host)return;
+  if(!GRIEVANCES.length){host.innerHTML='';return;}
+  var t=todayIso(),N=10;
+  var days=[],c=parseD(t),guard=0;
+  while(days.length<N&&guard<4000){if(isWorking(c))days.push(localIso(c));c.setDate(c.getDate()+1);guard++;}
+  if(!days.length){host.innerHTML='';return;} // beyond the published calendar — the calculator flags this loudly already
+  var acts=GRIEVANCES.map(function(g){return {g:g,act:activeDeadline(g)};}).filter(function(x){return !!x.act;});
+  if(!acts.length){host.innerHTML='';return;}
+  var overdue=acts.filter(function(x){return x.act.date<t;});
+  var byDay={},beyond=[];
+  acts.forEach(function(x){
+    if(x.act.date<t)return;
+    if(x.act.date<=days[days.length-1]){(byDay[x.act.date]=byDay[x.act.date]||[]).push(x);}
+    else beyond.push(x);
+  });
+  function chip(x){
+    var l=workingDaysLeft(x.act.date);
+    var cls=(x.act.escalated||l<=3)?'dl-red':(l<=5?'dl-amber':'');
+    var full=x.g.member+' — '+x.act.label+' '+prettyMed(x.act.date)+(l<0?' (PAST DUE)':' ('+l+' school day'+(l===1?'':'s')+' left)');
+    return '<span class="rw-chip '+cls+'" data-target="'+grId(x.g)+'" title="'+esc(full)+'">'+esc(memberInitials(x.g.member))+' · '+esc(shortActLabel(x.act.label))+'</span>';
+  }
+  var h='<h3 class="rw-h3">Deadline Runway <span class="daystamp">next 10 school days · click a case to open it</span></h3><div class="runway">';
+  if(overdue.length)h+='<div class="rw-over"><span class="rw-date">PAST DUE</span>'+overdue.map(chip).join('')+'</div>';
+  if(days[0]>t)h+='<div class="rw-pause">'+(inDuty(t)?'Weekend / break':'Summer recess')+' — clocks resume '+parseD(days[0]).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+'</div>';
+  days.forEach(function(d){
+    var isToday=d===t;
+    var lbl=isToday?('TODAY · '+prettyNoYr(d)):parseD(d).toLocaleDateString('en-US',{weekday:'short'})+' '+prettyNoYr(d);
+    h+='<div class="rw-day'+(isToday?' today':'')+'"><span class="rw-date">'+lbl+'</span>'+(byDay[d]||[]).map(chip).join('')+'</div>';
+  });
+  h+='</div>';
+  if(beyond.length){
+    beyond.sort(function(a,b){return a.act.date<b.act.date?-1:1;});
+    h+='<div class="rw-more">Beyond this window: '+beyond.map(function(x){
+      var l=workingDaysLeft(x.act.date);
+      return '<a href="#" class="attn-link" data-target="'+grId(x.g)+'"><b>'+esc(x.g.member)+'</b> — '+x.act.label+' '+prettyMed(x.act.date)+' ('+l+' school day'+(l===1?'':'s')+' left)</a>';
+    }).join(' &nbsp;·&nbsp; ')+'</div>';
+  }
+  host.innerHTML=h;
+}
+
+/* ---- Brief status tiles: one scannable row of the numbers the engine already computed
+   (DASH_COUNTS stashes + the same activeDeadline objects) — this row DISPLAYS engine output, it
+   never re-derives a deadline. Tiles click through via the delegated [data-target] handler, so
+   re-renders keep working. Red is reserved for the urgent tile, per the color rule. */
+function renderBriefTiles(){
+  var host=document.getElementById('briefTiles');if(!host)return;
+  var t=todayIso();
+  var acts=GRIEVANCES.map(function(g){return {g:g,act:activeDeadline(g)};}).filter(function(x){return !!x.act;}).sort(function(a,b){return a.act.date<b.act.date?-1:1;});
+  var openN=GRIEVANCES.filter(function(g){return !g.outcome;}).length;
+  var nyf=GRIEVANCES.filter(function(g){return grievStage(g)==='Pre-filing';}).length;
+  var fileNext=acts.filter(function(x){return x.act.label==='File by'||x.act.escalated;})[0];
+  function tile(n,l,s,target,red){
+    return '<div class="btile'+(red?' red':'')+'"'+(target?' data-target="'+target+'"':'')+'><div class="n">'+n+'</div><div class="l">'+l+'</div>'+(s?'<div class="s">'+s+'</div>':'')+'</div>';
+  }
+  var h='';
+  h+=tile(DASH_COUNTS.urgent,'urgent deadline'+(DASH_COUNTS.urgent===1?'':'s'),DASH_COUNTS.urgent?'≤3 school days or past due':'none within 3 school days','panel-griev',DASH_COUNTS.urgent>0);
+  h+=tile(openN,'open case'+(openN===1?'':'s'),acts.length?('next deadline '+prettyNoYr(acts[0].act.date)):'no live clocks','panel-griev',false);
+  if(nyf)h+=tile(nyf,'not yet filed',fileNext?((fileNext.act.escalated?'OUTER LIMIT ':'file by ')+prettyNoYr(fileNext.act.date)):'check case data','panel-griev',false);
+  h+=tile(DASH_COUNTS.issues,'open member issue'+(DASH_COUNTS.issues===1?'':'s'),DASH_COUNTS.issues?'don\'t let filing clocks age':'queue clear','panel-issues',false);
+  if(Object.keys(MEMBERSHIP||{}).length)h+=tile(DASH_COUNTS.recruit,'recruitment priorities','schools ≥15% non-member','panel-membership',false);
+  if(DASH_COUNTS.covGaps)h+=tile(DASH_COUNTS.covGaps,'coverage gap'+(DASH_COUNTS.covGaps===1?'':'s'),'missing rep · SCAC · LSAT','panel-coverage',false);
+  if(DASH_COUNTS.staleVisits)h+=tile(DASH_COUNTS.staleVisits,'stale visit'+(DASH_COUNTS.staleVisits===1?'':'s'),'not visited in 30+ school days','panel-visits',false);
+  if(!inDuty(t)){
+    var next=null;for(var i=0;i<DUTY.length;i++){if(DUTY[i][0]>t){next=DUTY[i][0];break;}}
+    if(next){var cd=Math.round((parseD(next)-parseD(t))/86400000);h+=tile(cd,'days until school year','calendar days · clocks resume '+prettyNoYr(next),'',false);}
+  }
+  host.innerHTML=h;
 }
 
 function wireCalc(){
@@ -1266,6 +1511,7 @@ var ICONS={
   inbox:'<path d="M3 12h4l2 3h6l2-3h4"/><path d="M5.5 6h13l3 6v5a2 2 0 0 1-2 2H4.5a2 2 0 0 1-2-2v-5z"/>',
   school:'<path d="M3 21h18"/><path d="M12 3 3 8h18z"/><path d="M5.5 10.5v8M10 10.5v8M14 10.5v8M18.5 10.5v8"/>',
   target:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>',
+  users:'<circle cx="9" cy="7" r="3.2"/><path d="M3.5 20v-1a5.5 5.5 0 0 1 11 0v1"/><path d="M16.5 4.2a3.2 3.2 0 0 1 0 6"/><path d="M18 13.6a5.5 5.5 0 0 1 3 4.9V20"/>',
   pin:'<path d="M19 10.5c0 5.2-7 11-7 11s-7-5.8-7-11a7 7 0 0 1 14 0z"/><circle cx="12" cy="10.3" r="2.5"/>',
   link:'<path d="M9.5 13.5a4 4 0 0 0 5.7 0l3-3a4 4 0 1 0-5.7-5.7l-1.2 1.2"/><path d="M14.5 10.5a4 4 0 0 0-5.7 0l-3 3a4 4 0 1 0 5.7 5.7l1.2-1.2"/>',
   pencil:'<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/>',
@@ -1280,6 +1526,7 @@ var SECTIONS=[
   {id:'panel-griev',ic:'clock',label:'Grievances'},
   {id:'panel-issues',ic:'inbox',label:'Member Issues'},
   {id:'panel-schools',ic:'school',label:'Schools'},
+  {id:'panel-membership',ic:'users',label:'Membership'},
   {id:'panel-coverage',ic:'target',label:'Coverage Gaps'},
   {id:'panel-visits',ic:'pin',label:'Visits'},
   {id:'panel-links',ic:'link',label:'Important Links'},
@@ -1287,13 +1534,14 @@ var SECTIONS=[
   {id:'panel-import',ic:'data',label:'Data on This Device',hosted:true,util:true}
 ];
 var ACTIVE_SECT='panel-brief'; // default on every open: the morning driver
-var DASH_COUNTS={urgent:0,route:0,issues:0,covGaps:0,staleVisits:0}; // stashed by renderStatusStrip / renderCoverage / renderVisitClusters
+var DASH_COUNTS={urgent:0,route:0,issues:0,covGaps:0,staleVisits:0,recruit:0}; // stashed by renderStatusStrip / renderCoverage / renderVisitClusters / renderMembership
 var mqLaptop=window.matchMedia?window.matchMedia('(min-width:1100px)'):null;
 function isLaptop(){return !!(mqLaptop&&mqLaptop.matches&&DATA_MODE!=='none');}
 // Jot and the import card exist only on the hosted/phone build (renderJot/renderImport hide them when embedded).
 function visibleSections(){return SECTIONS.filter(function(s){
   if(s.hosted&&DATA_MODE==='embedded')return false;
   if(s.id==='panel-links'&&!LINKS.length)return false; // older data file without the links key
+  if(s.id==='panel-membership'&&!Object.keys(MEMBERSHIP||{}).length)return false; // no membership overlay in this data
   return true;
 });}
 function showSection(id,opts){
@@ -1349,6 +1597,7 @@ function updateSidebarBadges(){
   put('panel-coverage',chip(DASH_COUNTS.covGaps));
   put('panel-visits',DASH_COUNTS.staleVisits?'<span class="sb-chip" title="schools not visited in 30+ school days">'+DASH_COUNTS.staleVisits+'</span>':'');
   put('panel-links',chip(LINKS.length));
+  put('panel-membership',chip(DASH_COUNTS.recruit)); // stashed by renderMembership — neutral count of priority/watch schools (red stays reserved for deadlines)
 }
 function applyLaptopMode(){
   var on=isLaptop();
@@ -1368,7 +1617,7 @@ function boot(){
   paintTabIcons(); // phone tab-bar SVG icons (harmless when the tab bar is hidden)
   var fns=DATA_MODE==='none'
     ?[renderSelfTest,renderImport,wireImport]
-    :[renderHeader,renderSelfTest,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderIssues,renderSchoolKpis,renderChips,renderSchools,renderCoverage,renderVisitClusters,renderVisits,renderAttention,renderLinks,wireCalc,wireButtons,renderImport,wireImport,renderJot,wireJot,wireLinks,renderSidebar,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
+    :[renderHeader,renderSelfTest,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderIssues,renderSchoolKpis,renderChips,renderSchools,renderMembership,renderCoverage,renderVisitClusters,renderVisits,renderAttention,renderBriefTiles,renderLinks,wireCalc,wireButtons,renderImport,wireImport,renderJot,wireJot,wireLinks,renderSidebar,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
   fns.forEach(function(fn){
     // Log the failure point but never the exception content — an error message must not echo member data (hardening).
     try{fn();}catch(e){console.error('dash:'+fn.name+' failed ('+((e&&e.name)||'error')+')');}
@@ -1384,7 +1633,7 @@ function rerenderForNewDay(){
   if(todayIso()===lastRenderedDay)return;
   lastRenderedDay=todayIso();
   var openIds=Array.prototype.map.call(document.querySelectorAll('details.sch[open]'),function(d){return d.id;}).filter(Boolean);
-  [renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderIssues,renderVisitClusters,renderAttention,updateSidebarBadges].forEach(function(fn){
+  [renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderIssues,renderVisitClusters,renderAttention,renderBriefTiles,updateSidebarBadges].forEach(function(fn){
     try{fn();}catch(e){console.error('rollover:'+fn.name+' failed ('+((e&&e.name)||'error')+')');}
   });
   openIds.forEach(function(id){var el=document.getElementById(id);if(el)el.open=true;});
