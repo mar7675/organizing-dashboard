@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Organizing Dashboard</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -10,145 +10,193 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Dashboard">
-<meta name="theme-color" content="#88292B">
+<meta name="theme-color" content="#191512">
+<script>/* Theme boot: runs before the stylesheet parses so the first paint is already themed (no flash).
+   Dark is the default; 'light' is the saved per-device override (localStorage, set by the toggle). */
+(function(){var t='dark';try{t=localStorage.getItem('dash-theme')||'dark';}catch(e){}if(t!=='light')t='dark';
+document.documentElement.setAttribute('data-theme',t);
+if(t==='light'){var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#F4F5F7');}})();</script>
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self'; manifest-src 'self'; worker-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="robots" content="noindex">
 <meta name="referrer" content="no-referrer">
 <style>
 :root{
   color-scheme: light;
-  --rose:#D2AEAF; --red:#BD2036; --maroon:#88292B; --ink:#0D0B0B;
-  --link:#1155CC; --rose-tint:#F3E7E7; --rose-line:#E2C9CA;
-  --card:#ffffff; --muted:#6b5f5f; --green:#2f7d4f; --amber:#B8860B;
+  /* Two-theme tokens (build 2026-07-17.1): light base here, dark overrides in the
+     @media screen block below (screen-only, so PRINT always gets these light values).
+     Conventions unchanged: maroon = identity/nav/computed-date · red = urgency ONLY ·
+     amber/green = status. Split tokens: --maroon/--red-ink are TEXT/STROKE steps,
+     --maroon-fill/--red are FILL steps — in dark they diverge so text stays legible
+     while fills stay deep enough to carry --on-accent (white) at ≥4.5:1.
+     Jewel accents (--j-*) are section/cluster identity CHROME (icons, border rules,
+     cluster headers) — never urgency. Every text pair validated ≥4.5:1 on both
+     surfaces; cluster trio + red/rose CVD separation ≥17 ΔE (protan & deutan). */
+  --red:#BD2036; --red-ink:#BD2036; --red-deep:#a51b2f; --red-tint:#FBEAEA;
+  --maroon:#88292B; --maroon-fill:#88292B; --maroon-deep:#6f2123; --on-accent:#fff;
+  --ink:#1A1D21; --muted:#5A6270; --link:#1155CC;
+  --bg:#F4F5F7; --bg-glass:rgba(244,245,247,.96);
+  --card:#ffffff; --card2:#F8F9FA; --hover:#FAFBFC;
+  --tint:#F1F3F5; --line:#E3E5E8; --line-strong:#CDD1D7;
+  --green:#2F7D4F; --ok-tint:#E8F3EC;
+  --amber:#8F5F06; --amber-fill:#E0A93F; --warn-tint:#F6E2BF; --warn-ink:#7A5000;
+  --chip-tint:#EEF0F2; --chip-ink:#4A5058;
+  --backdrop:rgba(13,11,11,.45);
+  --shadow-1:0 1px 2px rgba(16,24,40,.05); --shadow-card:0 1px 2px rgba(16,24,40,.04);
+  --shadow-sch:0 1px 4px rgba(136,41,43,.08); --shadow-up:0 -2px 8px rgba(16,24,40,.10);
+  --shadow-modal:0 8px 30px rgba(0,0,0,.25);
+  --j-gold:#8A6410; --j-emerald:#1F7A4D; --j-sapphire:#2B66B8; --j-amethyst:#7A4FA8;
+  --j-teal:#147A80; --j-orange:#B14E14; --j-slate:#4E6E9E; --j-jade:#366E5D;
+}
+@media screen{ /* dark theme is screen-only: print always falls back to the light tokens above */
+html[data-theme=dark]{
+  color-scheme: dark;
+  /* Warm charcoal surfaces; brand garnet reads as rose for text/strokes. */
+  --red:#C22F3B; --red-ink:#EE6A75; --red-deep:#D2434E; --red-tint:#42201F;
+  --maroon:#E2A9AA; --maroon-fill:#963A3D; --maroon-deep:#A84548;
+  --ink:#EDE7E0; --muted:#A79D93; --link:#8AB4F8;
+  --bg:#191512; --bg-glass:rgba(25,21,18,.95);
+  --card:#211C18; --card2:#282220; --hover:#2A2421;
+  --tint:#2C2622; --line:#3A332E; --line-strong:#4A4038;
+  --green:#83C99B; --ok-tint:#20342A;
+  --amber:#E4B45F; --amber-fill:#C99A3F; --warn-tint:#3D3117; --warn-ink:#EBC880;
+  --chip-tint:#322B27; --chip-ink:#CCC3B9;
+  --backdrop:rgba(0,0,0,.6);
+  --shadow-1:0 1px 2px rgba(0,0,0,.4); --shadow-card:0 1px 2px rgba(0,0,0,.35);
+  --shadow-sch:0 1px 4px rgba(0,0,0,.4); --shadow-up:0 -2px 8px rgba(0,0,0,.45);
+  --shadow-modal:0 8px 30px rgba(0,0,0,.6);
+  --j-gold:#E5C06A; --j-emerald:#7ECFA0; --j-sapphire:#8FB9F2; --j-amethyst:#C2A3E8;
+  --j-teal:#6FC9CF; --j-orange:#EFA470; --j-slate:#9FB6DC; --j-jade:#8FC7B8;
+}
 }
 *{box-sizing:border-box}
-body{margin:0;background:#FBF6F4;color:var(--ink);
-  font-family:'Inter','Open Sans',-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:'Inter','Segoe UI Variable Text','Segoe UI','Open Sans',-apple-system,Roboto,Helvetica,Arial,sans-serif;
   font-size:14px;line-height:1.45;}
 a{color:var(--link);text-decoration:none}
 a:hover{text-decoration:underline}
 .wrap{max-width:1120px;margin:0 auto;padding:18px 20px 60px}
-header.hero{background:linear-gradient(180deg,var(--rose) 0%, #C99FA0 100%);
-  border-radius:14px;padding:18px 22px;color:var(--ink);box-shadow:0 1px 0 var(--rose-line)}
-.hero h1{margin:0;font-size:30px;letter-spacing:.3px;color:#fff;
-  text-shadow:0 1px 0 var(--maroon),0 2px 6px rgba(0,0,0,.25);font-weight:800}
-.hero .sub{margin-top:2px;font-weight:700;color:var(--maroon);font-size:13px;letter-spacing:.4px;text-transform:uppercase}
-.hero .meta{margin-top:10px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:12.5px}
-.pill{background:rgba(255,255,255,.7);border:1px solid var(--rose-line);border-radius:999px;padding:3px 11px;font-weight:600;color:var(--ink)}
-.pill.live{background:var(--red);color:#fff;border-color:var(--maroon)}
-.pill.live .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#fff;margin-right:6px;animation:pulse 1.6s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+/* Compact flat header: kicker over title on a white card with a maroon brand rule.
+   (Replaced the rose gradient + text-shadow hero — white-on-rose measured 2:1 contrast.) */
+header.hero{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--maroon);
+  border-radius:14px;padding:16px 22px 14px;color:var(--ink);box-shadow:var(--shadow-1)}
+.hero h1{margin:0;font-size:22px;letter-spacing:.2px;color:var(--ink);font-weight:800}
+.hero .sub{margin:0 0 3px;font-weight:800;color:var(--maroon);font-size:11px;letter-spacing:.9px;text-transform:uppercase}
+.hero .meta{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:12.5px}
+.pill{background:var(--tint);border:1px solid var(--line);border-radius:999px;padding:3px 11px;font-weight:600;color:var(--ink)}
 .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
 @media(max-width:820px){.cols{grid-template-columns:1fr}}
-.card{background:var(--card);border:1px solid var(--rose-line);border-radius:12px;
-  padding:14px 16px;box-shadow:0 1px 3px rgba(136,41,43,.06)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:16px 20px;box-shadow:var(--shadow-card)}
 .card.full{grid-column:1 / -1}
-.card h2{margin:0 0 2px;font-size:15px;font-weight:800;color:var(--ink);
-  display:flex;align-items:center;gap:8px;border-bottom:2px solid var(--maroon);padding-bottom:7px}
+.card h2{margin:0 0 4px;font-size:17px;font-weight:800;color:var(--ink);
+  display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);padding-bottom:9px}
 .card h2 .badge{margin-left:auto;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
-.badge.snap{background:var(--rose-tint);color:var(--maroon);border:1px solid var(--rose-line)}
-.badge.livebadge{background:var(--red);color:#fff}
-.sectnote{font-size:11.5px;color:var(--muted);margin:10px 0 0}
+.badge.snap{background:var(--tint);color:var(--maroon);border:1px solid var(--line)}
+.sectnote{font-size:12px;color:var(--muted);margin:10px 0 0}
 .brief-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
 @media(max-width:680px){.brief-grid{grid-template-columns:1fr}}
 .brief-block h3{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--maroon);font-weight:800}
-.ev{padding:8px 10px;border:1px solid var(--rose-line);border-radius:8px;margin-bottom:7px;background:#fff}
+.ev{padding:8px 10px;border:1px solid var(--line);border-left:3px solid var(--j-gold);border-radius:8px;margin-bottom:7px;background:var(--card)}
 .ev .t{font-weight:700}
 .ev .when{font-size:12px;color:var(--muted)}
 .empty{color:var(--muted);font-style:italic;padding:8px 0;font-size:13px}
 .attn li{margin:4px 0}
 .daystamp{font-size:11px;color:var(--muted);font-weight:600;text-transform:none;letter-spacing:0;margin-left:6px}
-.wk-day{display:flex;gap:10px;padding:6px 0;border-bottom:1px dotted var(--rose-line)}
+.wk-day{display:flex;gap:10px;padding:6px 0;border-bottom:1px dotted var(--line)}
 .wk-day:last-child{border-bottom:none}
 .wk-date{flex:none;width:80px;font-size:11.5px;font-weight:700;color:var(--maroon)}
 .wk-date.today{color:var(--ink);text-decoration:underline}
 .wk-ev{font-size:12.5px;margin:1px 0}
 .wk-ev .tm{color:var(--muted)}
-.wk-none{font-size:12.5px;color:#8a7d7d}
+.wk-none{font-size:12.5px;color:var(--muted)}
 /* Brief status tiles (build 2026-07-11.1): numbers the sidebar/status strip already computed, tile-sized */
 .brief-tiles{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-.btile{flex:1 1 128px;min-width:118px;max-width:220px;background:#fff;border:1px solid var(--rose-line);border-radius:10px;padding:9px 12px}
+.btile{flex:1 1 132px;min-width:122px;max-width:230px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
 .btile[data-target]{cursor:pointer}
-.btile[data-target]:hover{background:var(--rose-tint)}
-.btile .n{font-size:22px;font-weight:800;color:var(--maroon);line-height:1.1}
-.btile .l{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:3px;font-weight:700}
-.btile .s{font-size:11px;color:var(--ink);margin-top:3px;font-weight:600}
-.btile.red{background:var(--red);border-color:var(--maroon)}
-.btile.red .n,.btile.red .s{color:#fff}
-.btile.red .l{color:#fff;opacity:.85}
-.btile.red[data-target]:hover{background:#a51b2f}
+.btile[data-target]:hover{background:var(--tint);border-color:var(--line-strong)}
+.btile .n{font-size:26px;font-weight:800;color:var(--ink);line-height:1.1;font-variant-numeric:tabular-nums}
+.btile .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:4px;font-weight:700}
+.btile .s{font-size:11.5px;color:var(--muted);margin-top:3px;font-weight:600}
+.btile.red{background:var(--red);border-color:var(--maroon-fill)}
+.btile.red .n,.btile.red .s{color:var(--on-accent)}
+.btile.red .l{color:var(--on-accent);opacity:.85}
+.btile.red[data-target]:hover{background:var(--red-deep)}
 /* Deadline runway: the next N school days as cells, each case chip on its due day */
 .rw-h3{margin:14px 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--maroon);font-weight:800}
 .rw-h3 .daystamp{text-transform:none;letter-spacing:0}
 .runway{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
-.rw-day{flex:1 0 88px;min-width:88px;border:1px solid var(--rose-line);border-radius:9px;background:#fff;padding:6px 7px;min-height:60px}
+.rw-day{flex:1 0 88px;min-width:88px;border:1px solid var(--line);border-radius:9px;background:var(--card);padding:6px 7px;min-height:60px}
 .rw-day.today{border-color:var(--maroon);box-shadow:0 0 0 1px var(--maroon)}
-.rw-date{font-size:10.5px;font-weight:800;color:var(--maroon);letter-spacing:.3px;white-space:nowrap}
-.rw-day.today .rw-date{color:var(--ink)}
-.rw-pause{flex:0 0 150px;border:1px dashed var(--rose-line);border-radius:9px;background:var(--rose-tint);padding:6px 9px;font-size:11px;color:var(--maroon);font-weight:700;display:flex;align-items:center}
-.rw-over{flex:0 0 130px;border:1px solid var(--maroon);border-radius:9px;background:var(--red);padding:6px 9px;color:#fff}
-.rw-over .rw-date{color:#fff}
-.rw-chip{display:block;font-size:10px;font-weight:800;border-radius:6px;padding:2px 6px;margin-top:4px;cursor:pointer;background:#EDEDED;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.rw-chip.dl-amber{background:#F6E2BF;color:#8a5a00}
-.rw-chip.dl-red{background:var(--red);color:#fff;box-shadow:0 0 0 1px var(--maroon)}
-.rw-day.today .rw-chip.dl-red,.rw-over .rw-chip.dl-red{box-shadow:0 0 0 1px #fff}
+.rw-date{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.3px;white-space:nowrap}
+.rw-day.today .rw-date{color:var(--maroon)}
+.rw-pause{flex:0 0 150px;border:1px dashed var(--line);border-radius:9px;background:var(--tint);padding:6px 9px;font-size:11px;color:var(--muted);font-weight:700;display:flex;align-items:center}
+.rw-over{flex:0 0 130px;border:1px solid var(--maroon-fill);border-radius:9px;background:var(--red);padding:6px 9px;color:var(--on-accent)}
+.rw-over .rw-date{color:var(--on-accent)}
+.rw-chip{display:block;font-size:10.5px;font-weight:800;border-radius:6px;padding:2px 6px;margin-top:4px;cursor:pointer;background:var(--chip-tint);color:var(--chip-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.rw-chip.dl-amber{background:var(--warn-tint);color:var(--warn-ink)}
+.rw-chip.dl-red{background:var(--red);color:var(--on-accent);box-shadow:0 0 0 1px var(--maroon-fill)}
+.rw-day.today .rw-chip.dl-red,.rw-over .rw-chip.dl-red{box-shadow:0 0 0 1px var(--card)}
 .rw-more{font-size:11.5px;color:var(--muted);margin-top:6px}
 .rw-more b{color:var(--ink)}
 /* Deadline-list urgency text (same thresholds as the case-card tags) */
-.days-red{color:var(--red)}
+.days-red{color:var(--red-ink)}
 .days-amber{color:var(--amber)}
 /* Collapsed calendar column: no events on file anywhere → one quiet line, Brief goes full-width */
 .brief-grid.no-cal{grid-template-columns:1fr}
-#briefCalCol.cal-empty{border-top:1px dotted var(--rose-line);padding-top:10px}
+#briefCalCol.cal-empty{border-top:1px dotted var(--line);padding-top:10px}
 #briefCalCol.cal-empty #weekH3,#briefCalCol.cal-empty #weekBox{display:none}
 #briefCalCol.cal-empty h3{display:inline}
 #briefCalCol.cal-empty #calBox,#briefCalCol.cal-empty #calBox .empty{display:inline;padding:0}
 /* Grievance stage pipeline (counts from grievStage — the engine's own classification) */
 .gr-pipe{display:flex;align-items:stretch;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.gp-seg{flex:1 1 92px;min-width:88px;border:1px solid var(--rose-line);border-radius:9px;padding:7px 10px;background:#FCF8F7;text-align:center;color:var(--muted)}
-.gp-seg.has{background:#fff;color:var(--ink);cursor:pointer}
-.gp-seg.has:hover{background:var(--rose-tint)}
-.gp-seg .gp-n{display:block;font-size:20px;font-weight:800;line-height:1.1;color:inherit}
-.gp-seg.has .gp-n{color:var(--maroon)}
-.gp-seg .gp-l{display:block;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.gp-seg{flex:1 1 92px;min-width:88px;border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:var(--card2);text-align:center;color:var(--muted)}
+.gp-seg.has{background:var(--card);color:var(--ink);cursor:pointer;border-color:var(--line-strong)}
+.gp-seg.has:hover{background:var(--tint)}
+.gp-seg .gp-n{display:block;font-size:20px;font-weight:800;line-height:1.1;color:inherit;font-variant-numeric:tabular-nums}
+.gp-seg.has .gp-n{color:var(--ink)}
+.gp-seg .gp-l{display:block;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
 .gp-arrow{align-self:center;color:var(--muted);font-weight:700;flex:none}
 @media(max-width:700px){.gp-arrow{display:none}}
 /* buttons */
-.actionbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px;position:sticky;top:0;z-index:40;background:rgba(251,246,244,.96);padding:8px 0;border-bottom:1px solid var(--rose-line)}
+.actionbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px;position:sticky;top:0;z-index:40;background:var(--bg-glass);padding:8px 0;border-bottom:1px solid var(--line)}
 .actionbar .grp-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
-.actionbar .sep{width:1px;height:22px;background:var(--rose-line);margin:0 4px}
-.btn{display:inline-flex;align-items:center;gap:6px;cursor:pointer;border:1px solid var(--rose-line);background:#fff;color:var(--ink);border-radius:8px;padding:7px 13px;font-size:12.5px;font-weight:700;font-family:inherit;text-decoration:none}
-.btn:hover{background:var(--rose-tint)}
-.btn.primary{background:var(--maroon);color:#fff;border-color:var(--maroon)}
-.btn.primary:hover{background:#6f2123}
+.actionbar .sep{width:1px;height:22px;background:var(--line);margin:0 4px}
+.btn{display:inline-flex;align-items:center;gap:6px;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:7px 13px;font-size:12.5px;font-weight:700;font-family:inherit;text-decoration:none}
+button:focus-visible,.btn:focus-visible,[role="button"]:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--maroon);outline-offset:2px}
+.btn:hover{background:var(--tint)}
+.btn.primary{background:var(--maroon-fill);color:var(--on-accent);border-color:var(--maroon-fill)}
+.btn.primary:hover{background:var(--maroon-deep)}
 @media print{
   .actionbar,.toolbar,.calc,.pill,.sidebar{display:none !important}
   body.laptop .card.full{display:block !important} /* print is the full snapshot even when the laptop view shows one section */
   .card{break-inside:avoid;box-shadow:none}
-  body{background:#fff}
+  body{background:var(--card)}
   .runway{flex-wrap:wrap;overflow:visible} /* a scrolled runway would clip on paper */
 }
 table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
-th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--rose-line);vertical-align:top}
-th{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--maroon);font-weight:800}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:800}
 tr:last-child td{border-bottom:none}
+@media(min-width:701px){table tr:hover td{background:var(--hover)}}
 .toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
-.chip{cursor:pointer;border:1px solid var(--rose-line);background:#fff;border-radius:999px;
-  padding:4px 12px;font-size:12.5px;font-weight:600;color:var(--ink)}
-.chip.active{background:var(--maroon);color:#fff;border-color:#6f2123}
-.kpis{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px}
-.kpi{background:#fff;border:1px solid var(--rose-line);border-radius:10px;padding:10px 16px;min-width:118px}
-.kpi .n{font-size:24px;font-weight:800;color:var(--maroon);line-height:1}
-.kpi .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:4px}
+.chip{cursor:pointer;border:1px solid var(--line);background:var(--card);border-radius:999px;
+  padding:4px 12px;font-size:12.5px;font-weight:600;color:var(--ink);font-family:inherit}
+.chip.active{background:var(--maroon-fill);color:var(--on-accent);border-color:var(--maroon-deep)}
+/* KPIs read as page stats (quiet, divider-anchored) — deliberately lighter than the
+   Brief's clickable tiles so the two stop competing. */
+.kpis{display:flex;gap:6px 18px;flex-wrap:wrap;margin-top:10px}
+.kpi{background:none;border:none;border-left:3px solid var(--line);border-radius:0;padding:2px 0 2px 12px;min-width:104px}
+.kpi .n{font-size:22px;font-weight:800;color:var(--ink);line-height:1.15;font-variant-numeric:tabular-nums}
+.kpi .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:3px}
 /* schools detailed */
 .cluster-h{margin:18px 0 8px;font-weight:800;color:var(--maroon);font-size:13px;text-transform:uppercase;letter-spacing:.5px;border-left:4px solid var(--maroon);padding-left:8px}
 .cluster-h .ch-meta{font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0;font-size:12px;margin-left:6px}
-.cluster-toggle{cursor:pointer;border:1px solid var(--rose-line);background:#fff;color:var(--maroon);border-radius:6px;width:22px;height:22px;font-size:11px;line-height:1;padding:0;margin-right:8px;font-weight:700;transition:transform .15s;vertical-align:middle}
-.cluster-toggle:hover{background:var(--rose-tint)}
+.cluster-toggle{cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--maroon);border-radius:6px;width:22px;height:22px;font-size:11px;line-height:1;padding:0;margin-right:8px;font-weight:700;transition:transform .15s;vertical-align:middle}
+.cluster-toggle:hover{background:var(--tint)}
 .cluster-block.collapsed .cluster-toggle{transform:rotate(-90deg)}
 .cluster-block.collapsed .cluster-schools{display:none}
-details.sch{border:1px solid var(--rose-line);border-radius:9px;margin-bottom:7px;background:#fff;overflow:hidden}
-details.sch[open]{box-shadow:0 1px 4px rgba(136,41,43,.08)}
+details.sch{border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--card);overflow:hidden}
+details.sch[open]{box-shadow:var(--shadow-sch)}
 details.sch>summary{list-style:none;cursor:pointer;padding:9px 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 details.sch>summary::-webkit-details-marker{display:none}
 .sch .snm{font-weight:700;font-size:13.5px}
@@ -156,109 +204,166 @@ details.sch>summary::-webkit-details-marker{display:none}
 details.sch[open] .caret{transform:rotate(90deg)}
 .sch .mini{font-size:11px;color:var(--muted);margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .sch .mini b{color:var(--ink)}
-.sch .tag{font-size:10px;font-weight:700;padding:1px 7px;border-radius:999px;background:var(--rose-tint);color:var(--maroon)}
-.sch .tag.warn{background:#FBEAEA;color:var(--red)}
-.sch .tag.ok{background:#E8F3EC;color:var(--green)}
-.sch .tag.stage{background:#ECE7E7;color:#5f5757}
-.sch .tag.dl-grey{background:#EDEDED;color:#555;font-weight:600}
-.sch .tag.dl-amber{background:#F6E2BF;color:#8a5a00;font-weight:800}
-.sch .tag.dl-red{background:var(--red);color:#fff;font-weight:800;box-shadow:0 0 0 1px var(--maroon)}
+.sch .tag{font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:999px;background:var(--chip-tint);color:var(--chip-ink)}
+.sch .tag.warn{background:var(--red-tint);color:var(--red-ink)}
+.sch .tag.ok{background:var(--ok-tint);color:var(--green)}
+.sch .tag.stage{background:var(--chip-tint);color:var(--chip-ink)}
+.sch .tag.dl-grey{background:var(--chip-tint);color:var(--chip-ink);font-weight:600}
+.sch .tag.dl-amber{background:var(--warn-tint);color:var(--warn-ink);font-weight:800}
+.sch .tag.dl-red{background:var(--red);color:var(--on-accent);font-weight:800;box-shadow:0 0 0 1px var(--maroon)}
 .mem-line{font-size:12.5px;padding:4px 0;color:var(--ink)}
-.mem-src{color:#8a7d7d;font-style:italic;font-size:11px}
-.mem-pct{display:inline-block;font-size:10px;font-weight:800;padding:1px 7px;border-radius:999px;margin-right:7px}
-.mem-pct.lo{background:#EDEDED;color:#555}
-.mem-pct.mid{background:#F6E2BF;color:#8a5a00}
-.mem-pct.hi{background:var(--red);color:#fff;box-shadow:0 0 0 1px var(--maroon)}
+.mem-src{color:var(--muted);font-style:italic;font-size:11px}
+.mem-pct{display:inline-block;font-size:10.5px;font-weight:800;padding:1px 7px;border-radius:999px;margin-right:7px}
+.mem-pct.lo{background:var(--chip-tint);color:var(--chip-ink)}
+.mem-pct.mid{background:var(--warn-tint);color:var(--warn-ink)}
+.mem-pct.hi{background:var(--red);color:var(--on-accent);box-shadow:0 0 0 1px var(--maroon)}
 .mem-tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
-.mem-tbl th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);border-bottom:1px solid var(--rose-line);padding:5px 8px;font-weight:700}
-.mem-tbl td{padding:5px 8px;border-bottom:1px solid var(--rose-line);white-space:nowrap}
+.mem-tbl th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);border-bottom:1px solid var(--line);padding:5px 8px;font-weight:700}
+.mem-tbl td{padding:5px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
 .mem-tbl tr:last-child td{border-bottom:none}
 .mem-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.mem-bar{display:inline-block;width:88px;height:8px;background:#EDEDED;border-radius:999px;overflow:hidden;vertical-align:middle}
+/* Membership interactivity (build 2026-07-17.2): cluster rows toggle a section-wide
+   filter; selection is marked with the cluster's jewel hue (VII gold · VIII teal ·
+   IX amethyst — same map as the Schools headers). */
+.mem-cl{cursor:pointer}
+.mem-cl:hover td{background:var(--hover)}
+.mem-cl[data-mem-cluster="VII"]{--clh:var(--j-gold)}
+.mem-cl[data-mem-cluster="VIII"]{--clh:var(--j-teal)}
+.mem-cl[data-mem-cluster="IX"]{--clh:var(--j-amethyst)}
+.mem-cl.sel td{background:var(--tint)}
+.mem-cl.sel td:first-child{box-shadow:inset 3px 0 0 var(--clh,var(--maroon))}
+.mem-clbtn{background:none;border:none;font:inherit;color:inherit;cursor:pointer;padding:0;font-weight:700;display:inline-flex;align-items:center;min-height:32px}
+.cl-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--clh,var(--muted));margin-right:7px;flex:none}
+.mem-note{font-size:12.5px;margin-top:8px;color:var(--muted);font-weight:600}
+.mem-target{font-size:13px;margin-top:8px;font-weight:600}
+.mem-target b{color:var(--maroon);font-size:15px}
+.mem-target.ok{color:var(--green)}
+.mem-th{cursor:pointer;user-select:none;white-space:nowrap}
+.mem-th:hover,.mem-th.cur{color:var(--ink)}
+.mem-bar{display:inline-block;width:88px;height:8px;background:var(--chip-tint);border-radius:999px;overflow:hidden;vertical-align:middle}
 .mem-bar-fill{display:block;height:100%}
-.mem-bar-fill.lo{background:#C4C4C4}
-.mem-bar-fill.mid{background:#E0A93F}
+.mem-bar-fill.lo{background:var(--line-strong)}
+.mem-bar-fill.mid{background:var(--amber-fill)}
 .mem-bar-fill.hi{background:var(--red)}
-.sch-body{padding:8px 14px 13px;border-top:1px solid var(--rose-line);background:#FCF8F7}
-.ct-line{display:flex;font-size:12.5px;padding:3px 0;border-bottom:1px dotted var(--rose-line)}
+.sch-body{padding:8px 14px 13px;border-top:1px solid var(--line);background:var(--card2)}
+.ct-line{display:flex;font-size:12.5px;padding:3px 0;border-bottom:1px dotted var(--line)}
 .ct-line:last-child{border-bottom:none}
 .ct-line .r{width:170px;color:var(--maroon);font-weight:600;flex:none}
-.ct-line .v.empty-v{color:#8a7d7d;font-style:italic}
+.ct-line .v.empty-v{color:var(--muted);font-style:italic}
 .sub-h{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--maroon);font-weight:800;margin:12px 0 4px}
 .notes-list{margin:4px 0 0 16px;padding:0}
 .notes-list li{margin:2px 0;font-size:12.5px}
 /* grievance tracker lines */
-.gr-line{display:flex;gap:12px;align-items:baseline;font-size:12.5px;padding:4px 0;border-bottom:1px dotted var(--rose-line)}
+.gr-line{display:flex;gap:12px;align-items:baseline;font-size:12.5px;padding:4px 0;border-bottom:1px dotted var(--line)}
 .gr-line:last-child{border-bottom:none}
 .gr-line .r{flex:1;color:var(--ink)}
 .gr-line .v{flex:none;text-align:right;font-weight:600;white-space:nowrap}
 .gr-line .v.due{color:var(--maroon);font-weight:700}
-.gr-line .v.empty-v{color:#8a7d7d;font-weight:400;font-style:italic}
-.gr-grp{padding:4px 0;border-bottom:1px dotted var(--rose-line)}
+.gr-line .v.empty-v{color:var(--muted);font-weight:400;font-style:italic}
+.gr-grp{padding:4px 0;border-bottom:1px dotted var(--line)}
 .gr-lbl{color:var(--maroon);font-weight:600;font-size:12.5px}
 .gr-note{font-size:12.5px;color:var(--ink);margin-top:2px}
-.gr-note .empty-v{color:#8a7d7d;font-style:italic}
-.gr-overview{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--rose-line)}
+.gr-note .empty-v{color:var(--muted);font-style:italic}
+.gr-overview{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--line)}
 .gr-overview .kpis{margin-top:0}
 .ov-schools{margin-top:10px;font-size:12.5px;color:var(--ink)}
 .ov-schools .ov-lbl{color:var(--maroon);font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:.4px;margin-right:8px}
-.ov-schools .empty-v{color:#8a7d7d;font-style:italic}
+.ov-schools .empty-v{color:var(--muted);font-style:italic}
 .cov-yes{color:var(--green);font-weight:700}
-.cov-no{color:var(--red);font-weight:700;font-size:11px}
+.cov-no{color:var(--red-ink);font-weight:700;font-size:11px}
 .cov-amber{color:var(--amber);font-weight:700;font-size:11px}
 .cov-muted{color:var(--muted);font-weight:600;font-size:11px}
-.status-strip{margin-top:10px;background:rgba(255,255,255,.72);border:1px solid var(--rose-line);border-radius:8px;padding:7px 12px;font-size:13px;font-weight:600;display:flex;gap:8px;flex-wrap:wrap}
-.status-strip .seg-red{color:var(--red);font-weight:800}
+.status-strip{margin-top:12px;background:none;border:none;border-top:1px solid var(--line);border-radius:0;padding:10px 0 0;font-size:13px;font-weight:600;display:flex;gap:8px;flex-wrap:wrap}
+.status-strip .seg-red{color:var(--red-ink);font-weight:800}
 .status-strip .seg-amber{color:var(--amber);font-weight:700}
 .status-strip .seg-ok{color:var(--green);font-weight:700}
 .status-strip .seg-muted{color:var(--muted);font-weight:600}
 .pill.diag{font-size:10.5px;padding:2px 9px;opacity:.8;font-weight:600}
-.schfilter{padding:7px 10px;border:1px solid var(--rose-line);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;min-width:230px}
+.schfilter{padding:7px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;background:var(--card);color:var(--ink);min-width:230px}
 .evlink{cursor:pointer}
-.evlink:hover{background:var(--rose-tint)}
+.evlink:hover{background:var(--tint)}
 .attn-link{color:var(--link)}
 .count-detail{margin-top:8px;font-size:12.5px}
 .count-detail summary{cursor:pointer;color:var(--maroon);font-weight:700}
-.cd-line{padding:2px 0;border-bottom:1px dotted var(--rose-line)}
+.cd-line{padding:2px 0;border-bottom:1px dotted var(--line)}
 .cd-gap{padding:2px 0;color:var(--muted);font-style:italic}
 .card{scroll-margin-top:64px}
 details.sch{scroll-margin-top:64px}
 .cluster-h{scroll-margin-top:64px} /* pipeline strip jumps to stage-group headers */
 /* calculator */
-.calc{margin-top:12px;border:1px solid var(--rose-line);border-radius:10px;padding:12px;background:var(--rose-tint)}
+.calc{margin-top:12px;border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--card2)}
 .calc h3{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--maroon);font-weight:800}
 .calc .fields{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
 .calc label{display:block;font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px}
-.calc input,.calc select{padding:6px 8px;border:1px solid var(--rose-line);border-radius:7px;font-size:13px;font-family:inherit;background:#fff}
-.calc button{background:var(--maroon);color:#fff;border:none;border-radius:7px;padding:7px 14px;font-weight:700;cursor:pointer;font-size:13px}
-.calc button:hover{background:#6f2123}
-.calc .out{margin-top:10px;font-size:13px;font-weight:600;color:var(--ink)}
-.calc .out b{color:var(--maroon);font-size:15px}
+.calc input,.calc select{padding:6px 8px;border:1px solid var(--line);border-radius:7px;font-size:13px;font-family:inherit;background:var(--card);color:var(--ink)}
+.calc button{background:var(--maroon-fill);color:var(--on-accent);border:none;border-radius:7px;padding:7px 14px;font-weight:700;cursor:pointer;font-size:13px}
+.calc button:hover{background:var(--maroon-deep)}
+.calc .out{margin-top:10px;font-size:13.5px;font-weight:600;color:var(--ink)}
+.calc .out b{color:var(--maroon);font-size:17px}
 footer{margin-top:22px;font-size:11.5px;color:var(--muted);text-align:center;line-height:1.6}
 .build-note{font-size:10px;opacity:.6}
-.err{color:var(--red);font-size:12px;margin-top:6px}
+.err{color:var(--red-ink);font-size:12px;margin-top:6px}
 /* school viewer modal */
-.modal{display:none;position:fixed;inset:0;background:rgba(13,11,11,.45);z-index:50;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
-.modal-card{background:#fff;border:1px solid var(--rose-line);border-radius:12px;max-width:680px;width:100%;box-shadow:0 8px 30px rgba(0,0,0,.25)}
-.modal-head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:2px solid var(--maroon);position:sticky;top:0;background:#fff;border-radius:12px 12px 0 0}
+.modal{display:none;position:fixed;inset:0;background:var(--backdrop);z-index:50;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+.modal-card{background:var(--card);border:1px solid var(--line);border-radius:12px;max-width:680px;width:100%;box-shadow:var(--shadow-modal)}
+.modal-head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:2px solid var(--maroon);position:sticky;top:0;background:var(--card);border-radius:12px 12px 0 0}
 .modal-head span{font-weight:800;font-size:16px;color:var(--ink)}
 .modal-x{margin-left:auto;border:none;background:none;font-size:24px;line-height:1;cursor:pointer;color:var(--maroon);font-weight:700}
-.modal-x:hover{color:var(--red)}
+.modal-x:hover{color:var(--red-ink)}
 .modal-body{padding:6px 18px 18px}
 @media print{.modal{display:none !important}}
 /* data import (shell mode) */
 body.nodata .card:not(#panel-import){display:none}
 body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sidebar{display:none}
-.imp-ta{width:100%;min-height:110px;margin-top:8px;padding:10px;font:12.5px/1.4 ui-monospace,Consolas,monospace;border:1px solid var(--rose-line);border-radius:8px;background:#fff;color:var(--ink)}
+.imp-ta{width:100%;min-height:110px;margin-top:8px;padding:10px;font:12.5px/1.4 ui-monospace,Consolas,monospace;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
 .jot-lbl{display:block;font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px}
 /* important links page (build .4) */
-.lnkrow{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--rose-line);min-height:44px}
+.lnkrow{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);min-height:44px}
 .lnkrow:last-child{border-bottom:none}
 .lnkrow .lnk{flex:1;display:flex;align-items:center;gap:10px;padding:8px 6px;text-decoration:none;color:var(--ink);font-weight:700;border-radius:8px;min-width:0}
-.lnkrow .lnk:hover{background:var(--rose-tint)}
+.lnkrow .lnk:hover{background:var(--tint)}
 .lnk-e{flex:none;width:24px;text-align:center;font-size:17px}
 .lnk-t{line-height:1.3;overflow-wrap:anywhere}
 .lnk-copy{flex:none}
+.res-cats{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 10px}
+.res-cat{font-size:12px;padding:4px 10px}
+.res-cat.active{background:var(--maroon-fill);color:var(--on-accent);border-color:var(--maroon-fill)}
+.res-prep{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 2px}
+.reslnk{text-decoration:none;cursor:pointer}
+.reslnk:hover{border-color:var(--maroon)}
+/* ---- Jewel identity accents (build 2026-07-17.1): color with jobs, never urgency. ----
+   Sections: a 3px top rule per card + hued nav icons (sidebar + tab bar) via a custom
+   prop on the button, so the .active white-on-garnet state still wins on specificity.
+   Clusters keep duty order VII, VIII, IX — gold, teal, amethyst — wherever a
+   cluster-block renders. Hues are the validated --j-* steps (≥4.5:1 both themes,
+   CVD ΔE ≥17); red/amber/green stay reserved for status and urgency. */
+.card.full{border-top:3px solid var(--sect,var(--line))}
+#panel-brief{--sect:var(--j-gold)}
+#panel-griev{--sect:var(--maroon-fill)}
+#panel-issues{--sect:var(--j-amethyst)}
+#panel-schools{--sect:var(--j-sapphire)}
+#panel-membership{--sect:var(--j-emerald)}
+#panel-coverage{--sect:var(--j-teal)}
+#panel-visits{--sect:var(--j-orange)}
+#panel-links{--sect:var(--j-slate)}
+#panel-resources{--sect:var(--j-jade)}
+.sb-btn[data-sect="panel-brief"]{--sect-ic:var(--j-gold)}
+.sb-btn[data-sect="panel-griev"]{--sect-ic:var(--maroon)}
+.sb-btn[data-sect="panel-issues"]{--sect-ic:var(--j-amethyst)}
+.sb-btn[data-sect="panel-schools"]{--sect-ic:var(--j-sapphire)}
+.sb-btn[data-sect="panel-membership"]{--sect-ic:var(--j-emerald)}
+.sb-btn[data-sect="panel-coverage"]{--sect-ic:var(--j-teal)}
+.sb-btn[data-sect="panel-visits"]{--sect-ic:var(--j-orange)}
+.sb-btn[data-sect="panel-links"]{--sect-ic:var(--j-slate)}
+.sb-btn[data-sect="panel-resources"]{--sect-ic:var(--j-jade)}
+.tabbar button[data-jump="panel-brief"]{--sect-ic:var(--j-gold)}
+.tabbar button[data-jump="panel-griev"]{--sect-ic:var(--maroon)}
+.tabbar button[data-jump="panel-schools"]{--sect-ic:var(--j-sapphire)}
+.tabbar button[data-jump="panel-links"]{--sect-ic:var(--j-slate)}
+.cluster-block[data-cluster="VII"]>.cluster-h{color:var(--j-gold);border-left-color:var(--j-gold)}
+.cluster-block[data-cluster="VIII"]>.cluster-h{color:var(--j-teal);border-left-color:var(--j-teal)}
+.cluster-block[data-cluster="IX"]>.cluster-h{color:var(--j-amethyst);border-left-color:var(--j-amethyst)}
+button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill look */
 /* field layer (Step 6): phone-width only */
 .tabbar{display:none}
 @media(max-width:700px){
@@ -267,16 +372,16 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
   .btn,.chip{min-height:44px;display:inline-flex;align-items:center}
   .calc input,.calc select,.schfilter,.imp-ta{font-size:16px}
   .actionbar .grp-label,.actionbar button[data-jump],.actionbar .sep{display:none}
-  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;background:#fff;border-top:2px solid var(--maroon);box-shadow:0 -2px 8px rgba(136,41,43,.12);padding:4px 2px calc(env(safe-area-inset-bottom,0px) + 4px)}
+  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;background:var(--card);border-top:2px solid var(--maroon);box-shadow:var(--shadow-up);padding:4px 2px calc(env(safe-area-inset-bottom,0px) + 4px)}
   .tabbar button{flex:1;background:none;border:none;font:inherit;font-size:10.5px;font-weight:800;color:var(--maroon);padding:5px 2px;min-height:44px;cursor:pointer}
-  .tabbar button .ti{display:block;line-height:1;color:var(--maroon)}
+  .tabbar button .ti{display:block;line-height:1;color:var(--sect-ic,var(--maroon))}
   .tabbar button .ti .ic{width:21px;height:21px;margin:0 auto}
   #issueBox table,#coverageBody table,#visitClusters table,#visitLog table,.sch-body table,#schModalBody table,
   #issueBox tbody,#coverageBody tbody,#visitClusters tbody,#visitLog tbody,.sch-body tbody,#schModalBody tbody,
   #issueBox tr,#coverageBody tr,#visitClusters tr,#visitLog tr,.sch-body tr,#schModalBody tr,
   #issueBox td,#coverageBody td,#visitClusters td,#visitLog td,.sch-body td,#schModalBody td{display:block;width:100%;box-sizing:border-box}
   #issueBox tr:first-child,#coverageBody tr:first-child,#visitClusters tr:first-child,#visitLog tr:first-child,.sch-body tr:first-child,#schModalBody tr:first-child{display:none}
-  #issueBox tr,#coverageBody tr,#visitClusters tr,#visitLog tr,.sch-body tr,#schModalBody tr{border:1px solid var(--rose-line);border-radius:9px;margin:0 0 8px;padding:4px 0;background:#fff}
+  #issueBox tr,#coverageBody tr,#visitClusters tr,#visitLog tr,.sch-body tr,#schModalBody tr{border:1px solid var(--line);border-radius:9px;margin:0 0 8px;padding:4px 0;background:var(--card)}
   #issueBox td,#coverageBody td,#visitClusters td,#visitLog td,.sch-body td,#schModalBody td{border-bottom:none;padding:4px 12px}
   #issueBox td:empty,#coverageBody td:empty,.sch-body td:empty,#schModalBody td:empty{display:none}
   #issueBox td::before,#coverageBody td::before,#visitClusters td::before,#visitLog td::before,.sch-body td::before,#schModalBody td::before{content:attr(data-label);display:block;font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--maroon);font-weight:800}
@@ -294,19 +399,22 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
 .ic{width:18px;height:18px;display:block}
 .sb-grp{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:8px 10px 4px}
 .sb-btn{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:8px;padding:8px 10px;margin:2px 0;font:inherit;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;text-decoration:none}
-.sb-btn:hover{background:var(--rose-tint);text-decoration:none}
-.sb-btn.active{background:var(--maroon);color:#fff;border-color:#6f2123}
-.sb-btn .sb-ic{flex:none;width:20px;display:flex;justify-content:center;color:var(--maroon)}
-.sb-btn.active .sb-ic{color:#fff}
+.sb-btn:hover{background:var(--tint);text-decoration:none}
+.sb-btn.active{background:var(--maroon-fill);color:var(--on-accent);border-color:var(--maroon-deep)}
+.sb-btn .sb-ic{flex:none;width:20px;display:flex;justify-content:center;color:var(--sect-ic,var(--maroon))}
+.sb-btn.active .sb-ic{color:var(--on-accent)}
 .sb-btn .sb-lbl{flex:1;min-width:0}
 .sb-badges{display:flex;gap:4px;flex:none}
-.sb-chip{font-size:10.5px;font-weight:800;padding:1px 7px;border-radius:999px;background:var(--rose-tint);color:var(--maroon);border:1px solid var(--rose-line)}
-.sb-btn.active .sb-chip{background:rgba(255,255,255,.22);color:#fff;border-color:rgba(255,255,255,.4)}
-.sb-chip.red{background:var(--red);color:#fff;border-color:var(--maroon)}
-.sb-foot{margin-top:auto;border-top:1px solid var(--rose-line);padding-top:8px}
+.sb-chip{font-size:10.5px;font-weight:800;padding:1px 7px;border-radius:999px;background:var(--tint);color:var(--maroon);border:1px solid var(--line)}
+.sb-btn.active .sb-chip{background:rgba(255,255,255,.22);color:var(--on-accent);border-color:rgba(255,255,255,.4)}
+.sb-chip.red{background:var(--red);color:var(--on-accent);border-color:var(--maroon-fill)}
+.sb-kbd{flex:none;font:700 10px/1.5 ui-monospace,Consolas,monospace;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 4px;background:var(--card)}
+.sb-btn.active .sb-kbd{color:var(--on-accent);border-color:rgba(255,255,255,.4);background:none}
+.sb-foot{margin-top:auto;border-top:1px solid var(--line);padding-top:8px}
 @media screen and (min-width:1100px){
-  body.laptop .sidebar{display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;width:224px;background:#fff;border-right:1px solid var(--rose-line);padding:14px 10px;overflow-y:auto;z-index:45}
-  body.laptop .wrap{margin:0 auto 0 224px}
+  body.laptop .sidebar{display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;width:224px;background:var(--card);border-right:1px solid var(--line);padding:14px 10px;overflow-y:auto;z-index:45}
+  body.laptop .wrap{margin:0 auto 0 224px;padding:22px 28px 60px}
+  body.laptop .card{padding:20px 24px}
   body.laptop .actionbar{display:none}
   body.laptop .card.full{display:none}
   body.laptop .card.full.sect-active{display:block}
@@ -322,27 +430,22 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
 <div class="wrap">
 
   <header class="hero">
-    <h1>Organizing Dashboard</h1>
     <div class="sub" id="heroSub">Organizer</div>
+    <h1>Organizing Dashboard</h1>
     <div class="meta">
       <span class="pill" id="todayPill">—</span>
       <span class="pill" id="snapPill">Snapshot: —</span>
       <span class="pill diag" id="selftestPill">checking deadline math…</span>
+      <button class="pill" id="themeToggle" type="button" aria-pressed="true" title="Switch to light mode">◐ Dark</button>
     </div>
     <div class="status-strip" id="statusStrip">—</div>
   </header>
 
-  <div class="actionbar">
+  <!-- Jump buttons are generated by renderActionbar() from the same visibleSections() list as the
+       sidebar and tab bar, so the three navs can't drift apart (the static list here had been
+       missing Member Issues and Membership). -->
+  <div class="actionbar" id="actionbar">
     <span class="grp-label">Jump to</span>
-    <button class="btn" data-jump="panel-brief">Brief</button>
-    <button class="btn" data-jump="panel-griev">Grievances</button>
-    <button class="btn" data-jump="panel-schools">Schools</button>
-    <button class="btn" data-jump="panel-coverage">Coverage</button>
-    <button class="btn" data-jump="panel-visits">Visits</button>
-    <button class="btn" data-jump="panel-links">Links</button>
-    <span class="sep"></span>
-    <!-- Support Intake Form + Member Support removed from the top bar (build .6): both live in the
-         Important Links section (reachable via the Links button here and the phone's Links tab). -->
     <button class="btn primary" id="printBtn">Print / Save PDF</button>
   </div>
 
@@ -437,6 +540,16 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
     <div class="sectnote">Every link opens in a new tab; <b>Copy</b> grabs the URL for texting or emailing a member. The list is maintained from <b>00_Resources/WTU Important Links.xlsx</b> — edit the spreadsheet, then ask me to "update links."</div>
   </div>
 
+  <div class="card full" id="panel-resources" style="margin-top:16px">
+    <h2>Resource Hub <span class="badge snap" id="resCount">RESOURCES</span></h2>
+    <div class="toolbar">
+      <input type="search" id="resFilter" class="schfilter" placeholder="Type to filter resources…" aria-label="Filter resources by name, topic, or tag">
+    </div>
+    <div class="res-cats" id="resCats"></div>
+    <div id="resBox"></div>
+    <div class="sectnote"><b>Open</b> is one click: PDFs open in a browser tab, Word/PowerPoint files open in the app (allow the "Open…?" prompt the first time). <b>Copy path</b> grabs the file's location for attaching to an email. Curated from <b>00_Resources/resource-manifest.json</b> — add the file there, then ask me to "update resources."</div>
+  </div>
+
   <div class="card full" id="panel-jot" style="margin-top:16px">
     <h2>Jot &amp; Share <span class="badge snap">FIELD NOTE</span></h2>
     <div class="sectnote" style="margin-top:8px">Capture it before you forget. Share or Copy sends the note out (Mail, Messages, Notes) — nothing writes back to the dashboard. Paste it to Cowork at the desk to log it on the school page.</div>
@@ -489,7 +602,7 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
   <footer>
     Snapshot data: WTU workspace (school pages + Filed Grievances) + calendar entered from Outlook screenshots, captured <span id="snapFoot">—</span>. Ask to "refresh" or "update" anytime.<br>
     This is a working-aid, not the official record. The CBA controls all grievance timelines — verify any deadline day-by-day before filing.<br>
-    <span class="build-note" id="buildPill">build 2026-07-11.1</span>
+    <span class="build-note" id="buildPill">build 2026-07-17.3</span>
   </footer>
 </div>
 
@@ -505,6 +618,11 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
    before any import; a data file's `calendar` key overrides it when present. */
 var SNAPSHOT_DATE='',EVENTS=[],SCHOOLS=[],GRIEVANCES=[],LINKS=[];
 var MEMBERSHIP={},MEMBERSHIP_DATE='',MEMBERSHIP_HISTORY=[]; // optional overlay (bySchool map + snapshot date + trend history); absent in older data files
+/* Membership VIEW state (build 2026-07-17.2): cluster filter, tier filter, and sort are
+   session-only — they reset on reload and must never leak into DASH_COUNTS (the sidebar
+   badge and Brief tile always stay org-wide). */
+var MEM_SEL={},MEM_TIER='',MEM_SORT={key:'nonRate',dir:-1};
+var RESOURCES=null; // optional Resource Hub data ({base, items:[{title,cat,tags,path,url,use,emoji}]}); absent = section hides
 var DATA_MODE='none'; // 'embedded' | 'imported' | 'none'
 var DATA_META=null;   // {importedAt, source} for imported mode
 var SHELL_SCHEMA=1;   // highest dashboard-data.json schemaVersion this build understands
@@ -527,6 +645,7 @@ function adoptData(d){
   SNAPSHOT_DATE=d.snapshotDate;EVENTS=d.events||[];SCHOOLS=d.schools||[];GRIEVANCES=d.grievances||[];
   LINKS=Array.isArray(d.links)?d.links:[]; // optional key (added build .4) — older data files simply hide the Links section
   if(d.membership&&d.membership.bySchool){MEMBERSHIP=d.membership.bySchool;MEMBERSHIP_DATE=d.membership.snapshotDate||'';MEMBERSHIP_HISTORY=d.membership.history||[];}else{MEMBERSHIP={};MEMBERSHIP_DATE='';MEMBERSHIP_HISTORY=[];} // optional overlay — absent = membership UI simply hides
+  RESOURCES=(d.resources&&Array.isArray(d.resources.items)&&d.resources.items.length)?d.resources:null; // optional (Resource Hub, 'update resources') — absent = section hides
 }
 function resolveData(){
   if(window.__DATA__){
@@ -762,6 +881,7 @@ function openSchool(name){
   if(!s)return;
   var b='';
   b+=memBlock(name);
+  b+=visitPrep(name);
   b+='<div class="sub-h">Key Contacts</div>';
   b+=s.contacts.some(function(c){return c[1];})?s.contacts.map(function(c){return '<div class="ct-line"><div class="r">'+esc(c[0])+'</div><div class="v'+(c[1]?'':' empty-v')+'">'+(c[1]?linkifyContact(c[1]):'— not yet recorded')+'</div></div>';}).join(''):'<div class="ct-line"><div class="v empty-v">No contacts recorded yet — add them on the school page and refresh.</div></div>';
   b+='<div class="sub-h">School Notes</div>';
@@ -773,8 +893,15 @@ function openSchool(name){
   document.getElementById('schModalTitle').textContent=s.name+' — Cluster '+s.cluster;
   document.getElementById('schModalBody').innerHTML=b;
   document.getElementById('schModal').style.display='flex';
+  MODAL_RETURN=document.activeElement;
+  var x=document.getElementById('schModalX');if(x)x.focus();
 }
-function closeSchool(){var m=document.getElementById('schModal');if(m)m.style.display='none';}
+var MODAL_RETURN=null;
+function closeSchool(){
+  var m=document.getElementById('schModal');if(m)m.style.display='none';
+  if(MODAL_RETURN&&MODAL_RETURN.focus){try{MODAL_RETURN.focus();}catch(e){}}
+  MODAL_RETURN=null;
+}
 function openSchoolFromUrl(){
   var m=(location.hash||'').match(/school=(.+)$/);
   if(!m)return;
@@ -879,14 +1006,14 @@ function renderGrievances(){
   var pipeShort={'Pre-filing':'Not Yet Filed','Stage 1':'Stage 1','Stage 2':'Stage 2','Stage 3':'Stage 3 · Specialist','Resolved':'Resolved'};
   var pipe='<div class="gr-pipe">'+STAGES.map(function(st){
     var n=GRIEVANCES.filter(function(g){return grievStage(g)===st[0];}).length;
-    return '<div class="gp-seg'+(n?' has':'')+'"'+(n?' data-target="grp-'+st[0].replace(/\s+/g,'-')+'" title="Jump to '+st[1].replace(/"/g,'&quot;')+'"':'')+'><span class="gp-n">'+n+'</span><span class="gp-l">'+pipeShort[st[0]]+'</span></div>';
+    return '<div class="gp-seg'+(n?' has':'')+'"'+(n?' data-target="grp-'+st[0].replace(/\s+/g,'-')+'" role="button" tabindex="0" title="Jump to '+st[1].replace(/"/g,'&quot;')+'"':'')+'><span class="gp-n">'+n+'</span><span class="gp-l">'+pipeShort[st[0]]+'</span></div>';
   }).join('<span class="gp-arrow">→</span>')+'</div>';
   box.innerHTML=pipe+ov+gh+
     '<div class="sectnote">Overview counts grievances that have a filing date (Not Yet Filed cases are excluded). Grouped by stage (Not Yet Filed → Step 1 Stage 1 → Stage 2 → Stage 3); a section appears only when it has a case. Within each, cases are ordered by soonest deadline. Dates in <span style="color:var(--maroon);font-weight:700">bold maroon</span> are auto-computed from the dates you enter (filing = 14 school days incl. the notice day; Stage 1 meeting = 5 and Stage 2 = 10 school days, counted from the day after filing). The tag shows the next active deadline with days-left recalculated live; "past due" means it has passed. A <b>future</b> date on a "scheduled / held" or "filed" line counts as scheduled/planned — it does not advance the stage or stop the countdown until the day arrives. If a filing\'s 14-day date is missed, the countdown escalates in red to the 30-school-day hard outer limit (6.5.3) while filing is still possible. Cases past Step 1, Stage 2 belong to a Grievance Specialist — they show no countdown here, and Top 3 flags any not yet routed.</div>';
   const soon=GRIEVANCES.map(g=>({g:g,act:activeDeadline(g)})).filter(x=>{if(!x.act)return false;return x.act.escalated||workingDaysLeft(x.act.date)<=5;}).sort((a,b)=>a.act.date<b.act.date?-1:a.act.date>b.act.date?1:0);
   // Urgency coloring matches the case-card tags (dl-red ≤3 or escalated, dl-amber ≤5) — the Brief
   // was the one place the red ≤3 rule wasn't applied.
-  due.innerHTML=soon.length?soon.map(x=>{const l=workingDaysLeft(x.act.date);const left=l<0?'<b class="days-red">PAST DUE</b>':(l===0?'<b class="days-red">due today</b>':((x.act.escalated||l<=3)?'<b class="days-red">'+l+' school day'+(l===1?'':'s')+' left</b>':(l<=5?'<b class="days-amber">'+l+' school days left</b>':l+' school day'+(l===1?'':'s')+' left')));return '<div class="ev evlink" data-target="'+grId(x.g)+'" title="Open this case"><div class="t">'+esc(x.g.member)+' · '+esc(x.g.article)+'</div><div class="when">'+x.act.label+' '+prettyMed(x.act.date)+' · '+left+'</div></div>';}).join(''):'<div class="empty">No deadlines in the next 5 school days.</div>';
+  due.innerHTML=soon.length?soon.map(x=>{const l=workingDaysLeft(x.act.date);const left=l<0?'<b class="days-red">PAST DUE</b>':(l===0?'<b class="days-red">due today</b>':((x.act.escalated||l<=3)?'<b class="days-red">'+l+' school day'+(l===1?'':'s')+' left</b>':(l<=5?'<b class="days-amber">'+l+' school days left</b>':l+' school day'+(l===1?'':'s')+' left')));return '<div class="ev evlink" role="button" tabindex="0" data-target="'+grId(x.g)+'" title="Open this case"><div class="t">'+esc(x.g.member)+' · '+esc(x.g.article)+'</div><div class="when">'+x.act.label+' '+prettyMed(x.act.date)+' · '+left+'</div></div>';}).join(''):'<div class="empty">No deadlines in the next 5 school days.</div>';
 }
 
 function renderIssues(){
@@ -924,7 +1051,7 @@ function renderSchoolKpis(){
 function renderChips(){
   const clusters=['All'].concat(orderedClusters());
   document.getElementById('clusterChips').innerHTML=clusters.map(c=>
-    '<span class="chip'+(c===activeCluster?' active':'')+'" data-c="'+c+'">'+(c==='All'?'All clusters':'Cluster '+c)+'</span>').join('');
+    '<button type="button" class="chip'+(c===activeCluster?' active':'')+'" data-c="'+c+'">'+(c==='All'?'All clusters':'Cluster '+c)+'</button>').join('');
   Array.prototype.forEach.call(document.querySelectorAll('#clusterChips .chip'),ch=>ch.onclick=function(){activeCluster=ch.dataset.c;renderChips();renderSchools();});
 }
 
@@ -950,32 +1077,64 @@ function memBlock(name){
 // All cluster/overall rollups compute here from MEMBERSHIP (per-school) — nothing is
 // stored twice. The trend reads MEMBERSHIP_HISTORY (present once ≥2 snapshots exist).
 function memPct1(r){return (Math.round((r||0)*1000)/10).toFixed(1)+'%';}
+function memSelList(){return orderedClusters().filter(function(c){return MEM_SEL[c];});}
+function memSortFn(){
+  var k=MEM_SORT.key,d=MEM_SORT.dir;
+  return function(a,b){
+    var va=a[k],vb=b[k];
+    if(typeof va==='string'){return (va.localeCompare(vb)*d)||(b.nonRate-a.nonRate);}
+    return ((va-vb)*d)||(b.potential-a.potential)||a.name.localeCompare(b.name);
+  };
+}
 function renderMembership(){
   var host=document.getElementById('memBody');if(!host)return;
   var snap=document.getElementById('memSnap');if(snap)snap.textContent=MEMBERSHIP_DATE?('SNAPSHOT '+esc(MEMBERSHIP_DATE)):'MEMBERSHIP';
   var names=Object.keys(MEMBERSHIP||{});
   if(!names.length){DASH_COUNTS.recruit=0;host.innerHTML='<div class="empty">No membership snapshot in this data. Ask me to "update membership."</div>';return;}
-  var recs=names.map(function(n){var m=MEMBERSHIP[n]||{};return {name:n,cluster:schoolCluster(n),total:+m.total||0,members:+m.members||0,potential:+m.potential||0,nonRate:+m.nonRate||0};});
-  DASH_COUNTS.recruit=recs.filter(function(r){return r.nonRate>=0.15;}).length; // one count, shared by the sidebar badge + the Brief tile
-  function agg(list){var t=0,me=0,po=0;list.forEach(function(r){t+=r.total;me+=r.members;po+=r.potential;});return {total:t,members:me,potential:po,nonRate:t?po/t:0};}
+  var recs=names.map(function(n){var m=MEMBERSHIP[n]||{};var tot=+m.total||0,mem=+m.members||0;return {name:n,cluster:schoolCluster(n),total:tot,members:mem,potential:+m.potential||0,nonRate:+m.nonRate||0,memRate:tot?mem/tot:0};});
+  DASH_COUNTS.recruit=recs.filter(function(r){return r.nonRate>=0.15;}).length; // one count, shared by the sidebar badge + the Brief tile — ALWAYS org-wide, never filtered
+  var sel=memSelList();
+  var view=sel.length?recs.filter(function(r){return MEM_SEL[r.cluster];}):recs;
+  function agg(list){var t=0,me=0,po=0;list.forEach(function(r){t+=r.total;me+=r.members;po+=r.potential;});return {total:t,members:me,potential:po,nonRate:t?po/t:0,memRate:t?me/t:0};}
   function kc(n,l){return '<div class="kpi"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>';}
   // Bars scale 0–30% (the red threshold zone), not 0–100%: cluster rates live in the 9–18% band,
   // and on a 0–100 scale every bar reads as a near-empty sliver. The true % sits right beside it.
   function bar(r){return '<span class="mem-bar"><span class="mem-bar-fill '+memPctCls(r)+'" style="width:'+Math.min(100,Math.round((r||0)/0.30*100))+'%"></span></span>';}
-  var all=agg(recs);
-  var h='<div class="kpis">'+kc(all.members,'members')+kc(all.potential,'potential (non-members)')+kc(memPct1(all.nonRate),'non-member rate')+kc(all.total,'staff')+'</div>';
-  h+='<div class="cluster-h" style="margin-top:16px">By cluster<span class="ch-meta">non-member rate · potential members to recruit · bar scale 0–30%</span></div>';
-  h+='<div class="mem-scroll"><table class="mem-tbl"><tr><th>Cluster</th><th>Members</th><th>Potential</th><th>Non-member %</th><th></th></tr>';
+  var all=agg(view);
+  var selLbl=sel.length?(sel.length>1?'Clusters ':'Cluster ')+sel.join(', '):'';
+  var h='<div class="kpis">'+kc(all.members,'members')+kc(all.potential,'potential (non-members)')+kc(memPct1(all.memRate),'member rate')+kc(memPct1(all.nonRate),'non-member rate')+kc(all.total,'staff')+'</div>';
+  if(sel.length)h+='<div class="mem-note">Showing '+selLbl+' · <a href="#" class="attn-link" data-mem-reset="1">show all clusters</a></div>';
+  // Recruits-to-90%: the density benchmark, recomputed for the current selection.
+  var need=Math.max(0,Math.ceil(all.total*0.90-all.members));
+  h+= need>0
+    ? '<div class="mem-target">To reach 90% membership'+(sel.length?' in '+selLbl:'')+': <b>'+need+'</b> more member'+(need===1?'':'s')+'</div>'
+    : '<div class="mem-target ok">'+(sel.length?selLbl+' is':'Org-wide density is')+' at or above the 90% benchmark</div>';
+  h+='<div class="cluster-h" style="margin-top:16px">By cluster<span class="ch-meta">tap a cluster to filter this section (tap again to clear) · bar scale 0–30%</span></div>';
+  h+='<div class="mem-scroll"><table class="mem-tbl"><tr><th>Cluster</th><th>Members</th><th>Potential Members</th><th>Total Staff</th><th>Member %</th><th>Non-member %</th><th></th></tr>';
   orderedClusters().forEach(function(c){var a=agg(recs.filter(function(r){return r.cluster===c;}));
-    h+='<tr><td><b>Cluster '+esc(c)+'</b></td><td>'+a.members+'</td><td>'+a.potential+'</td><td><span class="mem-pct '+memPctCls(a.nonRate)+'">'+memPct1(a.nonRate)+'</span></td><td>'+bar(a.nonRate)+'</td></tr>';});
+    var on=!!MEM_SEL[c];
+    h+='<tr class="mem-cl'+(on?' sel':'')+'" data-mem-cluster="'+esc(c)+'">'+
+       '<td><button type="button" class="mem-clbtn" data-mem-cluster="'+esc(c)+'" aria-pressed="'+(on?'true':'false')+'" title="Filter the membership section to Cluster '+esc(c)+'"><span class="cl-dot"></span>Cluster '+esc(c)+'</button></td>'+
+       '<td>'+a.members+'</td><td>'+a.potential+'</td><td>'+a.total+'</td><td>'+memPct1(a.memRate)+'</td>'+
+       '<td><span class="mem-pct '+memPctCls(a.nonRate)+'">'+memPct1(a.nonRate)+'</span></td><td>'+bar(a.nonRate)+'</td></tr>';});
   h+='</table></div>';
-  var ranked=recs.slice().sort(function(a,b){return (b.nonRate-a.nonRate)||(b.potential-a.potential);});
-  h+='<div class="cluster-h" style="margin-top:18px">Recruitment priorities<span class="ch-meta">every school by non-member rate — red ≥25%, amber 15–25%</span></div>';
-  h+='<div class="mem-scroll"><table class="mem-tbl"><tr><th>#</th><th>School</th><th>Cl.</th><th>Members</th><th>Potential</th><th>Non-member %</th></tr>';
-  ranked.forEach(function(r,i){h+='<tr><td>'+(i+1)+'</td><td>'+esc(r.name)+'</td><td>'+esc(r.cluster)+'</td><td>'+r.members+'</td><td>'+r.potential+'</td><td><span class="mem-pct '+memPctCls(r.nonRate)+'">'+memPct1(r.nonRate)+'</span></td></tr>';});
+  var ranked=view.slice().sort(memSortFn());
+  if(MEM_TIER==='red')ranked=ranked.filter(function(r){return r.nonRate>=0.25;});
+  else if(MEM_TIER==='amber')ranked=ranked.filter(function(r){return r.nonRate>=0.15&&r.nonRate<0.25;});
+  h+='<div class="cluster-h" style="margin-top:18px">Recruitment priorities<span class="ch-meta">red ≥25%, amber 15–25% · click a column to sort · school names open the viewer</span></div>';
+  h+='<div class="toolbar" style="margin-top:6px">'+
+     '<button type="button" class="chip'+(MEM_TIER===''?' active':'')+'" data-mem-tier="">All tiers</button>'+
+     '<button type="button" class="chip'+(MEM_TIER==='red'?' active':'')+'" data-mem-tier="red">Red ≥25%</button>'+
+     '<button type="button" class="chip'+(MEM_TIER==='amber'?' active':'')+'" data-mem-tier="amber">Amber 15–25%</button></div>';
+  function th(k,l){if(!k)return '<th>'+l+'</th>';
+    var cur=MEM_SORT.key===k,arr=cur?(MEM_SORT.dir<0?' ▾':' ▴'):'';
+    return '<th class="mem-th'+(cur?' cur':'')+'" data-mem-sort="'+k+'" tabindex="0" aria-sort="'+(cur?(MEM_SORT.dir<0?'descending':'ascending'):'none')+'" title="Sort by '+l+'">'+l+arr+'</th>';}
+  h+='<div class="mem-scroll"><table class="mem-tbl"><tr>'+th('','#')+th('name','School')+th('cluster','Cl.')+th('members','Members')+th('potential','Potential Members')+th('total','Total Staff')+th('memRate','Member %')+th('nonRate','Non-member %')+'</tr>';
+  ranked.forEach(function(r,i){h+='<tr><td>'+(i+1)+'</td><td>'+schoolLink(r.name)+'</td><td>'+esc(r.cluster)+'</td><td>'+r.members+'</td><td>'+r.potential+'</td><td>'+r.total+'</td><td>'+memPct1(r.memRate)+'</td><td><span class="mem-pct '+memPctCls(r.nonRate)+'">'+memPct1(r.nonRate)+'</span></td></tr>';});
+  if(!ranked.length)h+='<tr><td colspan="8"><span class="empty">No schools in this tier'+(sel.length?' within '+selLbl:'')+'.</span></td></tr>';
   h+='</table></div>';
   var hist=(MEMBERSHIP_HISTORY||[]).slice().sort(function(a,b){return (a.date||'')<(b.date||'')?-1:1;});
-  h+='<div class="cluster-h" style="margin-top:18px">Trend<span class="ch-meta">membership over time</span></div>';
+  h+='<div class="cluster-h" style="margin-top:18px">Trend<span class="ch-meta">membership over time'+(sel.length?' · always org-wide (snapshots don\'t store per-cluster history)':'')+'</span></div>';
   if(hist.length<2){
     h+='<div class="sectnote">Baseline snapshot'+(MEMBERSHIP_DATE?' ('+esc(MEMBERSHIP_DATE)+')':'')+'. Movement appears here after the next database import (~Aug 2026): members gained/lost and rate change vs. the prior snapshot.</div>';
   }else{
@@ -1178,7 +1337,7 @@ function renderRunway(){
     var l=workingDaysLeft(x.act.date);
     var cls=(x.act.escalated||l<=3)?'dl-red':(l<=5?'dl-amber':'');
     var full=x.g.member+' — '+x.act.label+' '+prettyMed(x.act.date)+(l<0?' (PAST DUE)':' ('+l+' school day'+(l===1?'':'s')+' left)');
-    return '<span class="rw-chip '+cls+'" data-target="'+grId(x.g)+'" title="'+esc(full)+'">'+esc(memberInitials(x.g.member))+' · '+esc(shortActLabel(x.act.label))+'</span>';
+    return '<span class="rw-chip '+cls+'" role="button" tabindex="0" data-target="'+grId(x.g)+'" title="'+esc(full)+'">'+esc(memberInitials(x.g.member))+' · '+esc(shortActLabel(x.act.label))+'</span>';
   }
   var h='<h3 class="rw-h3">Deadline Runway <span class="daystamp">next 10 school days · click a case to open it</span></h3><div class="runway">';
   if(overdue.length)h+='<div class="rw-over"><span class="rw-date">PAST DUE</span>'+overdue.map(chip).join('')+'</div>';
@@ -1211,7 +1370,7 @@ function renderBriefTiles(){
   var nyf=GRIEVANCES.filter(function(g){return grievStage(g)==='Pre-filing';}).length;
   var fileNext=acts.filter(function(x){return x.act.label==='File by'||x.act.escalated;})[0];
   function tile(n,l,s,target,red){
-    return '<div class="btile'+(red?' red':'')+'"'+(target?' data-target="'+target+'"':'')+'><div class="n">'+n+'</div><div class="l">'+l+'</div>'+(s?'<div class="s">'+s+'</div>':'')+'</div>';
+    return '<div class="btile'+(red?' red':'')+'"'+(target?' data-target="'+target+'" role="button" tabindex="0"':'')+'><div class="n">'+n+'</div><div class="l">'+l+'</div>'+(s?'<div class="s">'+s+'</div>':'')+'</div>';
   }
   var h='';
   h+=tile(DASH_COUNTS.urgent,'urgent deadline'+(DASH_COUNTS.urgent===1?'':'s'),DASH_COUNTS.urgent?'≤3 school days or past due':'none within 3 school days','panel-griev',DASH_COUNTS.urgent>0);
@@ -1279,6 +1438,28 @@ function wireCalc(){
   };
 }
 
+/* One handler for every membership control (cluster rows/buttons, tier chips, sort
+   headers, the reset link). Re-render loses focus, so the acted-on control is refocused
+   for keyboard users. View state only — DASH_COUNTS stays org-wide (see renderMembership). */
+function memAction(t){
+  var focusSel=null;
+  if(t.hasAttribute('data-mem-reset')){MEM_SEL={};}
+  else if(t.hasAttribute('data-mem-cluster')){
+    var c=t.getAttribute('data-mem-cluster');
+    if(MEM_SEL[c])delete MEM_SEL[c];else MEM_SEL[c]=1;
+    focusSel='button[data-mem-cluster="'+c+'"]';
+  }else if(t.hasAttribute('data-mem-tier')){
+    MEM_TIER=t.getAttribute('data-mem-tier');
+    focusSel='[data-mem-tier="'+MEM_TIER+'"]';
+  }else if(t.hasAttribute('data-mem-sort')){
+    var k=t.getAttribute('data-mem-sort');
+    if(MEM_SORT.key===k)MEM_SORT.dir=-MEM_SORT.dir;
+    else MEM_SORT={key:k,dir:(k==='name'||k==='cluster')?1:-1}; // text sorts start A→Z, numbers start biggest-first
+    focusSel='[data-mem-sort="'+k+'"]';
+  }else return;
+  renderMembership();
+  if(focusSel){var el=document.querySelector('#memBody '+focusSel);if(el&&el.focus)el.focus();}
+}
 function setAllSchools(open){
   Array.prototype.forEach.call(document.querySelectorAll('#schoolSections details.sch'),function(d){d.open=open;});
 }
@@ -1290,6 +1471,21 @@ function wireButtons(){
   var ea=document.getElementById('expandAll');if(ea)ea.onclick=function(){setAllSchools(true);};
   var ca=document.getElementById('collapseAll');if(ca)ca.onclick=function(){setAllSchools(false);};
   var sf=document.getElementById('schoolFilter');if(sf)sf.oninput=function(){schoolFilterText=sf.value.trim().toLowerCase();renderSchools();};
+  // Membership interactivity: one delegated listener survives every re-render of #memBody.
+  var mb=document.getElementById('memBody');
+  if(mb){
+    mb.addEventListener('click',function(e){
+      var t=e.target.closest&&e.target.closest('[data-mem-cluster],[data-mem-sort],[data-mem-tier],[data-mem-reset]');
+      if(!t)return;
+      if(t.tagName==='A')e.preventDefault();
+      memAction(t);
+    });
+    mb.addEventListener('keydown',function(e){ // th sort headers are focusable but not buttons
+      if(e.key!=='Enter'&&e.key!==' ')return;
+      var t=e.target.closest&&e.target.closest('[data-mem-sort]');
+      if(!t)return;e.preventDefault();memAction(t);
+    });
+  }
   document.addEventListener('click',function(e){
     var t=e.target.closest&&e.target.closest('[data-target]');
     if(!t)return;
@@ -1299,6 +1495,12 @@ function wireButtons(){
     revealSectionFor(el); // laptop mode: switch to the owning section first, or the scroll lands on a hidden panel
     if(el.tagName==='DETAILS')el.open=true;
     el.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  // Keyboard parity for the clickable tiles/chips/segments (role="button" + data-target): Enter/Space = click.
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Enter'&&e.key!==' ')return;
+    var t=e.target;
+    if(t&&t.getAttribute&&t.getAttribute('role')==='button'&&t.hasAttribute('data-target')){e.preventDefault();t.click();}
   });
   window.addEventListener('beforeprint',function(){setAllSchools(true);setAllCoverage(false);setAllVisitClusters(false);});
   var ss=document.getElementById('schoolSections');
@@ -1498,6 +1700,130 @@ function wireLinks(){
   });
 }
 
+/* ===== RESOURCE HUB: reads the optional `resources` key ({base, items:[…]}) =====
+   The shell ships ZERO paths or URLs — everything rides dashboard-data.json (curated in
+   00_Resources/resource-manifest.json; regenerated on "update resources"). Open logic is
+   per-surface: on file:// (the desktop artifact in Chrome) local files open one-click —
+   PDFs/MD via file:///, Office docs via ms-word:/ms-excel:/ms-powerpoint: ofe URIs; on
+   http(s) (the hosted phone shell) only items with a web twin URL render, local-only items
+   hide entirely (a C:\ path is dead weight on the phone). NOTE: local anchors would wedge
+   the old Obsidian Custom Frames pane — Chrome is the desktop surface (2026-07-12). */
+var RES_FILTER='',RES_CAT='';
+function resItems(){return (RESOURCES&&Array.isArray(RESOURCES.items))?RESOURCES.items:[];}
+function resLocal(){return location.protocol==='file:';}
+function resVisible(){return resLocal()?resItems():resItems().filter(function(it){return it.url;});}
+function resFileUrl(relPath){
+  var base=String((RESOURCES&&RESOURCES.base)||'').replace(/\\/g,'/').replace(/\/$/,'');
+  var full=(base?base+'/':'')+String(relPath||'');
+  // Encode per path segment so & (and any shell/URI metacharacter that is legal in a Windows
+  // filename) is percent-encoded — a RAW & breaks the ms-word:/ms-excel:/ms-powerpoint: handler
+  // when Windows hands the URI to the app. Folders "Member Flyers & 1-Pagers" / "LSAT & SCAC" and
+  // files like "…Members & Potential Members.docx" all hit this. encodeURIComponent per segment
+  // keeps the / separators; the last step restores the drive-letter colon it would have encoded.
+  var enc=full.split('/').map(function(seg){return encodeURIComponent(seg);}).join('/');
+  return 'file:///'+enc.replace(/^([A-Za-z])%3[Aa]/,'$1:');
+}
+function resHref(it){
+  if(!resLocal())return it.url||'';
+  if(!it.path)return it.url||'';
+  var ext=String(it.path).split('.').pop().toLowerCase();
+  var fu=resFileUrl(it.path);
+  if(ext==='docx'||ext==='doc'||ext==='dotx')return 'ms-word:ofe|u|'+fu;
+  if(ext==='xlsx'||ext==='xlsm')return 'ms-excel:ofe|u|'+fu;
+  if(ext==='pptx'||ext==='potx')return 'ms-powerpoint:ofe|u|'+fu;
+  return fu; // pdf, md, png → the browser handles it
+}
+function resWinPath(it){
+  var base=String((RESOURCES&&RESOURCES.base)||'').replace(/\//g,'\\').replace(/\\$/,'');
+  return base+'\\'+String(it.path||'').replace(/\//g,'\\');
+}
+function renderResources(){
+  var card=document.getElementById('panel-resources');if(!card)return;
+  var items=resVisible();
+  if(!items.length){card.style.display='none';return;}
+  card.style.display='';
+  var badge=document.getElementById('resCount');if(badge)badge.textContent=items.length+' ITEMS';
+  var cats=[];items.forEach(function(it){if(it.cat&&cats.indexOf(it.cat)<0)cats.push(it.cat);});
+  if(RES_CAT&&cats.indexOf(RES_CAT)<0)RES_CAT='';
+  var ch='<button type="button" class="btn res-cat'+(RES_CAT?'':' active')+'" data-cat="">All</button>';
+  cats.forEach(function(c){ch+='<button type="button" class="btn res-cat'+(RES_CAT===c?' active':'')+'" data-cat="'+esc(c)+'">'+esc(c)+'</button>';});
+  var cbox=document.getElementById('resCats');if(cbox)cbox.innerHTML=ch;
+  var q=RES_FILTER.toLowerCase(),shown=0,h='';
+  items.forEach(function(it){
+    if(RES_CAT&&it.cat!==RES_CAT)return;
+    var hay=(it.title+' '+(it.use||'')+' '+(it.cat||'')+' '+(it.tags||[]).join(' ')).toLowerCase();
+    if(q&&hay.indexOf(q)<0)return;
+    shown++;
+    var href=resHref(it);
+    h+='<div class="lnkrow">'+
+      (href?'<a class="lnk" href="'+esc(href)+'" target="_blank" rel="noopener" title="'+esc(it.use||'')+'">':'<span class="lnk" title="'+esc(it.use||'')+'">')+
+      '<span class="lnk-e">'+esc(it.emoji||'📄')+'</span><span class="lnk-t">'+esc(it.title)+' <span class="mini">'+esc(it.cat||'')+'</span></span>'+
+      (href?'</a>':'</span>');
+    if(resLocal()&&it.path)h+='<button class="btn lnk-copy res-copy" type="button" data-copy="'+esc(resWinPath(it))+'" title="Copy the file path">Copy path</button>';
+    else if(it.url)h+='<button class="btn lnk-copy res-copy" type="button" data-copy="'+esc(it.url)+'" title="Copy the link">Copy</button>';
+    h+='</div>';
+  });
+  var box=document.getElementById('resBox');
+  if(box)box.innerHTML=shown?h:'<div class="empty" style="padding:10px 6px">No resources match.</div>';
+}
+function wireResources(){
+  var f=document.getElementById('resFilter');
+  if(f)f.oninput=function(){RES_FILTER=f.value.trim();renderResources();};
+  var cats=document.getElementById('resCats');
+  if(cats)cats.addEventListener('click',function(e){ // delegated: survives re-renders
+    var b=e.target.closest&&e.target.closest('.res-cat');if(!b)return;
+    RES_CAT=b.getAttribute('data-cat')||'';renderResources();
+  });
+  var box=document.getElementById('resBox');
+  if(box)box.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('.res-copy');if(!b)return;
+    var u=b.getAttribute('data-copy');
+    function done(ok){b.textContent=ok?'Copied ✓':'Copy failed';setTimeout(function(){b.textContent=b.title==='Copy the file path'?'Copy path':'Copy';},1400);}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(function(){done(true);},function(){done(legacyCopy(u));});
+    else done(legacyCopy(u));
+  });
+}
+/* Contextual "Visit prep" chips in the school modal. Reads ONLY already-computed state —
+   the membership tier (memOf), the school page's open-issue articles, and open grievance
+   articles — and matches them to resource tags. Never recomputes a rate or a deadline.
+   The red-tier recruitment-kit chip links into the Restricted folder BY PATH ONLY (the
+   kit's contents never enter this data file) and renders on the desktop surface only. */
+var ART_TAGS=[['23.17','art-23.17'],['23.6','art-23.6'],['23.8','art-23.8'],['24.3','art-24.3'],['18.2','art-18.2'],['4.5','art-4.5'],['24','art-24'],['17','art-17'],['7','art-7'],['6','art-6']];
+function artTags(s){
+  var m=String(s||'').match(/\d+(?:\.\d+)*/g);if(!m)return [];
+  var out=[];
+  m.forEach(function(tok){
+    for(var i=0;i<ART_TAGS.length;i++){
+      var k=ART_TAGS[i][0];
+      if(tok===k||tok.indexOf(k+'.')===0){if(out.indexOf(ART_TAGS[i][1])<0)out.push(ART_TAGS[i][1]);return;}
+    }
+  });
+  return out;
+}
+function kitSlug(n){return String(n).toLowerCase().replace(/[.']/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
+function visitPrep(name){
+  if(!resItems().length)return '';
+  var m=memOf(name),tags=['visit'],chips=[],seen={};
+  if(m&&(m.nonRate||0)>=0.15)tags.push('recruitment');
+  var s=null;for(var i=0;i<SCHOOLS.length;i++){if(SCHOOLS[i].name===name){s=SCHOOLS[i];break;}}
+  if(s&&s.issues)s.issues.forEach(function(r){artTags(r[2]).forEach(function(t){if(tags.indexOf(t)<0)tags.push(t);});});
+  GRIEVANCES.forEach(function(g){if(g.school===name&&!g.outcome)artTags(g.article).forEach(function(t){if(tags.indexOf(t)<0)tags.push(t);});});
+  resVisible().forEach(function(it){
+    if(chips.length>=10)return;
+    if(!(it.tags||[]).some(function(t){return tags.indexOf(t)>=0;}))return;
+    if(seen[it.title])return;seen[it.title]=1;
+    var href=resHref(it);
+    chips.push(href
+      ?'<a class="tag reslnk" href="'+esc(href)+'" target="_blank" rel="noopener" title="'+esc(it.use||'')+'">'+esc(it.emoji||'📄')+' '+esc(it.title)+'</a>'
+      :'<span class="tag" title="'+esc(it.use||'')+'">'+esc(it.emoji||'📄')+' '+esc(it.title)+'</span>');
+  });
+  if(resLocal()&&m&&(m.nonRate||0)>=0.25){
+    chips.unshift('<a class="tag reslnk dl-red" href="'+esc(resFileUrl('Organizing/Membership Database (Restricted)/recruitment-kit-'+kitSlug(name)+'.md'))+'" target="_blank" rel="noopener" title="Pull-list + plan for this priority school (opens from the Restricted folder; regenerate with build_recruitment_kits.ps1)">🎯 Recruitment kit (pull-list)</a>');
+  }
+  if(!chips.length)return '';
+  return '<div class="sub-h">Visit prep</div><div class="res-prep">'+chips.join('')+'</div>';
+}
+
 /* ===== LAPTOP LAYER (build .2): fixed sidebar + one-section-at-a-time view =====
    Active at ≥1100px only (the same query as the CSS) and only once data is loaded — never in nodata
    mode, so the hosted shell's first-run import card stays full-page. Pure navigation/display: the
@@ -1507,6 +1833,7 @@ function wireLinks(){
    white on the active button. One SVG set drives both the JS-rendered sidebar and the tab bar. */
 var ICONS={
   brief:'<rect x="7" y="3" width="10" height="4" rx="1.5"/><path d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><path d="M8 12h8M8 16h5"/>',
+  book:'<path d="M12 6.5a3 3 0 0 0-3-3H4v14.5h6a2 2 0 0 1 2 2z"/><path d="M12 6.5a3 3 0 0 1 3-3h5v14.5h-6a2 2 0 0 0-2 2z"/><path d="M6.5 7.5h3M6.5 10.5h3"/>',
   clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
   inbox:'<path d="M3 12h4l2 3h6l2-3h4"/><path d="M5.5 6h13l3 6v5a2 2 0 0 1-2 2H4.5a2 2 0 0 1-2-2v-5z"/>',
   school:'<path d="M3 21h18"/><path d="M12 3 3 8h18z"/><path d="M5.5 10.5v8M10 10.5v8M14 10.5v8M18.5 10.5v8"/>',
@@ -1520,18 +1847,19 @@ var ICONS={
 };
 function icon(n){return '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}
 function paintTabIcons(){Array.prototype.forEach.call(document.querySelectorAll('.ti[data-ic]'),function(el){el.innerHTML=icon(el.getAttribute('data-ic'));});}
-var SHIELD='<svg viewBox="0 0 24 24" class="sb-shield" aria-hidden="true"><path d="M12 2 4 5v6.5c0 4.8 3.4 8.4 8 10.5 4.6-2.1 8-5.7 8-10.5V5z" fill="currentColor"/><text x="12" y="14.7" text-anchor="middle" font-size="8.5" font-weight="800" fill="#fff" font-family="Inter,Arial,sans-serif">W</text></svg>';
+var SHIELD='<svg viewBox="0 0 24 24" class="sb-shield" aria-hidden="true"><path d="M12 2 4 5v6.5c0 4.8 3.4 8.4 8 10.5 4.6-2.1 8-5.7 8-10.5V5z" fill="currentColor"/><text x="12" y="14.7" text-anchor="middle" font-size="8.5" font-weight="800" fill="var(--card)" font-family="Inter,Arial,sans-serif">W</text></svg>';
 var SECTIONS=[
-  {id:'panel-brief',ic:'brief',label:'Today\'s Brief'},
-  {id:'panel-griev',ic:'clock',label:'Grievances'},
-  {id:'panel-issues',ic:'inbox',label:'Member Issues'},
-  {id:'panel-schools',ic:'school',label:'Schools'},
-  {id:'panel-membership',ic:'users',label:'Membership'},
-  {id:'panel-coverage',ic:'target',label:'Coverage Gaps'},
-  {id:'panel-visits',ic:'pin',label:'Visits'},
-  {id:'panel-links',ic:'link',label:'Important Links'},
-  {id:'panel-jot',ic:'pencil',label:'Jot &amp; Share',hosted:true},
-  {id:'panel-import',ic:'data',label:'Data on This Device',hosted:true,util:true}
+  {id:'panel-brief',ic:'brief',label:'Today\'s Brief',short:'Brief'},
+  {id:'panel-griev',ic:'clock',label:'Grievances',short:'Grievances'},
+  {id:'panel-issues',ic:'inbox',label:'Member Issues',short:'Issues'},
+  {id:'panel-schools',ic:'school',label:'Schools',short:'Schools'},
+  {id:'panel-membership',ic:'users',label:'Membership',short:'Membership'},
+  {id:'panel-coverage',ic:'target',label:'Coverage Gaps',short:'Coverage'},
+  {id:'panel-visits',ic:'pin',label:'Visits',short:'Visits'},
+  {id:'panel-links',ic:'link',label:'Important Links',short:'Links'},
+  {id:'panel-resources',ic:'book',label:'Resource Hub',short:'Resources'},
+  {id:'panel-jot',ic:'pencil',label:'Jot &amp; Share',short:'Jot',hosted:true},
+  {id:'panel-import',ic:'data',label:'Data on This Device',short:'Data',hosted:true,util:true}
 ];
 var ACTIVE_SECT='panel-brief'; // default on every open: the morning driver
 var DASH_COUNTS={urgent:0,route:0,issues:0,covGaps:0,staleVisits:0,recruit:0}; // stashed by renderStatusStrip / renderCoverage / renderVisitClusters / renderMembership
@@ -1541,6 +1869,7 @@ function isLaptop(){return !!(mqLaptop&&mqLaptop.matches&&DATA_MODE!=='none');}
 function visibleSections(){return SECTIONS.filter(function(s){
   if(s.hosted&&DATA_MODE==='embedded')return false;
   if(s.id==='panel-links'&&!LINKS.length)return false; // older data file without the links key
+  if(s.id==='panel-resources'&&!resVisible().length)return false; // no resources for this surface (hosted shows web twins only)
   if(s.id==='panel-membership'&&!Object.keys(MEMBERSHIP||{}).length)return false; // no membership overlay in this data
   return true;
 });}
@@ -1566,23 +1895,39 @@ function navTo(id){
   revealSectionFor(el);
   el.scrollIntoView({behavior:'smooth',block:'start'});
 }
-function sbBtnHtml(s){
-  return '<button class="sb-btn'+(s.id===ACTIVE_SECT?' active':'')+'" type="button" data-sect="'+s.id+'"><span class="sb-ic">'+icon(s.ic)+'</span><span class="sb-lbl">'+s.label+'</span><span class="sb-badges" id="sbb-'+s.id+'"></span></button>';
+// The kbd hint surfaces the number-key shortcut (1–9 switch sections in laptop mode) that was
+// previously invisible; n is the section's 1-based index in visibleSections(), matching the handler.
+function sbBtnHtml(s,n){
+  var kbd=(n&&n<=9)?'<kbd class="sb-kbd" title="Press '+n+' to open">'+n+'</kbd>':'';
+  return '<button class="sb-btn'+(s.id===ACTIVE_SECT?' active':'')+'" type="button" data-sect="'+s.id+'"><span class="sb-ic">'+icon(s.ic)+'</span><span class="sb-lbl">'+s.label+'</span><span class="sb-badges" id="sbb-'+s.id+'"></span>'+kbd+'</button>';
+}
+/* The mid-width "Jump to" bar renders from visibleSections() — same source as the sidebar and
+   tab bar — so adding a section to SECTIONS updates every nav at once. Runs before wireButtons. */
+function renderActionbar(){
+  var bar=document.getElementById('actionbar');if(!bar)return;
+  var h='<span class="grp-label">Jump to</span>';
+  h+=visibleSections().filter(function(s){return !s.util;}).map(function(s){return '<button class="btn" data-jump="'+s.id+'">'+(s.short||s.label)+'</button>';}).join('');
+  h+='<span class="sep"></span><button class="btn primary" id="printBtn">Print / Save PDF</button>';
+  bar.innerHTML=h;
 }
 function renderSidebar(){
   var sb=document.getElementById('sidebar');if(!sb)return;
   var secs=visibleSections();
+  var num=function(s){return secs.indexOf(s)+1;};
   var h='<div class="sb-brand"><span class="sb-logo">'+SHIELD+'</span><span class="sb-brand-txt"><span class="sb-kick">WTU</span><span class="sb-name">Organizing Dashboard</span></span></div><div class="sb-grp">Sections</div>';
-  h+=secs.filter(function(s){return !s.util;}).map(sbBtnHtml).join('');
+  h+=secs.filter(function(s){return !s.util;}).map(function(s){return sbBtnHtml(s,num(s));}).join('');
   // Support Intake Form + Member Support removed from the sidebar (build .5): both live in the
   // Important Links section now, so the footer keeps only the genuine tools (Print, Data).
   h+='<div class="sb-foot"><div class="sb-grp">Tools</div>';
   h+='<button class="sb-btn" type="button" id="sbPrint"><span class="sb-ic">'+icon('printer')+'</span><span class="sb-lbl">Print / Save PDF</span></button>';
-  h+=secs.filter(function(s){return s.util;}).map(sbBtnHtml).join('');
+  h+='<button class="sb-btn" type="button" id="sbTheme"><span class="sb-ic">◐</span><span class="sb-lbl" id="sbThemeLbl">Light mode</span></button>';
+  h+=secs.filter(function(s){return s.util;}).map(function(s){return sbBtnHtml(s,num(s));}).join('');
   h+='</div>';
   sb.innerHTML=h;
   Array.prototype.forEach.call(sb.querySelectorAll('.sb-btn[data-sect]'),function(b){b.onclick=function(){navTo(b.getAttribute('data-sect'));};});
   var pr=document.getElementById('sbPrint');if(pr)pr.onclick=function(){window.print();};
+  var th=document.getElementById('sbTheme');if(th)th.onclick=toggleTheme;
+  syncThemeUi(); // the sidebar re-renders on data changes — keep the theme label current
 }
 // Numbers only — badge markup must never carry member names or school names (the shell stays data-free).
 function updateSidebarBadges(){
@@ -1597,8 +1942,27 @@ function updateSidebarBadges(){
   put('panel-coverage',chip(DASH_COUNTS.covGaps));
   put('panel-visits',DASH_COUNTS.staleVisits?'<span class="sb-chip" title="schools not visited in 30+ school days">'+DASH_COUNTS.staleVisits+'</span>':'');
   put('panel-links',chip(LINKS.length));
+  put('panel-resources',chip(resVisible().length)); // items available on THIS surface (desktop: all; hosted: web twins only)
   put('panel-membership',chip(DASH_COUNTS.recruit)); // stashed by renderMembership — neutral count of priority/watch schools (red stays reserved for deadlines)
 }
+/* ---- Theme (build 2026-07-17.1): dark is the default; the toggle saves a per-device
+   'light' override. The head bootstrap set the attribute pre-paint; these keep the
+   meta theme-color and both toggle labels (hero pill + sidebar tool) in sync. ---- */
+function currentTheme(){return document.documentElement.getAttribute('data-theme')==='light'?'light':'dark';}
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  try{localStorage.setItem('dash-theme',t);}catch(e){}
+  var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='dark'?'#191512':'#F4F5F7');
+  syncThemeUi();
+}
+function toggleTheme(){setTheme(currentTheme()==='dark'?'light':'dark');}
+function syncThemeUi(){
+  var dark=currentTheme()==='dark';
+  var tt=document.getElementById('themeToggle');
+  if(tt){tt.textContent=dark?'◐ Dark':'◑ Light';tt.setAttribute('aria-pressed',dark?'true':'false');tt.title='Switch to '+(dark?'light':'dark')+' mode';}
+  var sl=document.getElementById('sbThemeLbl');if(sl)sl.textContent=dark?'Light mode':'Dark mode';
+}
+function wireTheme(){var tt=document.getElementById('themeToggle');if(tt)tt.onclick=toggleTheme;syncThemeUi();}
 function applyLaptopMode(){
   var on=isLaptop();
   document.body.classList.toggle('laptop',on);
@@ -1616,8 +1980,8 @@ function boot(){
   resolveData();
   paintTabIcons(); // phone tab-bar SVG icons (harmless when the tab bar is hidden)
   var fns=DATA_MODE==='none'
-    ?[renderSelfTest,renderImport,wireImport]
-    :[renderHeader,renderSelfTest,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderIssues,renderSchoolKpis,renderChips,renderSchools,renderMembership,renderCoverage,renderVisitClusters,renderVisits,renderAttention,renderBriefTiles,renderLinks,wireCalc,wireButtons,renderImport,wireImport,renderJot,wireJot,wireLinks,renderSidebar,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
+    ?[renderSelfTest,renderImport,wireImport,wireTheme]
+    :[renderHeader,renderSelfTest,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderIssues,renderSchoolKpis,renderChips,renderSchools,renderMembership,renderCoverage,renderVisitClusters,renderVisits,renderAttention,renderBriefTiles,renderLinks,renderResources,renderActionbar,wireCalc,wireButtons,renderImport,wireImport,renderJot,wireJot,wireLinks,wireResources,renderSidebar,wireTheme,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
   fns.forEach(function(fn){
     // Log the failure point but never the exception content — an error message must not echo member data (hardening).
     try{fn();}catch(e){console.error('dash:'+fn.name+' failed ('+((e&&e.name)||'error')+')');}
