@@ -341,6 +341,31 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
 #panel-brief{--sect:var(--j-gold)}
 #panel-griev{--sect:var(--maroon-fill)}
 #panel-issues{--sect:var(--j-amethyst)}
+/* "Needs a BR election" strip (top of Schools). Data-free shell: every count/name renders
+   from SCHOOLS at runtime. Amber = awaiting election results, dashed = seat vacant after an
+   election, red = school has NO union contact at all (worst state, per the urgency-color rule). */
+.brx{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:10px 12px;margin:10px 0 4px}
+.brx-h{font-weight:800;font-size:13px}
+.brx-h .brx-n{font-weight:700;font-size:11px;margin-left:8px;padding:1px 8px;border-radius:999px;background:var(--warn-tint);color:var(--warn-ink)}
+.brx-lab{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;font-weight:800;color:var(--maroon);margin:8px 0 4px}
+a.brx-chip{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--warn-tint);color:var(--warn-ink);margin:0 6px 6px 0;text-decoration:none}
+a.brx-chip.vac{background:var(--chip-tint);color:var(--chip-ink);outline:1px dashed var(--line)}
+a.brx-chip.red{background:var(--red-tint);color:var(--red-ink)}
+.brx-note{font-size:11px;opacity:.75;margin-top:2px}
+/* August push block + global search + ward chips (build 2026-07-18.2) */
+.aug{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:10px 12px;margin:10px 0 4px}
+.aug-h{font-weight:800;font-size:13px}
+.aug-h .aug-n{font-weight:700;font-size:11px;margin-left:8px;padding:1px 8px;border-radius:999px;background:var(--tint);color:var(--muted)}
+.aug-line{font-size:12.5px;margin-top:7px;color:var(--ink)}
+.aug-line .tag{margin:3px 6px 0 0}
+.gsearch{position:relative;margin-top:10px;max-width:560px}
+.gsearch .schfilter{width:100%;box-sizing:border-box}
+.gresults{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow-1);max-height:min(60vh,420px);overflow:auto;z-index:80;padding:6px}
+.gres-grp{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--maroon);font-weight:800;padding:6px 8px 2px}
+.gres{display:block;width:100%;text-align:left;background:none;border:none;font-family:inherit;cursor:pointer;padding:7px 8px;border-radius:8px;color:var(--ink);text-decoration:none;font-size:13px}
+.gres:hover,.gres:focus{background:var(--tint)}
+.gres .gsub{display:block;font-size:11px;color:var(--muted);margin-top:1px}
+.nodata .gsearch{display:none}
 #panel-schools{--sect:var(--j-sapphire)}
 #panel-membership{--sect:var(--j-emerald)}
 #panel-coverage{--sect:var(--j-teal)}
@@ -438,6 +463,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
       <span class="pill diag" id="selftestPill">checking deadline math…</span>
       <button class="pill" id="themeToggle" type="button" aria-pressed="true" title="Switch to light mode">◐ Dark</button>
     </div>
+    <div class="gsearch"><input type="search" id="gSearch" class="schfilter" placeholder="Search schools, contacts, links, resources…" aria-label="Search the dashboard" autocomplete="off" title="Press / to jump here"><div class="gresults" id="gResults" style="display:none"></div></div>
     <div class="status-strip" id="statusStrip">—</div>
   </header>
 
@@ -453,6 +479,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
     <h2>Today's Brief</h2>
     <div class="brief-tiles" id="briefTiles"><!-- built by renderBriefTiles() from engine counts --></div>
     <div id="runwayBox"><!-- built by renderRunway() — heading + cells render together so an empty runway leaves no dangling header --></div>
+    <div id="augPushBox"><!-- built by renderAugustPush() — the SY 26-27 membership-push block; self-retires after Aug 31, 2026 --></div>
     <div class="brief-grid" id="briefGrid">
       <div class="brief-block">
         <h3>Deadlines — Next 5 School Days</h3>
@@ -499,8 +526,10 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
 
   <div class="card full" id="panel-schools" style="margin-top:16px">
     <h2>Schools at a Glance</h2>
+    <div id="brElection"><!-- built by renderBrElection(): schools without an elected 26-27 BR --></div>
     <div class="kpis" id="schoolKpis"></div>
     <div class="toolbar" id="clusterChips"></div>
+    <div class="toolbar" id="wardChips"><!-- ward filter chips — renders only when the data carries wards --></div>
     <div class="toolbar">
       <input type="search" id="schoolFilter" class="schfilter" placeholder="Type to filter schools…" aria-label="Filter schools by name">
       <button class="btn" id="expandAll">Expand all</button>
@@ -602,7 +631,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
   <footer>
     Snapshot data: WTU workspace (school pages + Filed Grievances) + calendar entered from Outlook screenshots, captured <span id="snapFoot">—</span>. Ask to "refresh" or "update" anytime.<br>
     This is a working-aid, not the official record. The CBA controls all grievance timelines — verify any deadline day-by-day before filing.<br>
-    <span class="build-note" id="buildPill">build 2026-07-17.3</span>
+    <span class="build-note" id="buildPill">build 2026-07-18.2</span>
   </footer>
 </div>
 
@@ -737,6 +766,7 @@ function renderStatusStrip(){
 }
 
 let activeCluster='All';
+let activeWard='All'; // ward filter (build .2) — chips render only when the data carries wards
 let schoolFilterText='';
 let covHideEmpty=true; // build .5: Coverage Gaps hides schools with nothing recorded yet (identical all-missing rows are noise; a partially-filled school missing a rep is the real signal)
 const CLUSTER_ORDER=['VII','VIII','IX'];
@@ -745,6 +775,12 @@ function orderedClusters(){
   const known=CLUSTER_ORDER.filter(c=>present.has(c));
   const extra=Array.from(present).filter(c=>CLUSTER_ORDER.indexOf(c)===-1).sort();
   return known.concat(extra);
+}
+// DC wards present in the data, sorted numerically (1–8). Empty when the data predates the ward field.
+function orderedWards(){
+  const seen=new Set();
+  SCHOOLS.forEach(function(s){if(s.ward!==undefined&&s.ward!==null&&s.ward!=='')seen.add(String(s.ward));});
+  return Array.from(seen).sort(function(a,b){return (+a)-(+b);});
 }
 
 function renderHeader(){
@@ -890,7 +926,7 @@ function openSchool(name){
   b+=s.issues.length?('<table><tr><th>Issue</th><th>Status</th><th>Article</th><th>Opened</th></tr>'+s.issues.map(function(r){return '<tr><td data-label="Issue">'+esc(r[0]||'')+'</td><td data-label="Status">'+esc(r[1]||'')+'</td><td data-label="Article">'+esc(r[2]||'')+'</td><td data-label="Opened">'+esc(r[3]||'')+'</td></tr>';}).join('')+'</table>'):'<div class="empty">No open issues.</div>';
   b+='<div class="sub-h">Visit &amp; Conversation Log</div>';
   b+=s.visits.length?('<table><tr><th>Date</th><th>Notes</th></tr>'+s.visits.slice().sort(function(a,b2){return b2[0].localeCompare(a[0]);}).map(function(v){return '<tr><td data-label="Date">'+pretty(v[0])+'</td><td data-label="Notes">'+esc(v[1])+'</td></tr>';}).join('')+'</table>'):'<div class="empty">No visits logged.</div>';
-  document.getElementById('schModalTitle').textContent=s.name+' — Cluster '+s.cluster;
+  document.getElementById('schModalTitle').textContent=s.name+' — Cluster '+s.cluster+(s.ward?' · Ward '+s.ward:'');
   document.getElementById('schModalBody').innerHTML=b;
   document.getElementById('schModal').style.display='flex';
   MODAL_RETURN=document.activeElement;
@@ -1031,12 +1067,20 @@ function renderIssues(){
     const opened=x.row[3]||'';
     const openedIso=/^\d{4}-\d{2}-\d{2}$/.test(opened)?opened:null;
     let ageTxt=opened?(openedIso?prettyMed(openedIso):esc(opened)):'—';
-    if(openedIso){const age=workingDaysBetween(openedIso,t);if(age&&age>0)ageTxt+=' · '+age+' school day'+(age===1?'':'s')+' ago';}
+    // Age chips (build .2): amber at 7+, red at 12+ school days in the queue — an article-tagged
+    // issue nearing 14 school days may be losing its filing window. Displays workingDaysBetween()
+    // (the engine's own counter); the clock naturally pauses over breaks and summer.
+    if(openedIso){const age=workingDaysBetween(openedIso,t);
+      if(age&&age>0){
+        const cls=age>=12?'dl-red':(age>=7?'dl-amber':'dl-grey');
+        ageTxt+=' <span class="tag '+cls+'">'+age+' school day'+(age===1?'':'s')+' in queue</span>';
+      }
+    }
     const art=x.row[2]||'';
     const artCell=art?esc(art)+' <a href="#" class="attn-link" data-target="panel-griev" title="An article-tagged issue may be a violation with a live 14-school-day filing clock — run the date through the calculator">check filing clock →</a>':'';
     return '<tr><td data-label="School">'+schoolLink(x.school)+'</td><td data-label="Issue">'+esc(x.row[0]||'')+'</td><td data-label="Status">'+esc(x.row[1]||'')+'</td><td data-label="Article">'+artCell+'</td><td data-label="Opened">'+ageTxt+'</td></tr>';}).join('');
   box.innerHTML='<table><tr><th>School</th><th>Issue</th><th>Status</th><th>Article</th><th>Opened</th></tr>'+rows+'</table>'+
-    '<div class="sectnote">Oldest first. An issue tagged with a CBA article may be a violation with a live 14-school-day filing clock — don\'t let it age in the queue.</div>';
+    '<div class="sectnote">Oldest first. The age chip counts school days in the queue — amber at 7+, red at 12+. An issue tagged with a CBA article may be a violation with a live 14-school-day filing clock — don\'t let it age out.</div>';
 }
 
 function renderSchoolKpis(){
@@ -1053,6 +1097,17 @@ function renderChips(){
   document.getElementById('clusterChips').innerHTML=clusters.map(c=>
     '<button type="button" class="chip'+(c===activeCluster?' active':'')+'" data-c="'+c+'">'+(c==='All'?'All clusters':'Cluster '+c)+'</button>').join('');
   Array.prototype.forEach.call(document.querySelectorAll('#clusterChips .chip'),ch=>ch.onclick=function(){activeCluster=ch.dataset.c;renderChips();renderSchools();});
+  // Ward filter (build .2): a second chip row, hidden entirely when the data predates the ward field.
+  const wb=document.getElementById('wardChips');
+  if(wb){
+    const wards=orderedWards();
+    if(!wards.length){wb.innerHTML='';}
+    else{
+      wb.innerHTML=['All'].concat(wards).map(w=>
+        '<button type="button" class="chip'+(w===activeWard?' active':'')+'" data-w="'+w+'">'+(w==='All'?'All wards':'Ward '+w)+'</button>').join('');
+      Array.prototype.forEach.call(wb.querySelectorAll('.chip'),ch=>ch.onclick=function(){activeWard=ch.dataset.w;renderChips();renderSchools();});
+    }
+  }
 }
 
 // ---- Membership overlay (optional; from the data's membership.bySchool key) ----
@@ -1153,6 +1208,7 @@ function schoolCard(s){
   const lv=lastVisit(s);
   const issuesN=s.issues.length;
   const tags=[];
+  if(s.ward)tags.push('<span class="tag">Ward '+esc(s.ward)+'</span>');
   tags.push('<span class="tag'+(s.cf>0?' ok':'')+'">'+s.cf+'/'+s.ct+' contacts</span>');
   tags.push('<span class="tag'+(issuesN>0?' warn':'')+'">'+issuesN+' issue'+(issuesN===1?'':'s')+'</span>');
   tags.push('<span class="tag">'+(lv?'visit '+prettyNoYr(lv):'no visits')+'</span>');
@@ -1180,16 +1236,45 @@ function renderSchools(){
   let html='';
   clusters.forEach(c=>{
     if(activeCluster!=='All'&&activeCluster!==c)return;
-    const list=SCHOOLS.filter(s=>s.cluster===c&&(!schoolFilterText||s.name.toLowerCase().indexOf(schoolFilterText)!==-1)).sort((a,b)=>a.name.localeCompare(b.name));
+    const list=SCHOOLS.filter(s=>s.cluster===c&&(activeWard==='All'||String(s.ward)===activeWard)&&(!schoolFilterText||s.name.toLowerCase().indexOf(schoolFilterText)!==-1)).sort((a,b)=>a.name.localeCompare(b.name));
     if(!list.length)return;
     const issues=list.reduce((a,s)=>a+s.issues.length,0);
     const visited=list.filter(s=>s.visits.length).length;
     html+='<div class="cluster-block" data-cluster="'+c+'">';
-    html+='<div class="cluster-h"><button class="cluster-toggle" aria-expanded="true" title="Collapse or expand this cluster">▾</button>Cluster '+c+'<span class="ch-meta">'+list.length+' schools · '+visited+' visited · '+issues+' open issues</span></div>';
+    html+='<div class="cluster-h"><button class="cluster-toggle" aria-expanded="true" title="Collapse or expand this cluster">▾</button>Cluster '+c+'<span class="ch-meta">'+list.length+' school'+(list.length===1?'':'s')+' · '+visited+' visited · '+issues+' open issues</span></div>';
     html+='<div class="cluster-schools">'+list.map(schoolCard).join('')+'</div>';
     html+='</div>';
   });
-  wrap.innerHTML=html||'<div class="empty">No schools match'+(schoolFilterText?' "'+esc(schoolFilterText)+'"':' this cluster')+'.</div>';
+  wrap.innerHTML=html||'<div class="empty">No schools match the current filters'+(schoolFilterText?' ("'+esc(schoolFilterText)+'")':'')+'.</div>';
+}
+
+/* "Needs a BR election" strip — the Building Rep is the most important seat, so schools without
+   an elected 26-27 BR get a dedicated block at the top of Schools (+ a Brief tile via
+   DASH_COUNTS.brNeed). brStatus is written by the refresh (elected|pending|vacant); the fallback
+   keeps older imported data on the phone rendering sanely. Ignores the cluster filter on purpose —
+   this is the standing to-do list, not a view. */
+function brStatusOf(s){
+  if(s.brStatus)return s.brStatus;
+  return contactVal(s,'Building Rep')?'elected':'pending';
+}
+function renderBrElection(){
+  var host=document.getElementById('brElection');if(!host)return;
+  var ord={VII:0,VIII:1,IX:2};
+  var srt=function(a,b){return (ord[a.cluster]-ord[b.cluster])||a.name.localeCompare(b.name);};
+  var pend=SCHOOLS.filter(function(s){return brStatusOf(s)==='pending';}).sort(srt);
+  var vac=SCHOOLS.filter(function(s){return brStatusOf(s)==='vacant';}).sort(srt);
+  DASH_COUNTS.brNeed=pend.length+vac.length;
+  if(!DASH_COUNTS.brNeed){host.innerHTML='';return;}
+  var chip=function(s,vacCls){
+    var noC=!vacCls&&!contactVal(s,'Other key members');
+    var cls='brx-chip schlink'+(vacCls?' vac':'')+(noC?' red':'');
+    return '<a href="#" class="'+cls+'" data-school="'+esc(s.name)+'">'+esc(s.name)+(s.ward?' · Ward '+esc(s.ward):'')+(noC?' · no contact on file':'')+'</a>';
+  };
+  var h='<div class="brx"><div class="brx-h">Needs a Building Rep election<span class="brx-n">'+DASH_COUNTS.brNeed+' school'+(DASH_COUNTS.brNeed===1?'':'s')+'</span></div>';
+  if(pend.length)h+='<span class="brx-lab">Awaiting 26-27 election results ('+pend.length+')</span>'+pend.map(function(s){return chip(s,false);}).join('');
+  if(vac.length)h+='<span class="brx-lab">Election held — BR seat vacant ('+vac.length+')</span>'+vac.map(function(s){return chip(s,true);}).join('');
+  h+='<div class="brx-note">The BR slot stays empty until a 26-27 election fills it; 25-26 holdovers sit under "Other key members" as the contact for getting the election run. Red = no union contact at the school at all.</div></div>';
+  host.innerHTML=h;
 }
 
 function renderCoverage(){
@@ -1199,6 +1284,7 @@ function renderCoverage(){
   const total=SCHOOLS.length;
   k.innerHTML=roles.map(function(r){var n=SCHOOLS.filter(function(s){return contactVal(s,r[0]);}).length;return '<div class="kpi"><div class="n">'+n+' / '+total+'</div><div class="l">'+r[1]+'</div></div>';}).join('');
   const hasData=function(s){return s.cf>0||s.notes.length>0||s.issues.length>0||s.visits.length>0;};
+  const hasWards=SCHOOLS.some(function(s){return s.ward;}); // older data without wards keeps the old 4-column table
   const missingRole=function(s){return roles.some(function(r){return !contactVal(s,r[0]);});};
   const hiddenN=covHideEmpty?SCHOOLS.filter(function(s){return missingRole(s)&&!hasData(s);}).length:0;
   let html='',gapsShown=0;
@@ -1208,8 +1294,8 @@ function renderCoverage(){
     gapsShown+=list.length;
     html+='<div class="cluster-block" data-cluster="'+c+'">';
     html+='<div class="cluster-h"><button class="cluster-toggle" aria-expanded="true" title="Collapse or expand this cluster">▾</button>Cluster '+c+'<span class="ch-meta">'+list.length+' school'+(list.length===1?'':'s')+' missing a rep</span></div>';
-    html+='<div class="cluster-schools"><table><tr><th>School</th><th>Building Rep</th><th>SCAC Committee</th><th>LSAT Rep</th></tr>'+list.map(function(s){
-      return '<tr><td data-label="School">'+schoolLink(s.name)+'</td>'+roles.map(function(r){return '<td data-label="'+r[1]+'">'+(contactVal(s,r[0])?'<span class="cov-yes">✓</span>':'<span class="cov-no">missing</span>')+'</td>';}).join('')+'</tr>';
+    html+='<div class="cluster-schools"><table><tr><th>School</th>'+(hasWards?'<th>Ward</th>':'')+'<th>Building Rep</th><th>SCAC Committee</th><th>LSAT Rep</th></tr>'+list.map(function(s){
+      return '<tr><td data-label="School">'+schoolLink(s.name)+'</td>'+(hasWards?'<td data-label="Ward">'+(s.ward?'Ward '+esc(s.ward):'—')+'</td>':'')+roles.map(function(r){return '<td data-label="'+r[1]+'">'+(contactVal(s,r[0])?'<span class="cov-yes">✓</span>':'<span class="cov-no">missing</span>')+'</td>';}).join('')+'</tr>';
     }).join('')+'</table></div>';
     html+='</div>';
   });
@@ -1378,6 +1464,7 @@ function renderBriefTiles(){
   if(nyf)h+=tile(nyf,'not yet filed',fileNext?((fileNext.act.escalated?'OUTER LIMIT ':'file by ')+prettyNoYr(fileNext.act.date)):'check case data','panel-griev',false);
   h+=tile(DASH_COUNTS.issues,'open member issue'+(DASH_COUNTS.issues===1?'':'s'),DASH_COUNTS.issues?'don\'t let filing clocks age':'queue clear','panel-issues',false);
   if(Object.keys(MEMBERSHIP||{}).length)h+=tile(DASH_COUNTS.recruit,'recruitment priorities','schools ≥15% non-member','panel-membership',false);
+  if(DASH_COUNTS.brNeed)h+=tile(DASH_COUNTS.brNeed,'school'+(DASH_COUNTS.brNeed===1?'':'s')+' need a BR election','the #1 seat — tap for the list','panel-schools',false);
   if(DASH_COUNTS.covGaps)h+=tile(DASH_COUNTS.covGaps,'coverage gap'+(DASH_COUNTS.covGaps===1?'':'s'),'missing rep · SCAC · LSAT','panel-coverage',false);
   if(DASH_COUNTS.staleVisits)h+=tile(DASH_COUNTS.staleVisits,'stale visit'+(DASH_COUNTS.staleVisits===1?'':'s'),'not visited in 30+ school days','panel-visits',false);
   if(!inDuty(t)){
@@ -1385,6 +1472,54 @@ function renderBriefTiles(){
     if(next){var cd=Math.round((parseD(next)-parseD(t))/86400000);h+=tile(cd,'days until school year','calendar days · clocks resume '+prettyNoYr(next),'',false);}
   }
   host.innerHTML=h;
+}
+
+/* ---- August membership push (build 2026-07-18.2): a Brief block for the SY 26-27 startup
+   drive. Renders only through Aug 31, 2026, then retires itself. The NEO dates and the Aug-31
+   gate are event constants (like the CALDATA fixtures) — the duty-start date comes from CALDATA,
+   and the red-tier schools + starred recruit targets are computed from the LOADED DATA at render
+   time, so no school or member data lives in this file. Countdowns here are calendar days
+   (events, not deadlines — no school-day math, nothing red). */
+function renderAugustPush(){
+  var host=document.getElementById('augPushBox');if(!host)return;
+  var t=todayIso();
+  if(t>'2026-08-31'){host.innerHTML='';return;}
+  var cd=function(d){return Math.round((parseD(d)-parseD(t))/86400000);};
+  var lines=[];
+  var NEO_START='2026-08-12',NEO_END='2026-08-14';
+  if(t<=NEO_END){
+    var n=cd(NEO_START);
+    lines.push('<div class="aug-line">🎓 <b>New Educator Orientation</b> — Aug 12–14 (Wed/Thu in person, Fri virtual)'+(n>0?' · in '+n+' day'+(n===1?'':'s'):' · <b>happening now</b>')+' — the prime face-to-face window for signing new hires.</div>');
+  }else{
+    lines.push('<div class="aug-line">🎓 <b>New Educator Orientation</b> (Aug 12–14) is done — follow up with every new hire you met.</div>');
+  }
+  var next=null;for(var i=0;i<DUTY.length;i++){if(DUTY[i][0]>t){next=DUTY[i][0];break;}}
+  if(next&&next<='2026-08-31'){var dn=cd(next);lines.push('<div class="aug-line">🏫 <b>First teacher duty day</b> — '+prettyMed(next)+' · in '+dn+' day'+(dn===1?'':'s')+'. BR-led in-building recruitment is the primary engine once doors open.</div>');}
+  var reds=[];
+  Object.keys(MEMBERSHIP||{}).forEach(function(nm){var m=MEMBERSHIP[nm];if(m&&(m.nonRate||0)>=0.25)reds.push({name:nm,rate:m.nonRate||0});});
+  if(reds.length){
+    reds.sort(function(a,b){return b.rate-a.rate;});
+    lines.push('<div class="aug-line">🎯 <b>Red-tier schools</b> (≥25% non-member): '+reds.map(function(r){return '<span class="tag dl-red">'+schoolLink(r.name)+' · '+Math.round(r.rate*100)+'%</span>';}).join(' ')+'</div>');
+  }
+  // Count DISTINCT starred people per school: strip the "(* = not yet a WTU member)" legend first
+  // (its own * would inflate the count and split one person into two keys), then dedupe names —
+  // one leader on SCAC + LSAT + Personnel is one recruit, not three. Verified 2026-07-18 to
+  // reproduce the elections workbook's Needs Attention numbers exactly (13 · KM 5 · IBW 3).
+  var starN=0,starSchools=0;
+  SCHOOLS.forEach(function(s){
+    var seen={};
+    (s.contacts||[]).forEach(function(c){
+      String(c[1]||'').split(';').forEach(function(p){
+        p=p.replace(/\([^)]*=\s*not yet[^)]*\)/gi,'').trim();
+        if(p.indexOf('*')>=0){var nm=p.replace(/\*/g,'').trim();if(nm)seen[nm.toLowerCase()]=1;}
+      });
+    });
+    var k=Object.keys(seen).length;
+    if(k){starN+=k;starSchools++;}
+  });
+  if(starN)lines.push('<div class="aug-line">⭐ <b>'+starN+' elected leader'+(starN===1?'':'s')+' not yet a member</b> across '+starSchools+' school'+(starSchools===1?'':'s')+' (the * names on Key Contacts lines) — recruit the leadership first.</div>');
+  if(!lines.length){host.innerHTML='';return;}
+  host.innerHTML='<div class="aug"><div class="aug-h">August Membership Push<span class="aug-n">SY 26-27 startup · retires Sep 1</span></div>'+lines.join('')+'</div>';
 }
 
 function wireCalc(){
@@ -1824,6 +1959,90 @@ function visitPrep(name){
   return '<div class="sub-h">Visit prep</div><div class="res-prep">'+chips.join('')+'</div>';
 }
 
+/* ===== GLOBAL SEARCH (build 2026-07-18.2): one header box over schools, key contacts,
+   links, and resources. Pure lookup over the already-loaded arrays — school and contact
+   results open the school viewer, link/resource results reuse the exact hrefs their own
+   sections render (resHref per surface), so nothing here invents a second open path. ===== */
+var GS_MAX=24;
+function gsResults(q){
+  q=q.toLowerCase();
+  var out=[];
+  function push(grp,html){out.push({grp:grp,html:html});return out.length<GS_MAX;}
+  for(var i=0;i<SCHOOLS.length;i++){
+    var s=SCHOOLS[i];
+    if(s.name.toLowerCase().indexOf(q)>=0){
+      var sub='Cluster '+s.cluster+(s.ward?' · Ward '+s.ward:'');
+      if(!push('Schools','<button type="button" class="gres" data-gs-school="'+esc(s.name)+'">'+esc(s.name)+'<span class="gsub">'+esc(sub)+'</span></button>'))return out;
+    }
+  }
+  for(var i2=0;i2<SCHOOLS.length;i2++){
+    var s2=SCHOOLS[i2];
+    for(var c=0;c<(s2.contacts||[]).length;c++){
+      var role=String(s2.contacts[c][0]||''),val=String(s2.contacts[c][1]||'');
+      if(!val)continue;
+      if(val.toLowerCase().indexOf(q)>=0||role.toLowerCase().indexOf(q)>=0){
+        var snip=val.length>70?val.slice(0,67)+'…':val;
+        if(!push('Contacts','<button type="button" class="gres" data-gs-school="'+esc(s2.name)+'">'+esc(role)+' — '+esc(s2.name)+'<span class="gsub">'+esc(snip)+'</span></button>'))return out;
+      }
+    }
+  }
+  for(var l=0;l<LINKS.length;l++){
+    var lk=LINKS[l];
+    if(String(lk.title||'').toLowerCase().indexOf(q)>=0){
+      if(!push('Links','<a class="gres" href="'+esc(lk.url)+'" target="_blank" rel="noopener">'+esc(lk.emoji||'🔗')+' '+esc(lk.title)+'<span class="gsub">opens in a new tab</span></a>'))return out;
+    }
+  }
+  var items=resVisible();
+  for(var r=0;r<items.length;r++){
+    var it=items[r];
+    var hay=(it.title+' '+(it.use||'')+' '+(it.cat||'')+' '+(it.tags||[]).join(' ')).toLowerCase();
+    if(hay.indexOf(q)>=0){
+      var href=resHref(it);
+      var inner=esc(it.emoji||'📄')+' '+esc(it.title)+'<span class="gsub">'+esc(it.cat||'Resource')+(it.use?' · '+esc(it.use):'')+'</span>';
+      if(!push('Resources',href?'<a class="gres" href="'+esc(href)+'" target="_blank" rel="noopener">'+inner+'</a>':'<span class="gres" style="cursor:default">'+inner+'</span>'))return out;
+    }
+  }
+  return out;
+}
+function gsRender(){
+  var inp=document.getElementById('gSearch'),box=document.getElementById('gResults');
+  if(!inp||!box)return;
+  var q=inp.value.trim();
+  if(q.length<2){box.style.display='none';box.innerHTML='';return;}
+  var res=gsResults(q);
+  if(!res.length){
+    box.innerHTML='<div class="gres-grp">No matches</div><span class="gres" style="cursor:default">Nothing found for “'+esc(q)+'” in schools, contacts, links, or resources.</span>';
+    box.style.display='block';return;
+  }
+  var h='',last='';
+  res.forEach(function(r){if(r.grp!==last){h+='<div class="gres-grp">'+r.grp+'</div>';last=r.grp;}h+=r.html;});
+  if(res.length>=GS_MAX)h+='<div class="gres-grp">keep typing to narrow the list…</div>';
+  box.innerHTML=h;box.style.display='block';
+}
+function gsClose(){var box=document.getElementById('gResults');if(box)box.style.display='none';}
+function wireSearch(){
+  var inp=document.getElementById('gSearch'),box=document.getElementById('gResults');
+  if(!inp||!box)return;
+  inp.addEventListener('input',gsRender);
+  inp.addEventListener('focus',gsRender);
+  inp.addEventListener('keydown',function(e){if(e.key==='Escape'){gsClose();inp.blur();}});
+  box.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('[data-gs-school]');
+    if(b){openSchool(b.getAttribute('data-gs-school'));gsClose();return;}
+    if(e.target.closest&&e.target.closest('a.gres'))gsClose(); // link/resource: browser handles the href, just close the panel
+  });
+  document.addEventListener('click',function(e){
+    if(!(e.target.closest&&e.target.closest('.gsearch')))gsClose();
+  });
+  // '/' focuses the search from anywhere (pairs with the 1–9 section keys) — never while typing.
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='/'||e.altKey||e.ctrlKey||e.metaKey)return;
+    var tg=e.target,tag=(tg&&tg.tagName)||'';
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(tg&&tg.isContentEditable))return;
+    e.preventDefault();inp.focus();
+  });
+}
+
 /* ===== LAPTOP LAYER (build .2): fixed sidebar + one-section-at-a-time view =====
    Active at ≥1100px only (the same query as the CSS) and only once data is loaded — never in nodata
    mode, so the hosted shell's first-run import card stays full-page. Pure navigation/display: the
@@ -1862,7 +2081,7 @@ var SECTIONS=[
   {id:'panel-import',ic:'data',label:'Data on This Device',short:'Data',hosted:true,util:true}
 ];
 var ACTIVE_SECT='panel-brief'; // default on every open: the morning driver
-var DASH_COUNTS={urgent:0,route:0,issues:0,covGaps:0,staleVisits:0,recruit:0}; // stashed by renderStatusStrip / renderCoverage / renderVisitClusters / renderMembership
+var DASH_COUNTS={urgent:0,route:0,issues:0,covGaps:0,staleVisits:0,recruit:0,brNeed:0}; // stashed by renderStatusStrip / renderCoverage / renderVisitClusters / renderMembership / renderBrElection
 var mqLaptop=window.matchMedia?window.matchMedia('(min-width:1100px)'):null;
 function isLaptop(){return !!(mqLaptop&&mqLaptop.matches&&DATA_MODE!=='none');}
 // Jot and the import card exist only on the hosted/phone build (renderJot/renderImport hide them when embedded).
@@ -1981,7 +2200,7 @@ function boot(){
   paintTabIcons(); // phone tab-bar SVG icons (harmless when the tab bar is hidden)
   var fns=DATA_MODE==='none'
     ?[renderSelfTest,renderImport,wireImport,wireTheme]
-    :[renderHeader,renderSelfTest,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderIssues,renderSchoolKpis,renderChips,renderSchools,renderMembership,renderCoverage,renderVisitClusters,renderVisits,renderAttention,renderBriefTiles,renderLinks,renderResources,renderActionbar,wireCalc,wireButtons,renderImport,wireImport,renderJot,wireJot,wireLinks,wireResources,renderSidebar,wireTheme,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
+    :[renderHeader,renderSelfTest,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderAugustPush,renderIssues,renderSchoolKpis,renderChips,renderSchools,renderBrElection,renderMembership,renderCoverage,renderVisitClusters,renderVisits,renderAttention,renderBriefTiles,renderLinks,renderResources,renderActionbar,wireCalc,wireButtons,wireSearch,renderImport,wireImport,renderJot,wireJot,wireLinks,wireResources,renderSidebar,wireTheme,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
   fns.forEach(function(fn){
     // Log the failure point but never the exception content — an error message must not echo member data (hardening).
     try{fn();}catch(e){console.error('dash:'+fn.name+' failed ('+((e&&e.name)||'error')+')');}
@@ -1997,7 +2216,7 @@ function rerenderForNewDay(){
   if(todayIso()===lastRenderedDay)return;
   lastRenderedDay=todayIso();
   var openIds=Array.prototype.map.call(document.querySelectorAll('details.sch[open]'),function(d){return d.id;}).filter(Boolean);
-  [renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderIssues,renderVisitClusters,renderAttention,renderBriefTiles,updateSidebarBadges].forEach(function(fn){
+  [renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderAugustPush,renderIssues,renderVisitClusters,renderAttention,renderBriefTiles,updateSidebarBadges].forEach(function(fn){
     try{fn();}catch(e){console.error('rollover:'+fn.name+' failed ('+((e&&e.name)||'error')+')');}
   });
   openIds.forEach(function(id){var el=document.getElementById(id);if(el)el.open=true;});
