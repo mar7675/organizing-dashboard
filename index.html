@@ -750,6 +750,11 @@ var MEMBERSHIP={},MEMBERSHIP_DATE='',MEMBERSHIP_HISTORY=[]; // optional overlay 
 var MEM_SEL={},MEM_TIER='',MEM_SORT={key:'nonRate',dir:-1};
 var RESOURCES=null; // optional Resource Hub data ({base, items:[{title,cat,tags,path,url,use,emoji}]}); absent = section hides
 var HUSTLE=null; // optional Hustle Texts data ({capChars, segmentChars, templates:[…], sends:[…]}); absent = section hides
+/* Backup freshness ({checked, warnDays, local:{lastRun}, external:{lastRun}, warn}) — written by
+   backup/_status.ps1 and carried into the data file on refresh; absent = the strip says nothing.
+   Age is recomputed from lastRun at render time, never read from the file, so the number stays
+   honest even when the data snapshot itself is a few days old. Dates only — no member data. */
+var BACKUP=null;
 var DATA_MODE='none'; // 'embedded' | 'imported' | 'none'
 var DATA_META=null;   // {importedAt, source} for imported mode
 var SHELL_SCHEMA=1;   // highest dashboard-data.json schemaVersion this build understands
@@ -774,6 +779,7 @@ function adoptData(d){
   if(d.membership&&d.membership.bySchool){MEMBERSHIP=d.membership.bySchool;MEMBERSHIP_DATE=d.membership.snapshotDate||'';MEMBERSHIP_HISTORY=d.membership.history||[];}else{MEMBERSHIP={};MEMBERSHIP_DATE='';MEMBERSHIP_HISTORY=[];} // optional overlay — absent = membership UI simply hides
   RESOURCES=(d.resources&&Array.isArray(d.resources.items)&&d.resources.items.length)?d.resources:null; // optional (Resource Hub, 'update resources') — absent = section hides
   HUSTLE=(d.hustle&&Array.isArray(d.hustle.templates)&&d.hustle.templates.length)?d.hustle:null; // optional (Hustle Texts, 'update hustle templates') — absent = section hides
+  BACKUP=(d.backup&&typeof d.backup==='object')?d.backup:null; // optional (backup freshness) — absent = status strip stays silent about it
 }
 function resolveData(){
   if(window.__DATA__){
@@ -861,7 +867,23 @@ function renderStatusStrip(){
   parts.push(urgent?'<span class="seg-red">⚠ '+urgent+' deadline'+(urgent===1?'':'s')+' within 3 school days or past due</span>':'<span class="seg-ok">no urgent deadlines</span>');
   if(route)parts.push('<span class="seg-amber">'+route+' case'+(route===1?'':'s')+' needs routing to a Grievance Specialist</span>');
   parts.push('<span class="seg-muted">'+issues+' open member issue'+(issues===1?'':'s')+'</span>');
+  var bk=backupSegment();if(bk)parts.push(bk);
   el.innerHTML=parts.join('<span class="seg-muted">·</span>');
+}
+/* Backup freshness segment. The T7 lives unplugged, so a stale external copy is invisible by
+   design — the hourly job just skips. This is where it stops being invisible. Amber (not red):
+   a stale backup is a "plug the drive in" nudge, never as urgent as a live grievance clock. */
+function backupSegment(){
+  if(!BACKUP)return '';
+  var warnAt=BACKUP.warnDays||14;
+  var last=(BACKUP.external&&BACKUP.external.lastRun)||'';
+  if(!last)return '<span class="seg-amber">external backup has never run — plug in the T7 Shield</span>';
+  // CALENDAR days, deliberately — a backup goes stale over a school break like any other week.
+  // This is the one age in the dashboard that must NOT use the school-day counters.
+  var age=Math.floor((parseD(todayIso())-parseD(last))/86400000);
+  if(age<0)age=0;
+  if(age>=warnAt)return '<span class="seg-amber">external backup '+age+' days old — plug in the T7 Shield</span>';
+  return '<span class="seg-muted">backup '+(age===0?'today':age+'d ago')+'</span>';
 }
 
 let activeCluster='All';
