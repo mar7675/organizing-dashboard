@@ -372,6 +372,17 @@ a.brx-chip.red{background:var(--red-tint);color:var(--red-ink)}
 #panel-visits{--sect:var(--j-orange)}
 #panel-links{--sect:var(--j-slate)}
 #panel-resources{--sect:var(--j-jade)}
+#panel-runbook{--sect:var(--j-amethyst)}
+/* Runbook: static how-do-I list. No data, no member names — safe in the hosted shell,
+   but only SHOWN on the desktop artifact (the steps are desk work, not phone work). */
+.rb-item{padding:10px 10px 11px;border-radius:10px;border:1px solid var(--line);margin-bottom:8px;background:var(--card)}
+.rb-item:hover{border-color:var(--sect)}
+.rb-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-weight:700;font-size:14px;color:var(--ink)}
+.rb-when{font-weight:500;font-size:11.5px;color:var(--muted)}
+.rb-do{margin-top:5px;font-size:13px;color:var(--ink)}
+.rb-do code{background:var(--tint);border-radius:5px;padding:1px 5px;font-size:12px;word-break:break-word}
+.rb-file{margin-top:4px;font-size:11.5px;color:var(--muted)}
+.rb-file b{color:var(--ink);font-weight:600}
 .sb-btn[data-sect="panel-brief"]{--sect-ic:var(--j-gold)}
 .sb-btn[data-sect="panel-griev"]{--sect-ic:var(--maroon)}
 .sb-btn[data-sect="panel-issues"]{--sect-ic:var(--j-amethyst)}
@@ -381,6 +392,7 @@ a.brx-chip.red{background:var(--red-tint);color:var(--red-ink)}
 .sb-btn[data-sect="panel-visits"]{--sect-ic:var(--j-orange)}
 .sb-btn[data-sect="panel-links"]{--sect-ic:var(--j-slate)}
 .sb-btn[data-sect="panel-resources"]{--sect-ic:var(--j-jade)}
+.sb-btn[data-sect="panel-runbook"]{--sect-ic:var(--j-amethyst)}
 .tabbar button[data-jump="panel-brief"]{--sect-ic:var(--j-gold)}
 .tabbar button[data-jump="panel-griev"]{--sect-ic:var(--maroon)}
 .tabbar button[data-jump="panel-schools"]{--sect-ic:var(--j-sapphire)}
@@ -447,7 +459,19 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
 @media screen and (min-width:1400px){
   body.laptop .wrap{max-width:1280px} /* use the width the retired long-scroll layout never had */
 }
-@media print{#panel-import,#panel-jot,.tabbar,.lnk-copy{display:none !important}}
+/* ---- Hustle Texts panel (build 2026-07-19.1): renders from the optional `hustle` data key — absent = section hides. Zero scripts live in this markup. ---- */
+.hu-flag{border:1px solid var(--line);border-radius:9px;background:var(--tint);padding:8px 11px;font-size:13px;margin-top:10px}
+.hu-flag.due{border-color:var(--red)}
+.hu-blk{margin:12px 0 0}
+.hu-blk .hu-lbl{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)}
+.hu-ta{width:100%;min-height:88px;margin-top:6px;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink);font-family:inherit;font-size:13.5px;line-height:1.45;resize:vertical;box-sizing:border-box}
+.hu-meta{font-size:12px;color:var(--muted);margin-top:4px;font-weight:600}
+.hu-meta .over{color:var(--red);font-weight:800}
+.hu-meta .warn{color:var(--red)}
+.hu-sel{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:7px 10px;font-size:12.5px;font-family:inherit;max-width:100%}
+.hu-log-row{display:flex;gap:10px;padding:7px 2px;border-top:1px solid var(--line);font-size:13px;align-items:baseline;flex-wrap:wrap}
+.hu-log-row .d{font-size:11px;font-weight:800;color:var(--muted);white-space:nowrap}
+@media print{#panel-import,#panel-jot,#panel-hustle,.tabbar,.lnk-copy{display:none !important}}
 </style>
 </head>
 <body>
@@ -560,6 +584,20 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
     <div id="visitLog"></div>
   </div>
 
+  <div class="card full" id="panel-hustle" style="margin-top:16px">
+    <h2>Hustle Texts <span class="badge snap" id="huBadge">HUSTLE</span></h2>
+    <div id="huFlags"><!-- draft-needed / day-of reminder flags, built by renderHustle() from events + logged sends --></div>
+    <div class="toolbar">
+      <select class="hu-sel" id="huTpl" aria-label="Choose a template"></select>
+      <select class="hu-sel" id="huEvent" aria-label="Merge an upcoming event"></select>
+      <button class="btn" id="huFill" title="Fill [when]/[time]/[location]/[event] from the chosen event">Fill scripts</button>
+    </div>
+    <div id="huScripts"><!-- Initial / Yes / No / Reminder textareas with live segment counters, built by renderHustle() --></div>
+    <div class="cluster-h" style="margin-top:18px">Send Log<span class="ch-meta">from Organizing/hustle-send-log.md · newest first</span></div>
+    <div id="huLog"></div>
+    <div class="sectnote">Scripts follow <b>00_Resources/hustle-message-playbook.md</b>: initial ≤450 characters (3 segments) with opt-out language, a space between every link and any punctuation after it, reminders day-of to Yes responders. Paste into Hustle and send from there; afterward tell me ("log the Hustle send") and I add it to <b>Organizing/hustle-send-log.md</b>. "Update hustle templates" regenerates this library from the playbook.</div>
+  </div>
+
   <div class="card full" id="panel-links" style="margin-top:16px">
     <h2>Important Links <span class="badge snap" id="lnkCount">LINKS</span></h2>
     <div class="toolbar">
@@ -577,6 +615,65 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
     <div class="res-cats" id="resCats"></div>
     <div id="resBox"></div>
     <div class="sectnote"><b>Open</b> is one click: PDFs open in a browser tab, Word/PowerPoint files open in the app (allow the "Open…?" prompt the first time). <b>Copy path</b> grabs the file's location for attaching to an email. Curated from <b>00_Resources/resource-manifest.json</b> — add the file there, then ask me to "update resources."</div>
+  </div>
+
+  <div class="card full" id="panel-runbook" style="margin-top:16px">
+    <h2>Runbook <span class="badge snap">HOW DO I…</span></h2>
+    <div class="sectnote" style="margin-top:8px">The recurring procedures, each pointing at the one file that owns it. If a step here and the linked file ever disagree, <b>the file wins</b> — fix this list.</div>
+
+    <div class="rb-item">
+      <div class="rb-h">Refresh this dashboard <span class="rb-when">· automatic weekdays ~6am from Aug 17; any time on demand</span></div>
+      <div class="rb-do">Tell Cowork <code>refresh</code>. It re-parses the grievance log, rewrites the deadline heartbeat, and rebuilds this page.</div>
+      <div class="rb-file"><b>Scheduled/organizing-dashboard-refresh/SKILL.md</b> — the canonical spec. Events, links, membership, resources and Hustle templates carry over untouched.</div>
+    </div>
+
+    <div class="rb-item">
+      <div class="rb-h">Load a new membership snapshot <span class="rb-when">· each August, and whenever DCPS re-exports</span></div>
+      <div class="rb-do">Drop the export in the Restricted folder, then run one command:<br><code>run-membership-refresh.ps1 -SnapshotPath "&lt;file&gt;.xlsx" -SnapshotDate YYYY-MM-DD</code></div>
+      <div class="rb-file"><b>Organizing/Membership Database (Restricted)/</b> — stops twice for review: after the roster diff, and after name verification. Don't hand-chain the individual scripts.</div>
+    </div>
+
+    <div class="rb-item">
+      <div class="rb-h">Send a Hustle text <span class="rb-when">· before every send</span></div>
+      <div class="rb-do">Ask Cowork for the 3-script package (Initial / Yes / No). Initial caps at 450 characters with opt-out language. Paste into Hustle yourself — Cowork never sends. Then confirm the send so it gets logged.</div>
+      <div class="rb-file"><b>00_Resources/hustle-message-playbook.md</b> — mandatory read. Sends log to <b>Organizing/hustle-send-log.md</b>.</div>
+    </div>
+
+    <div class="rb-item">
+      <div class="rb-h">File a Step 1 grievance <span class="rb-when">· 14 school days from notice; 30-day outer limit</span></div>
+      <div class="rb-do">Work it in the Grievances workstation: find the article, check the clock with the calculator on this page, complete the official WTU form, CC President Fuchs / Lisa Haynes / the grievant, then log the case.</div>
+      <div class="rb-file"><b>00_Resources/2026-06-26-grievance-timeline-playbook.md</b> for the counting. Cases go in the <b>Case blocks</b> section of Grievances/Filed Grievances/grievance-log.md — that's what this dashboard reads.</div>
+    </div>
+
+    <div class="rb-item">
+      <div class="rb-h">Log school election results <span class="rb-when">· as each unit reports in</span></div>
+      <div class="rb-do">Results go to the MASTER workbook and the school page's Key Contacts, then re-run <code>leadership_crossref.ps1</code> and say <code>refresh</code>. Names come from the membership DB, not the submitted spelling.</div>
+      <div class="rb-file"><b>db-name-matching-rules.md</b> (Restricted folder) for the naming rule and its three carve-outs. School pages are the single source of truth for who holds a seat.</div>
+    </div>
+
+    <div class="rb-item">
+      <div class="rb-h">Update Links or Resources <span class="rb-when">· only when you ask</span></div>
+      <div class="rb-do">Edit <b>00_Resources/WTU Important Links.xlsx</b> then say <code>update links</code>. Add the file to <b>00_Resources/resource-manifest.json</b> then say <code>update resources</code>. Neither regenerates on a plain refresh.</div>
+      <div class="rb-file">The Restricted folder is never indexed into the Resource Hub.</div>
+    </div>
+
+    <div class="rb-item">
+      <div class="rb-h">Put the calendar on this page <span class="rb-when">· whenever your week changes</span></div>
+      <div class="rb-do">Send Cowork an Outlook screenshot, or drop an Outlook-exported <code>.ics</code> anywhere in the workspace (File → Save Calendar). The <code>.ics</code> is preferred — it parses exactly, no OCR guessing.</div>
+      <div class="rb-file">Today's Calendar and Week at a Glance come only from this. No calendar connector is used.</div>
+    </div>
+
+    <div class="rb-item">
+      <div class="rb-h">Publish to the phone <span class="rb-when">· only when you ask for it</span></div>
+      <div class="rb-do">Two separate things. <b>New code</b> needs a shell publish (git push, after verifying the shell carries zero member data) — then open the app twice. <b>New numbers</b> only need a re-import of <code>dashboard-data.json</code> on the phone.</div>
+      <div class="rb-file">The hosted repo is public, so the pre-push data scan is not optional.</div>
+    </div>
+
+    <div class="rb-item">
+      <div class="rb-h">Find a command that didn't work <span class="rb-when">· when a slash command does nothing</span></div>
+      <div class="rb-do">Some commands run in Cowork, some need a Claude Code terminal. Ask Cowork rather than assuming it failed.</div>
+      <div class="rb-file"><b>commands-index.md</b> (workspace root) — what runs where.</div>
+    </div>
   </div>
 
   <div class="card full" id="panel-jot" style="margin-top:16px">
@@ -631,7 +728,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
   <footer>
     Snapshot data: WTU workspace (school pages + Filed Grievances) + calendar entered from Outlook screenshots, captured <span id="snapFoot">—</span>. Ask to "refresh" or "update" anytime.<br>
     This is a working-aid, not the official record. The CBA controls all grievance timelines — verify any deadline day-by-day before filing.<br>
-    <span class="build-note" id="buildPill">build 2026-07-18.2</span>
+    <span class="build-note" id="buildPill">build 2026-07-19.1</span>
   </footer>
 </div>
 
@@ -652,6 +749,7 @@ var MEMBERSHIP={},MEMBERSHIP_DATE='',MEMBERSHIP_HISTORY=[]; // optional overlay 
    badge and Brief tile always stay org-wide). */
 var MEM_SEL={},MEM_TIER='',MEM_SORT={key:'nonRate',dir:-1};
 var RESOURCES=null; // optional Resource Hub data ({base, items:[{title,cat,tags,path,url,use,emoji}]}); absent = section hides
+var HUSTLE=null; // optional Hustle Texts data ({capChars, segmentChars, templates:[…], sends:[…]}); absent = section hides
 var DATA_MODE='none'; // 'embedded' | 'imported' | 'none'
 var DATA_META=null;   // {importedAt, source} for imported mode
 var SHELL_SCHEMA=1;   // highest dashboard-data.json schemaVersion this build understands
@@ -675,6 +773,7 @@ function adoptData(d){
   LINKS=Array.isArray(d.links)?d.links:[]; // optional key (added build .4) — older data files simply hide the Links section
   if(d.membership&&d.membership.bySchool){MEMBERSHIP=d.membership.bySchool;MEMBERSHIP_DATE=d.membership.snapshotDate||'';MEMBERSHIP_HISTORY=d.membership.history||[];}else{MEMBERSHIP={};MEMBERSHIP_DATE='';MEMBERSHIP_HISTORY=[];} // optional overlay — absent = membership UI simply hides
   RESOURCES=(d.resources&&Array.isArray(d.resources.items)&&d.resources.items.length)?d.resources:null; // optional (Resource Hub, 'update resources') — absent = section hides
+  HUSTLE=(d.hustle&&Array.isArray(d.hustle.templates)&&d.hustle.templates.length)?d.hustle:null; // optional (Hustle Texts, 'update hustle templates') — absent = section hides
 }
 function resolveData(){
   if(window.__DATA__){
@@ -1835,6 +1934,134 @@ function wireLinks(){
   });
 }
 
+/* ===== HUSTLE TEXTS: reads the optional `hustle` key ({capChars, segmentChars, templates:[…], sends:[…]}) =====
+   Absent = the section hides. ZERO scripts live in this file — templates ride dashboard-data.json
+   (curated from 00_Resources/hustle-message-playbook.md via "update hustle templates"); sends parse
+   from Organizing/hustle-send-log.md on every refresh. Mike pastes into the Hustle app and sends
+   there — nothing sends from this page. */
+var HU_TPL_IDX=0;
+function huCap(){return (HUSTLE&&HUSTLE.capChars)||450;}
+function huSeg(){return (HUSTLE&&HUSTLE.segmentChars)||153;}
+function huTemplates(){return (HUSTLE&&Array.isArray(HUSTLE.templates))?HUSTLE.templates:[];}
+// Relative-day phrase in Mike's voice: "today, Tuesday" / "tomorrow, Wednesday" / "this Thursday, 8/28" / "next Tuesday, 9/9".
+function huWhen(dateStr){
+  if(!dateStr)return '[when]';
+  var t=parseD(todayIso()),d=parseD(dateStr),dd=Math.round((d-t)/86400000);
+  var wd=d.toLocaleDateString('en-US',{weekday:'long'}),md=(d.getMonth()+1)+'/'+d.getDate();
+  if(dd===0)return 'today, '+wd;
+  if(dd===1)return 'tomorrow, '+wd;
+  if(dd>=2&&dd<=6)return 'this '+wd+', '+md;
+  if(dd>=7&&dd<=13)return 'next '+wd+', '+md;
+  return wd+', '+d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+function huMerge(text,ev){
+  if(!ev)return text;
+  return String(text).replace(/\[when\]/g,huWhen(ev.date)).replace(/\[time\]/g,ev.time||'[time]')
+    .replace(/\[location\]/g,ev.location||'[location]').replace(/\[event\]/g,ev.summary||'[event]');
+}
+// Character/segment count + the playbook's mechanical checks (over cap, smart quotes, em dash,
+// a link glued to punctuation). The 450-char cap is the hard rule; segments are guidance.
+function huCount(text){
+  var s=String(text||''),n=s.length,cap=huCap(),seg=huSeg(),warns=[];
+  if(/[‘’“”]/.test(s))warns.push('smart quotes — use straight quotes');
+  if(/—/.test(s))warns.push('em dash — use commas or hyphens');
+  if(/<Link>[.,;!?]/.test(s))warns.push('put a space before the punctuation after <Link>');
+  if(s.split(/\s+/).some(function(w){return /^https?:\/\//.test(w)&&/[.,;!?]$/.test(w);}))warns.push('put a space between the link and the punctuation after it');
+  return {chars:n,segs:n?Math.ceil(n/seg):0,over:n>cap,warns:warns};
+}
+function huMetaHtml(text,isInitial){
+  var c=huCount(text),cap=huCap();
+  if(isInitial&&!/stop/i.test(String(text)))c.warns.push('no opt-out line — add "Reply STOP to end."');
+  var h='<span class="'+(c.over?'over':'')+'">'+c.chars+' / '+cap+' chars · '+c.segs+' segment'+(c.segs===1?'':'s')+'</span>';
+  if(c.warns.length)h+=' · <span class="warn">'+c.warns.map(esc).join(' · ')+'</span>';
+  return h;
+}
+var HU_PARTS=[['initial','Initial'],['yes','Yes response'],['no','No response'],['reminder','Reminder (day-of, to Yes responders)']];
+function huScriptsHtml(tpl){
+  if(!tpl)return '<div class="empty">No template selected.</div>';
+  return HU_PARTS.map(function(p){
+    var key=p[0],val=tpl[key];
+    if(key==='reminder'&&!val)return ''; // only event templates carry a reminder
+    return '<div class="hu-blk"><div class="hu-lbl">'+p[1]+
+      '<button class="btn hu-copy" type="button" data-k="'+key+'" style="margin-left:auto;padding:4px 9px">Copy</button></div>'+
+      '<textarea class="hu-ta" id="huTa-'+key+'" data-part="'+key+'">'+esc(val||'')+'</textarea>'+
+      '<div class="hu-meta" id="huMeta-'+key+'"></div></div>';
+  }).join('');
+}
+function huRefreshMeta(){
+  HU_PARTS.forEach(function(p){
+    var ta=document.getElementById('huTa-'+p[0]),m=document.getElementById('huMeta-'+p[0]);
+    if(ta&&m)m.innerHTML=huMetaHtml(ta.value,p[0]==='initial');
+  });
+}
+function huRenderScripts(){
+  var box=document.getElementById('huScripts');if(!box)return;
+  box.innerHTML=huScriptsHtml(huTemplates()[HU_TPL_IDX]||null);
+  huRefreshMeta();
+  HU_PARTS.forEach(function(p){
+    var ta=document.getElementById('huTa-'+p[0]);
+    if(ta)ta.oninput=function(){var m=document.getElementById('huMeta-'+p[0]);if(m)m.innerHTML=huMetaHtml(ta.value,p[0]==='initial');};
+  });
+  Array.prototype.forEach.call(box.querySelectorAll('.hu-copy'),function(b){
+    b.onclick=function(){
+      var ta=document.getElementById('huTa-'+b.getAttribute('data-k'));if(!ta)return;
+      function done(ok){b.textContent=ok?'Copied ✓':'Copy failed';setTimeout(function(){b.textContent='Copy';},1400);}
+      if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(ta.value).then(function(){done(true);},function(){done(legacyCopy(ta.value));});
+      else done(legacyCopy(ta.value));
+    };
+  });
+}
+function huSelectedEvent(){var sel=document.getElementById('huEvent');if(!sel||!sel.value)return null;return EVENTS[Number(sel.value)]||null;}
+function renderHustle(){
+  var card=document.getElementById('panel-hustle');if(!card)return;
+  if(!HUSTLE){card.style.display='none';DASH_COUNTS.huDraft=0;return;}
+  card.style.display='';
+  var tpls=huTemplates(),t=todayIso();
+  var badge=document.getElementById('huBadge');if(badge)badge.textContent=tpls.length+' TEMPLATES';
+  if(HU_TPL_IDX>=tpls.length)HU_TPL_IDX=0;
+  var sel=document.getElementById('huTpl');
+  if(sel){sel.innerHTML=tpls.map(function(x,i){return '<option value="'+i+'">'+esc(x.label||x.id||('Template '+(i+1)))+'</option>';}).join('');sel.value=String(HU_TPL_IDX);}
+  var evSel=document.getElementById('huEvent');
+  if(evSel){
+    var opts='<option value="">— merge an upcoming event (optional) —</option>';
+    EVENTS.forEach(function(e,i){if(e.date&&e.date>=t)opts+='<option value="'+i+'">'+esc(e.summary)+' · '+esc(huWhen(e.date))+'</option>';});
+    evSel.innerHTML=opts;
+  }
+  huRenderScripts();
+  // Flags: an upcoming event (≤7 calendar days) with no logged send = "draft needed" (red ≤3 days);
+  // a logged event that lands today = "send the day-of reminder".
+  var sends=(HUSTLE.sends||[]),flags=[],draftN=0;
+  EVENTS.forEach(function(e){
+    if(!e.date)return;
+    var dd=Math.round((parseD(e.date)-parseD(t))/86400000);
+    var logged=sends.some(function(s){return (s.eventDate&&s.eventDate===e.date)||(s.event&&e.summary&&String(s.event).toLowerCase().indexOf(String(e.summary).toLowerCase().slice(0,12))>=0);});
+    if(dd>=0&&dd<=7&&!logged){draftN++;flags.push({red:dd<=3,html:'📣 <b>'+esc(e.summary)+'</b> is '+(dd===0?'today':dd===1?'tomorrow':'in '+dd+' days')+' ('+esc(prettyNoYr(e.date))+') — no Hustle send logged yet. Draft the message.'});}
+    if(dd===0&&logged)flags.push({red:true,html:'⏰ <b>'+esc(e.summary)+'</b> is today — send the day-of reminder to everyone who replied Yes.'});
+  });
+  DASH_COUNTS.huDraft=draftN;
+  var host=document.getElementById('huFlags');
+  if(host)host.innerHTML=flags.map(function(f){return '<div class="hu-flag'+(f.red?' due':'')+'">'+f.html+'</div>';}).join('');
+  var log=document.getElementById('huLog');
+  if(log){
+    log.innerHTML=sends.length?sends.map(function(s){
+      return '<div class="hu-log-row"><span class="d">'+esc(s.date||'—')+'</span><span>'+esc(s.title||s.type||'send')+
+        (s.audience?' · '+esc(s.audience):'')+(s.status?' · '+esc(s.status):'')+
+        (s.notes?'<br><span style="color:var(--muted);font-size:12px">'+esc(s.notes)+'</span>':'')+'</span></div>';
+    }).join(''):'<div class="empty">No sends logged yet. After you send a Hustle message, tell me "log the Hustle send" and I\'ll add it here.</div>';
+  }
+}
+function wireHustle(){
+  var sel=document.getElementById('huTpl');
+  if(sel)sel.onchange=function(){HU_TPL_IDX=Number(sel.value)||0;huRenderScripts();};
+  var fill=document.getElementById('huFill');
+  if(fill)fill.onclick=function(){
+    var ev=huSelectedEvent();
+    if(!ev){var m0=document.getElementById('huMeta-initial');if(m0)m0.innerHTML='<span class="warn">Pick an event above first.</span>';return;}
+    HU_PARTS.forEach(function(p){var ta=document.getElementById('huTa-'+p[0]);if(ta)ta.value=huMerge(ta.value,ev);});
+    huRefreshMeta();
+  };
+}
+
 /* ===== RESOURCE HUB: reads the optional `resources` key ({base, items:[…]}) =====
    The shell ships ZERO paths or URLs — everything rides dashboard-data.json (curated in
    00_Resources/resource-manifest.json; regenerated on "update resources"). Open logic is
@@ -2062,7 +2289,8 @@ var ICONS={
   link:'<path d="M9.5 13.5a4 4 0 0 0 5.7 0l3-3a4 4 0 1 0-5.7-5.7l-1.2 1.2"/><path d="M14.5 10.5a4 4 0 0 0-5.7 0l-3 3a4 4 0 1 0 5.7 5.7l1.2-1.2"/>',
   pencil:'<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/>',
   data:'<path d="M21 15v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3"/><path d="M7.5 11l4.5 4.5L16.5 11"/><path d="M12 15.5V3"/>',
-  printer:'<path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="13" width="12" height="8" rx="1"/>'
+  printer:'<path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="13" width="12" height="8" rx="1"/>',
+  steps:'<path d="M4 7h3M4 12h3M4 17h3"/><path d="M10.5 7h9.5M10.5 12h9.5M10.5 17h6"/>'
 };
 function icon(n){return '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}
 function paintTabIcons(){Array.prototype.forEach.call(document.querySelectorAll('.ti[data-ic]'),function(el){el.innerHTML=icon(el.getAttribute('data-ic'));});}
@@ -2075,21 +2303,25 @@ var SECTIONS=[
   {id:'panel-membership',ic:'users',label:'Membership',short:'Membership'},
   {id:'panel-coverage',ic:'target',label:'Coverage Gaps',short:'Coverage'},
   {id:'panel-visits',ic:'pin',label:'Visits',short:'Visits'},
+  {id:'panel-hustle',ic:'pencil',label:'Hustle Texts',short:'Hustle'},
   {id:'panel-links',ic:'link',label:'Important Links',short:'Links'},
   {id:'panel-resources',ic:'book',label:'Resource Hub',short:'Resources'},
+  {id:'panel-runbook',ic:'steps',label:'Runbook',short:'Runbook',desktop:true},
   {id:'panel-jot',ic:'pencil',label:'Jot &amp; Share',short:'Jot',hosted:true},
   {id:'panel-import',ic:'data',label:'Data on This Device',short:'Data',hosted:true,util:true}
 ];
 var ACTIVE_SECT='panel-brief'; // default on every open: the morning driver
-var DASH_COUNTS={urgent:0,route:0,issues:0,covGaps:0,staleVisits:0,recruit:0,brNeed:0}; // stashed by renderStatusStrip / renderCoverage / renderVisitClusters / renderMembership / renderBrElection
+var DASH_COUNTS={urgent:0,route:0,issues:0,covGaps:0,staleVisits:0,recruit:0,brNeed:0,huDraft:0}; // stashed by renderStatusStrip / renderCoverage / renderVisitClusters / renderMembership / renderBrElection / renderHustle
 var mqLaptop=window.matchMedia?window.matchMedia('(min-width:1100px)'):null;
 function isLaptop(){return !!(mqLaptop&&mqLaptop.matches&&DATA_MODE!=='none');}
 // Jot and the import card exist only on the hosted/phone build (renderJot/renderImport hide them when embedded).
 function visibleSections(){return SECTIONS.filter(function(s){
   if(s.hosted&&DATA_MODE==='embedded')return false;
+  if(s.desktop&&DATA_MODE!=='embedded')return false; // Runbook: desk work, not phone work
   if(s.id==='panel-links'&&!LINKS.length)return false; // older data file without the links key
   if(s.id==='panel-resources'&&!resVisible().length)return false; // no resources for this surface (hosted shows web twins only)
   if(s.id==='panel-membership'&&!Object.keys(MEMBERSHIP||{}).length)return false; // no membership overlay in this data
+  if(s.id==='panel-hustle'&&!HUSTLE)return false; // no Hustle templates in this data
   return true;
 });}
 function showSection(id,opts){
@@ -2160,6 +2392,7 @@ function updateSidebarBadges(){
   put('panel-schools',chip(SCHOOLS.length));
   put('panel-coverage',chip(DASH_COUNTS.covGaps));
   put('panel-visits',DASH_COUNTS.staleVisits?'<span class="sb-chip" title="schools not visited in 30+ school days">'+DASH_COUNTS.staleVisits+'</span>':'');
+  put('panel-hustle',DASH_COUNTS.huDraft?'<span class="sb-chip" title="upcoming events within 7 days with no Hustle send logged">'+DASH_COUNTS.huDraft+'</span>':'');
   put('panel-links',chip(LINKS.length));
   put('panel-resources',chip(resVisible().length)); // items available on THIS surface (desktop: all; hosted: web twins only)
   put('panel-membership',chip(DASH_COUNTS.recruit)); // stashed by renderMembership — neutral count of priority/watch schools (red stays reserved for deadlines)
@@ -2200,7 +2433,7 @@ function boot(){
   paintTabIcons(); // phone tab-bar SVG icons (harmless when the tab bar is hidden)
   var fns=DATA_MODE==='none'
     ?[renderSelfTest,renderImport,wireImport,wireTheme]
-    :[renderHeader,renderSelfTest,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderAugustPush,renderIssues,renderSchoolKpis,renderChips,renderSchools,renderBrElection,renderMembership,renderCoverage,renderVisitClusters,renderVisits,renderAttention,renderBriefTiles,renderLinks,renderResources,renderActionbar,wireCalc,wireButtons,wireSearch,renderImport,wireImport,renderJot,wireJot,wireLinks,wireResources,renderSidebar,wireTheme,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
+    :[renderHeader,renderSelfTest,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderAugustPush,renderIssues,renderSchoolKpis,renderChips,renderSchools,renderBrElection,renderMembership,renderCoverage,renderVisitClusters,renderVisits,renderAttention,renderBriefTiles,renderLinks,renderResources,renderHustle,wireHustle,renderActionbar,wireCalc,wireButtons,wireSearch,renderImport,wireImport,renderJot,wireJot,wireLinks,wireResources,renderSidebar,wireTheme,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
   fns.forEach(function(fn){
     // Log the failure point but never the exception content — an error message must not echo member data (hardening).
     try{fn();}catch(e){console.error('dash:'+fn.name+' failed ('+((e&&e.name)||'error')+')');}
@@ -2216,7 +2449,7 @@ function rerenderForNewDay(){
   if(todayIso()===lastRenderedDay)return;
   lastRenderedDay=todayIso();
   var openIds=Array.prototype.map.call(document.querySelectorAll('details.sch[open]'),function(d){return d.id;}).filter(Boolean);
-  [renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderAugustPush,renderIssues,renderVisitClusters,renderAttention,renderBriefTiles,updateSidebarBadges].forEach(function(fn){
+  [renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderAugustPush,renderIssues,renderVisitClusters,renderAttention,renderBriefTiles,renderHustle,updateSidebarBadges].forEach(function(fn){
     try{fn();}catch(e){console.error('rollover:'+fn.name+' failed ('+((e&&e.name)||'error')+')');}
   });
   openIds.forEach(function(id){var el=document.getElementById(id);if(el)el.open=true;});
