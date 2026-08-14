@@ -101,6 +101,18 @@ header.hero{background:var(--card);border:1px solid var(--line);border-top:4px s
 .ev .when{font-size:12px;color:var(--muted)}
 .empty{color:var(--muted);font-style:italic;padding:8px 0;font-size:13px}
 .attn li{margin:4px 0}
+/* Severity carries a left rule AND a marker word in the text — never colour alone. */
+.attn li.sev-urgent{list-style:none;margin-left:-16px;padding-left:9px;border-left:3px solid var(--red)}
+.attn li.sev-attention{list-style:none;margin-left:-16px;padding-left:9px;border-left:3px solid var(--amber)}
+.attn li.attn-more{list-style:none;margin-left:-16px;padding-left:12px;font-size:12px;color:var(--muted);font-weight:600}
+/* Second line on a dated reminder — the one queue row that carries authored detail (which file the
+   script is in, what breaks if it slips). Block-level so it wraps under the title, not beside it. */
+.attn-sub{display:block;font-size:12px;color:var(--muted);font-weight:500;margin-top:2px}
+/* Standing work sits under a labelled divider and is dimmed — present and clickable, but visibly not
+   today's news. The divider carries the word "Standing", so the distinction is not colour-only. */
+.attn li.attn-div{list-style:none;margin:10px 0 4px -16px;padding:6px 0 0;border-top:1px solid var(--line);font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:800}
+.attn li.standing{opacity:.78}
+.attn li.standing.sev-urgent{border-left-color:var(--amber)}
 .daystamp{font-size:11px;color:var(--muted);font-weight:600;text-transform:none;letter-spacing:0;margin-left:6px}
 .wk-day{display:flex;gap:10px;padding:6px 0;border-bottom:1px dotted var(--line)}
 .wk-day:last-child{border-bottom:none}
@@ -168,7 +180,7 @@ button:focus-visible,.btn:focus-visible,[role="button"]:focus-visible,a:focus-vi
 .btn.primary:hover{background:var(--maroon-deep)}
 @media print{
   .actionbar,.toolbar,.calc,.pill,.sidebar{display:none !important}
-  body.laptop .card.full{display:block !important} /* print is the full snapshot even when the laptop view shows one section */
+  body.laptop .card.full,body.phone .card.full{display:block !important} /* print is the full snapshot even when a switched view shows one section */
   .card{break-inside:avoid;box-shadow:none}
   body{background:var(--card)}
   .runway{flex-wrap:wrap;overflow:visible} /* a scrolled runway would clip on paper */
@@ -216,7 +228,9 @@ details.sch[open] .caret{transform:rotate(90deg)}
 .mem-pct{display:inline-block;font-size:10.5px;font-weight:800;padding:1px 7px;border-radius:999px;margin-right:7px}
 .mem-pct.lo{background:var(--chip-tint);color:var(--chip-ink)}
 .mem-pct.mid{background:var(--warn-tint);color:var(--warn-ink)}
-.mem-pct.hi{background:var(--red);color:var(--on-accent);box-shadow:0 0 0 1px var(--maroon)}
+/* Recruitment tier is AMBER, not red (2026-08-14). Red is reserved for past-due or <=3 school days;
+   a school at 25% non-member is a priority, not a deadline, and red on both flattened the difference. */
+.mem-pct.hi{background:var(--warn-tint);color:var(--warn-ink);box-shadow:0 0 0 1px var(--amber-fill)}
 .mem-tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
 .mem-tbl th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);border-bottom:1px solid var(--line);padding:5px 8px;font-weight:700}
 .mem-tbl td{padding:5px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
@@ -244,15 +258,24 @@ details.sch[open] .caret{transform:rotate(90deg)}
 .mem-bar-fill{display:block;height:100%}
 .mem-bar-fill.lo{background:var(--line-strong)}
 .mem-bar-fill.mid{background:var(--amber-fill)}
-.mem-bar-fill.hi{background:var(--red)}
+.mem-bar-fill.hi{background:var(--amber-fill)}
 .sch-body{padding:8px 14px 13px;border-top:1px solid var(--line);background:var(--card2)}
 .ct-line{display:flex;font-size:12.5px;padding:3px 0;border-bottom:1px dotted var(--line)}
 .ct-line:last-child{border-bottom:none}
 .ct-line .r{width:170px;color:var(--maroon);font-weight:600;flex:none}
 .ct-line .v.empty-v{color:var(--muted);font-style:italic}
 .sub-h{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--maroon);font-weight:800;margin:12px 0 4px}
+/* Recommended next step on the collapsed school row — the answer to "and then what?" without expanding. */
+.sch-act{flex-basis:100%;display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;margin:5px 0 1px;padding-left:2px}
+.sch-act-do{font-size:12.5px;font-weight:800;color:var(--maroon)}
+.sch-act-why{font-size:11.5px;color:var(--muted);font-weight:600}
+/* Count badge inside a view chip — sized down so it reads as a tally, not a second label. */
+.chip-n{margin-left:6px;font-size:10px;font-weight:800;opacity:.72;font-variant-numeric:tabular-nums}
+.view-note{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
 .notes-list{margin:4px 0 0 16px;padding:0}
 .notes-list li{margin:2px 0;font-size:12.5px}
+/* A note Mike bolded is one he flagged — mark it with a rule, not just weight, so it is not colour-only. */
+.notes-list li.flagged{list-style:none;margin-left:-14px;padding-left:10px;border-left:3px solid var(--amber)}
 /* grievance tracker lines */
 .gr-line{display:flex;gap:12px;align-items:baseline;font-size:12.5px;padding:4px 0;border-bottom:1px dotted var(--line)}
 .gr-line:last-child{border-bottom:none}
@@ -270,7 +293,12 @@ details.sch[open] .caret{transform:rotate(90deg)}
 .ov-schools .ov-lbl{color:var(--maroon);font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:.4px;margin-right:8px}
 .ov-schools .empty-v{color:var(--muted);font-style:italic}
 .cov-yes{color:var(--green);font-weight:700}
-.cov-no{color:var(--red-ink);font-weight:700;font-size:11px}
+/* cov-warn is the TOP non-deadline state: a missing contact, a high-priority visit, a school unvisited
+   for 60+ school days. All three used to render in --red-ink, which is reserved for past-due or <=3
+   school days on a contractual clock (2026-08-14 colour rule). Amber at a heavier weight keeps the
+   two-step distinction from cov-amber without borrowing urgency the state does not have. Every one of
+   these carries its own word ("missing", "high", "60 school days ago"), so colour is never the signal. */
+.cov-warn{display:inline-block;background:var(--warn-tint);color:var(--warn-ink);padding:1px 7px;border-radius:999px;font-weight:800;font-size:11px}
 .cov-amber{color:var(--amber);font-weight:700;font-size:11px}
 .cov-muted{color:var(--muted);font-weight:600;font-size:11px}
 .status-strip{margin-top:12px;background:none;border:none;border-top:1px solid var(--line);border-radius:0;padding:10px 0 0;font-size:13px;font-weight:600;display:flex;gap:8px;flex-wrap:wrap}
@@ -343,14 +371,15 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
 #panel-issues{--sect:var(--j-amethyst)}
 /* "Needs a BR election" strip (top of Schools). Data-free shell: every count/name renders
    from SCHOOLS at runtime. Amber = awaiting election results, dashed = seat vacant after an
-   election, red = school has NO union contact at all (worst state, per the urgency-color rule). */
+   election, ringed amber = school has NO union contact at all (the worst state here, but still not
+   red — a school with nobody to call is urgent organizing, not a contractual clock. 2026-08-14). */
 .brx{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:10px 12px;margin:10px 0 4px}
 .brx-h{font-weight:800;font-size:13px}
 .brx-h .brx-n{font-weight:700;font-size:11px;margin-left:8px;padding:1px 8px;border-radius:999px;background:var(--warn-tint);color:var(--warn-ink)}
 .brx-lab{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;font-weight:800;color:var(--maroon);margin:8px 0 4px}
 a.brx-chip{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--warn-tint);color:var(--warn-ink);margin:0 6px 6px 0;text-decoration:none}
 a.brx-chip.vac{background:var(--chip-tint);color:var(--chip-ink);outline:1px dashed var(--line)}
-a.brx-chip.red{background:var(--red-tint);color:var(--red-ink)}
+a.brx-chip.nocontact{background:var(--warn-tint);color:var(--warn-ink);box-shadow:0 0 0 1.5px var(--amber-fill)}
 .brx-note{font-size:11px;opacity:.75;margin-top:2px}
 /* August push block + global search + ward chips (build 2026-07-18.2) */
 .aug{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:10px 12px;margin:10px 0 4px}
@@ -358,6 +387,25 @@ a.brx-chip.red{background:var(--red-tint);color:var(--red-ink)}
 .aug-h .aug-n{font-weight:700;font-size:11px;margin-left:8px;padding:1px 8px;border-radius:999px;background:var(--tint);color:var(--muted)}
 .aug-line{font-size:12.5px;margin-top:7px;color:var(--ink)}
 .aug-line .tag{margin:3px 6px 0 0}
+/* Union Update block (build 2026-08-09) — reuses the .aug shell so the Brief keeps one visual language */
+.nws-lead{font-size:13.5px;font-weight:800;margin-top:8px;color:var(--ink)}
+/* Own chip class, not .tag — .tag is scoped to .sch cards and renders as plain text out here */
+.nws-due{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--chip-tint);color:var(--chip-ink);margin-left:6px;vertical-align:2px;white-space:nowrap}
+/* A Union Update item coming due is a CALENDAR event, not a contractual clock, and this chip fired at
+   7 calendar days in full --red — the loudest treatment on the page for the softest deadline on it.
+   Amber, and the chip already prints "in 4 days" so the colour is never doing the work. (2026-08-14) */
+.nws-due.hot{background:var(--warn-tint);color:var(--warn-ink);font-weight:800;box-shadow:0 0 0 1px var(--amber-fill)}
+.nws-detail{font-size:12.5px;margin-top:3px;color:var(--ink);opacity:.9}
+.nws-mem{margin-top:9px;padding:8px 10px;border:1px dashed var(--line);border-radius:10px;background:var(--tint)}
+.nws-mem-h{font-size:11px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+.nws-mem-t{font-size:12.5px;margin:4px 0 6px;color:var(--ink)}
+.nws-from{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-left:6px;white-space:nowrap}
+.nws-flag{font-size:12px;margin-top:8px;color:var(--muted)}
+.nws-flag b{color:var(--ink)}
+.nws-stale{font-size:11px;margin-top:7px;color:var(--muted);font-style:italic}
+/* Off-screen but readable by a screen reader — for live regions that announce a change the sighted
+   reader can already see (search-result counts). Not display:none, which removes it from the a11y tree. */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
 .gsearch{position:relative;margin-top:10px;max-width:560px}
 .gsearch .schfilter{width:100%;box-sizing:border-box}
 .gresults{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow-1);max-height:min(60vh,420px);overflow:auto;z-index:80;padding:6px}
@@ -413,15 +461,29 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
   .tabbar button{flex:1;background:none;border:none;font:inherit;font-size:10.5px;font-weight:800;color:var(--maroon);padding:5px 2px;min-height:44px;cursor:pointer}
   .tabbar button .ti{display:block;line-height:1;color:var(--sect-ic,var(--maroon))}
   .tabbar button .ti .ic{width:21px;height:21px;margin:0 auto}
-  #issueBox table,#coverageBody table,#visitClusters table,#visitLog table,.sch-body table,#schModalBody table,
-  #issueBox tbody,#coverageBody tbody,#visitClusters tbody,#visitLog tbody,.sch-body tbody,#schModalBody tbody,
-  #issueBox tr,#coverageBody tr,#visitClusters tr,#visitLog tr,.sch-body tr,#schModalBody tr,
-  #issueBox td,#coverageBody td,#visitClusters td,#visitLog td,.sch-body td,#schModalBody td{display:block;width:100%;box-sizing:border-box}
-  #issueBox tr:first-child,#coverageBody tr:first-child,#visitClusters tr:first-child,#visitLog tr:first-child,.sch-body tr:first-child,#schModalBody tr:first-child{display:none}
-  #issueBox tr,#coverageBody tr,#visitClusters tr,#visitLog tr,.sch-body tr,#schModalBody tr{border:1px solid var(--line);border-radius:9px;margin:0 0 8px;padding:4px 0;background:var(--card)}
-  #issueBox td,#coverageBody td,#visitClusters td,#visitLog td,.sch-body td,#schModalBody td{border-bottom:none;padding:4px 12px}
-  #issueBox td:empty,#coverageBody td:empty,.sch-body td:empty,#schModalBody td:empty{display:none}
-  #issueBox td::before,#coverageBody td::before,#visitClusters td::before,#visitLog td::before,.sch-body td::before,#schModalBody td::before{content:attr(data-label);display:block;font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--maroon);font-weight:800}
+  .tabbar button.active{color:var(--on-accent);background:var(--maroon-fill);border-radius:9px}
+  .tabbar button.active .ti{color:var(--on-accent)}
+  /* One section at a time on the phone, same machinery as laptop mode. Without this the page was a
+     ~25,000px document and every tab tap was a long scroll through everything else. */
+  body.phone .card.full{display:none}
+  body.phone .card.full.sect-active{display:block}
+  body.phone .actionbar{display:none}
+  /* More sheet: the four tabs can't cover ten sections, so the rest live here. */
+  .more-sheet{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.45);display:flex;align-items:flex-end}
+  .more-panel{width:100%;background:var(--card);border-top-left-radius:14px;border-top-right-radius:14px;padding:10px 10px calc(env(safe-area-inset-bottom,0px) + 96px);max-height:76vh;overflow-y:auto}
+  .more-h{display:flex;align-items:center;justify-content:space-between;font-weight:800;font-size:13px;color:var(--maroon);padding:4px 6px 10px;border-bottom:1px solid var(--line)}
+  .more-item{display:flex;align-items:center;gap:11px;width:100%;min-height:48px;background:none;border:none;border-bottom:1px solid var(--line);font:inherit;font-size:14.5px;font-weight:700;color:var(--ink);text-align:left;padding:6px 6px;cursor:pointer}
+  .more-item:last-child{border-bottom:none}
+  .more-ic{flex:none;width:22px;display:flex;justify-content:center;color:var(--maroon)}
+  #visitPlan table,#issueBox table,#coverageBody table,#visitClusters table,#visitLog table,.sch-body table,#schModalBody table,
+  #visitPlan tbody,#issueBox tbody,#coverageBody tbody,#visitClusters tbody,#visitLog tbody,.sch-body tbody,#schModalBody tbody,
+  #visitPlan tr,#issueBox tr,#coverageBody tr,#visitClusters tr,#visitLog tr,.sch-body tr,#schModalBody tr,
+  #visitPlan td,#issueBox td,#coverageBody td,#visitClusters td,#visitLog td,.sch-body td,#schModalBody td{display:block;width:100%;box-sizing:border-box}
+  #visitPlan tr:first-child,#issueBox tr:first-child,#coverageBody tr:first-child,#visitClusters tr:first-child,#visitLog tr:first-child,.sch-body tr:first-child,#schModalBody tr:first-child{display:none}
+  #visitPlan tr,#issueBox tr,#coverageBody tr,#visitClusters tr,#visitLog tr,.sch-body tr,#schModalBody tr{border:1px solid var(--line);border-radius:9px;margin:0 0 8px;padding:4px 0;background:var(--card)}
+  #visitPlan td,#issueBox td,#coverageBody td,#visitClusters td,#visitLog td,.sch-body td,#schModalBody td{border-bottom:none;padding:4px 12px}
+  #visitPlan td:empty,#issueBox td:empty,#coverageBody td:empty,.sch-body td:empty,#schModalBody td:empty{display:none}
+  #visitPlan td::before,#issueBox td::before,#coverageBody td::before,#visitClusters td::before,#visitLog td::before,.sch-body td::before,#schModalBody td::before{content:attr(data-label);display:block;font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--maroon);font-weight:800}
 }
 /* laptop layer: ≥1100px (screen only) gets a fixed left sidebar + one-section-at-a-time view.
    ≤700px stays the phone layer above; 701–1099px keeps the classic long-scroll layout (Obsidian pane,
@@ -487,7 +549,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
       <span class="pill diag" id="selftestPill">checking deadline math…</span>
       <button class="pill" id="themeToggle" type="button" aria-pressed="true" title="Switch to light mode">◐ Dark</button>
     </div>
-    <div class="gsearch"><input type="search" id="gSearch" class="schfilter" placeholder="Search schools, contacts, links, resources…" aria-label="Search the dashboard" autocomplete="off" title="Press / to jump here"><div class="gresults" id="gResults" style="display:none"></div></div>
+    <div class="gsearch"><input type="search" id="gSearch" class="schfilter" placeholder="Search schools, contacts, links, resources…" aria-label="Search the dashboard" autocomplete="off" title="Press / to jump here"><div class="gresults" id="gResults" style="display:none"></div><div id="gStatus" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div></div>
     <div class="status-strip" id="statusStrip">—</div>
   </header>
 
@@ -503,21 +565,25 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
     <h2>Today's Brief</h2>
     <div class="brief-tiles" id="briefTiles"><!-- built by renderBriefTiles() from engine counts --></div>
     <div id="runwayBox"><!-- built by renderRunway() — heading + cells render together so an empty runway leaves no dangling header --></div>
-    <div id="augPushBox"><!-- built by renderAugustPush() — the SY 26-27 membership-push block; self-retires after Aug 31, 2026 --></div>
+    <!-- ORDER (build 2026-08-14): the day's work comes FIRST. The newsletter and the membership push
+         are briefing material, not the day's work, and they sat above the calendar pushing it ~1,170px
+         down the page at 1280x720 — past the fold on the laptop this is used on. They now render below. -->
     <div class="brief-grid" id="briefGrid">
-      <div class="brief-block">
-        <h3>Deadlines — Next 5 School Days</h3>
-        <div id="dueBox"></div>
-        <h3 style="margin-top:14px">Top 3 Needing Attention</h3>
-        <ul class="attn" id="attnBox"><li class="empty">Nothing flagged.</li></ul>
-      </div>
       <div class="brief-block" id="briefCalCol">
         <h3>Today's Calendar <span class="daystamp" id="calDay"></span></h3>
         <div id="calBox"></div>
         <h3 style="margin-top:14px" id="weekH3">Week at a Glance</h3>
         <div id="weekBox"></div>
       </div>
+      <div class="brief-block">
+        <h3>Needs Attention <span class="daystamp" id="attnCount"></span></h3>
+        <ul class="attn" id="attnBox"><li class="empty">Nothing flagged.</li></ul>
+        <h3 style="margin-top:14px">Deadlines — Next 5 School Days</h3>
+        <div id="dueBox"></div>
+      </div>
     </div>
+    <div id="nwsBox"><!-- built by renderNewsletter() from the optional `newsletter` key; hides itself once every dated item is past --></div>
+    <div id="augPushBox"><!-- built by renderAugustPush() — the SY 26-27 membership-push block; self-retires after Aug 31, 2026 --></div>
   </div>
 
   <div class="card full" id="panel-griev" style="margin-top:16px">
@@ -526,16 +592,16 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
       <div class="calc">
         <h3>Grievance Deadline Calculator</h3>
         <div class="fields">
-          <div><label>What am I counting?</label>
+          <div><label for="cMode">What am I counting?</label>
             <select id="cMode">
               <option value="filing">Filing deadline (violation → file)</option>
               <option value="meeting">Step 1/Stage 1 meeting (filed → meet)</option>
               <option value="count">Count school days between two dates</option>
             </select>
           </div>
-          <div><label id="cFromLbl">Violation date</label><input type="date" id="cFrom"></div>
-          <div id="nWrap"><label>School days</label><input type="number" id="cN" value="14" min="1" style="width:80px"></div>
-          <div id="toWrap" style="display:none"><label>To (end date)</label><input type="date" id="cTo"></div>
+          <div><label id="cFromLbl" for="cFrom">Violation date</label><input type="date" id="cFrom"></div>
+          <div id="nWrap"><label for="cN">School days</label><input type="number" id="cN" value="14" min="1" style="width:80px"></div>
+          <div id="toWrap" style="display:none"><label for="cTo">To (end date)</label><input type="date" id="cTo"></div>
           <button id="cGo">Calculate</button>
         </div>
         <div class="out" id="calcOut"></div>
@@ -552,6 +618,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
     <h2>Schools at a Glance</h2>
     <div id="brElection"><!-- built by renderBrElection(): schools without an elected 26-27 BR --></div>
     <div class="kpis" id="schoolKpis"></div>
+    <div class="toolbar" id="schoolViews" role="group" aria-label="School view"><!-- built by renderSchoolViews(); defaults to Needs attention --></div>
     <div class="toolbar" id="clusterChips"></div>
     <div class="toolbar" id="wardChips"><!-- ward filter chips — renders only when the data carries wards --></div>
     <div class="toolbar">
@@ -566,7 +633,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
   <div class="card full" id="panel-membership" style="margin-top:16px">
     <h2>Membership <span class="badge snap" id="memSnap">MEMBERSHIP</span></h2>
     <div id="memBody"></div>
-    <div class="sectnote">Cluster-wide density and each school's non-member rate from the WTU database snapshot. Priorities are ranked by non-member rate (red ≥25%, amber 15–25%). Sourced from <b>Organizing/Membership Database (Restricted)</b> — ask me to "update membership" after importing a new snapshot.</div>
+    <div class="sectnote">Cluster-wide density and each school's non-member rate from the WTU database snapshot. Priorities are ranked by non-member rate (priority ≥25%, watch 15–25%). Sourced from <b>Organizing/Membership Database (Restricted)</b> — ask me to "update membership" after importing a new snapshot.</div>
   </div>
 
   <div class="card full" id="panel-coverage" style="margin-top:16px">
@@ -577,7 +644,8 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
   </div>
 
   <div class="card full" id="panel-visits" style="margin-top:16px">
-    <h2>School Visits Attended</h2>
+    <h2>Visits — Where to Go Next</h2>
+    <div id="visitPlan"><!-- built by renderVisitPlan(): ranked next schools, or a seasonal state out of duty --></div>
     <div class="kpis" id="visitKpis"></div>
     <div id="visitClusters"></div>
     <div class="cluster-h" style="margin-top:18px">Visit Log<span class="ch-meta">most recent, newest first</span></div>
@@ -659,7 +727,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
 
     <div class="rb-item">
       <div class="rb-h">Put the calendar on this page <span class="rb-when">· whenever your week changes</span></div>
-      <div class="rb-do">Send Cowork an Outlook screenshot, or drop an Outlook-exported <code>.ics</code> anywhere in the workspace (File → Save Calendar). The <code>.ics</code> is preferred — it parses exactly, no OCR guessing.</div>
+      <div class="rb-do">Send Cowork a screenshot of the Outlook calendar. Since OCR is the only input, anything <i>derived</i> from a block's position rather than read as printed text — an all-day-looking block with no times on it, stacked short events — comes back to you to confirm rather than being rounded silently.</div>
       <div class="rb-file">Today's Calendar and Week at a Glance come only from this. No calendar connector is used.</div>
     </div>
 
@@ -709,26 +777,22 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
     <div class="sectnote">Phone: tap Import → Browse / Files → OneDrive → Documents → WTU Dashboard → <b>dashboard-data.json</b>. The data stays on this device — nothing is uploaded anywhere.</div>
   </div>
 
-  <div id="schModal" class="modal" role="dialog" aria-modal="true">
+  <div id="schModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="schModalTitle">
     <div class="modal-card">
       <div class="modal-head"><span id="schModalTitle"></span><button class="modal-x" id="schModalX" aria-label="Close">×</button></div>
       <div class="modal-body" id="schModalBody"></div>
     </div>
   </div>
 
-  <nav class="tabbar" id="tabbar">
-    <button data-jump="panel-brief"><span class="ti" data-ic="brief"></span>Brief</button>
-    <button data-jump="panel-griev"><span class="ti" data-ic="clock"></span>Cases</button>
-    <button data-jump="panel-schools"><span class="ti" data-ic="school"></span>Schools</button>
-    <button data-jump="panel-links" id="tabLinks"><span class="ti" data-ic="link"></span>Links</button>
-    <button data-jump="panel-jot"><span class="ti" data-ic="pencil"></span>Jot</button>
-    <button data-jump="panel-import"><span class="ti" data-ic="data"></span>Data</button>
-  </nav>
+  <!-- Built by renderTabbar() from visibleSections(), like the sidebar and the jump bar. It used to be
+       static markup, so the embedded desktop artifact at phone width offered Jot and Data buttons whose
+       panels renderJot/renderImport had already hidden — two taps that did nothing. -->
+  <nav class="tabbar" id="tabbar" aria-label="Sections"></nav>
 
   <footer>
     Snapshot data: WTU workspace (school pages + Filed Grievances) + calendar entered from Outlook screenshots, captured <span id="snapFoot">—</span>. Ask to "refresh" or "update" anytime.<br>
     This is a working-aid, not the official record. The CBA controls all grievance timelines — verify any deadline day-by-day before filing.<br>
-    <span class="build-note" id="buildPill">build 2026-07-19.1</span>
+    <span class="build-note" id="buildPill">build 2026-08-14.3</span>
   </footer>
 </div>
 
@@ -755,6 +819,17 @@ var HUSTLE=null; // optional Hustle Texts data ({capChars, segmentChars, templat
    Age is recomputed from lastRun at render time, never read from the file, so the number stays
    honest even when the data snapshot itself is a few days old. Dates only — no member data. */
 var BACKUP=null;
+/* Union Update (build 2026-08-09): the week's WTU newsletter, curated down to one headline, up to
+   three dated items, and one member-facing line. Optional key — absent = the Brief block hides.
+   No newsletter text is ever authored in this file; it rides dashboard-data.json exactly like
+   links/resources, refreshed when Mike drops a newsletter ("update newsletter"). */
+var NEWSLETTER=null;
+/* Dated reminders (build 2026-08-14.2): the ONE authored input to Needs Attention — everything else
+   in that queue is derived from cases, schools and backup age. Kept deliberately narrow so it cannot
+   become a second to-do list: each entry is {date, title, detail?, lead?, target?}, it appears `lead`
+   calendar days ahead, turns urgent on its day, and drops itself a week after. Carry-over key like
+   links/resources — the refresh never regenerates it. */
+var REMINDERS=[];
 var DATA_MODE='none'; // 'embedded' | 'imported' | 'none'
 var DATA_META=null;   // {importedAt, source} for imported mode
 var SHELL_SCHEMA=1;   // highest dashboard-data.json schemaVersion this build understands
@@ -780,6 +855,8 @@ function adoptData(d){
   RESOURCES=(d.resources&&Array.isArray(d.resources.items)&&d.resources.items.length)?d.resources:null; // optional (Resource Hub, 'update resources') — absent = section hides
   HUSTLE=(d.hustle&&Array.isArray(d.hustle.templates)&&d.hustle.templates.length)?d.hustle:null; // optional (Hustle Texts, 'update hustle templates') — absent = section hides
   BACKUP=(d.backup&&typeof d.backup==='object')?d.backup:null; // optional (backup freshness) — absent = status strip stays silent about it
+  NEWSLETTER=(d.newsletter&&typeof d.newsletter==='object')?d.newsletter:null; // optional (Union Update, 'update newsletter') — absent = Brief block hides
+  REMINDERS=Array.isArray(d.reminders)?d.reminders:[]; // optional (dated reminders) — absent = no tier-3 rows in Needs Attention
 }
 function resolveData(){
   if(window.__DATA__){
@@ -804,6 +881,32 @@ function resolveData(){
 }
 
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+/* Notes are authored as markdown on the school pages, so `**like this**` was printing its asterisks.
+   ESCAPE FIRST, then promote the marker — the input to the regex is already inert, so no markup can
+   survive from the source text. Bold is the ONLY marker handled; everything else stays literal. */
+function escNote(s){return esc(s).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');}
+/* A note whose FIRST characters are a bold marker is one Mike deliberately flagged — it is his own
+   authoring convention — a note he wants flagged opens with a bolded lead — not a keyword guess, and it
+   splits his notes cleanly: flags are bolded, records are not. Multi-note entries are split on the same
+   ` || ` the refresh writes them with. NO EXAMPLE TEXT HERE ON PURPOSE: this file ships to a public
+   repo, so a sample lifted from a real school page would be school data in the shell. */
+function flaggedNotes(s){
+  var out=[];
+  (s.notes||[]).forEach(function(n){
+    String(n).split(' || ').forEach(function(part){
+      if(/^\s*\*\*/.test(part))out.push(part.trim());
+    });
+  });
+  return out;
+}
+/* Relative age in calendar days, for freshness stamps. "Updated 5 days ago" answers "is this safe to
+   act on"; a bare date makes the reader do the subtraction. */
+function relAge(iso){
+  if(!iso)return 'date unknown';
+  var n=Math.floor((parseD(todayIso())-parseD(iso))/86400000);
+  if(n<0)return 'dated ahead';
+  return n===0?'today':n===1?'yesterday':n+' days ago';
+}
 // iso() removed: engine standardized on localIso (local time) so date strings match the PWA build and never UTC-shift.
 function parseD(s){const a=s.split('-').map(Number);return new Date(a[0],a[1]-1,a[2]);}
 function inDuty(s){return DUTY.some(d=>s>=d[0]&&s<=d[1]);}
@@ -873,23 +976,47 @@ function renderStatusStrip(){
 /* Backup freshness segment. The T7 lives unplugged, so a stale external copy is invisible by
    design — the hourly job just skips. This is where it stops being invisible. Amber (not red):
    a stale backup is a "plug the drive in" nudge, never as urgent as a live grievance clock. */
-function backupSegment(){
-  if(!BACKUP)return '';
+/* ONE derivation of backup staleness, read by both consumers — the status strip below and the
+   attention queue's tier 8. They used to each do this arithmetic, and they had already drifted: the
+   strip clamped a negative age to 0 and the queue did not, so a clock skew would have shown "backup
+   today" up top and a nonsense age in the queue. Anything else that needs backup age calls this. */
+function backupAge(){
+  if(!BACKUP)return null;
   var warnAt=BACKUP.warnDays||14;
   var last=(BACKUP.external&&BACKUP.external.lastRun)||'';
-  if(!last)return '<span class="seg-amber">external backup has never run — plug in the T7 Shield</span>';
+  if(!last)return {last:'',warnAt:warnAt,age:null,stale:true,never:true};
   // CALENDAR days, deliberately — a backup goes stale over a school break like any other week.
   // This is the one age in the dashboard that must NOT use the school-day counters.
   var age=Math.floor((parseD(todayIso())-parseD(last))/86400000);
   if(age<0)age=0;
-  if(age>=warnAt)return '<span class="seg-amber">external backup '+age+' days old — plug in the T7 Shield</span>';
-  return '<span class="seg-muted">backup '+(age===0?'today':age+'d ago')+'</span>';
+  return {last:last,warnAt:warnAt,age:age,stale:age>=warnAt,never:false};
+}
+function backupSegment(){
+  var b=backupAge();
+  if(!b)return '';
+  if(b.never)return '<span class="seg-amber">external backup has never run — plug in the T7 Shield</span>';
+  if(b.stale)return '<span class="seg-amber">external backup '+b.age+' days old — plug in the T7 Shield</span>';
+  return '<span class="seg-muted">backup '+(b.age===0?'today':b.age+'d ago')+'</span>';
 }
 
 let activeCluster='All';
 let activeWard='All'; // ward filter (build .2) — chips render only when the data carries wards
 let schoolFilterText='';
 let covHideEmpty=true; // build .5: Coverage Gaps hides schools with nothing recorded yet (identical all-missing rows are noise; a partially-filled school missing a rep is the real signal)
+/* The cluster toggle's accessible name is an ACTION ("Collapse Cluster VII"), which is the right
+   pattern — but it was written once at render and never updated, so after one click a screen reader
+   still offered to collapse an already-collapsed cluster. aria-expanded alone does not fix that when
+   the label itself names the action. Every toggle path calls this instead of setting aria-expanded
+   by hand; the cluster name comes off the block so the three call sites stay identical. */
+function syncClusterToggle(btn,collapsed){
+  if(!btn)return;
+  var block=btn.closest&&btn.closest('.cluster-block');
+  var c=(block&&block.getAttribute('data-cluster'))||'';
+  var act=(collapsed?'Expand':'Collapse')+(c?' Cluster '+c:' this cluster');
+  btn.setAttribute('aria-expanded',String(!collapsed));
+  btn.setAttribute('aria-label',act);
+  btn.setAttribute('title',act);
+}
 const CLUSTER_ORDER=['VII','VIII','IX'];
 function orderedClusters(){
   const present=new Set(SCHOOLS.map(s=>s.cluster));
@@ -922,9 +1049,13 @@ function renderHeader(){
     sp.textContent='Snapshot dated '+pretty(SNAPSHOT_DATE)+' — a FUTURE date; ask me to refresh';
     sp.style.background='var(--red)';sp.style.color='#fff';sp.style.borderColor='var(--maroon)';
   }else if(schDays>3||calDays>7){
-    sp.textContent='Snapshot STALE: '+pretty(SNAPSHOT_DATE)+' — ask me to refresh';
+    sp.textContent='Snapshot STALE: '+relAge(SNAPSHOT_DATE)+' ('+prettyNoYr(SNAPSHOT_DATE)+') — ask me to refresh';
     sp.style.background='var(--red)';sp.style.color='#fff';sp.style.borderColor='var(--maroon)';
-  }else{sp.style.background='';sp.style.color='';sp.style.borderColor='';}
+  }else{
+    // Relative first: "is this safe to act on" is the question a bare date makes you do maths for.
+    sp.textContent='Updated '+relAge(SNAPSHOT_DATE)+' · '+prettyNoYr(SNAPSHOT_DATE);
+    sp.style.background='';sp.style.color='';sp.style.borderColor='';
+  }
   if(DATA_MODE==='imported'&&DATA_META&&DATA_META.importedAt){sp.textContent+=' · imported '+new Date(DATA_META.importedAt).toLocaleDateString('en-US',{month:'short',day:'numeric'});}
 }
 // On-load engine self-test against the known-good cases in the build plan's Verification Plan.
@@ -963,7 +1094,7 @@ function renderCalendar(){
   const grid=document.getElementById('briefGrid');if(grid)grid.classList.toggle('no-cal',noCal);
   const col=document.getElementById('briefCalCol');if(col)col.classList.toggle('cal-empty',noCal);
   if(noCal){
-    box.innerHTML='<div class="empty">— no events on file. Send me an Outlook screenshot (or drop an exported .ics in the workspace) and I\'ll transcribe your week.</div>';
+    box.innerHTML='<div class="empty">— no events on file. Send me a screenshot of your Outlook calendar and I\'ll transcribe your week.</div>';
     return;
   }
   const today=EVENTS.filter(function(e){return e.date===t;});
@@ -1042,9 +1173,13 @@ function openSchool(name){
   b+='<div class="sub-h">Key Contacts</div>';
   b+=s.contacts.some(function(c){return c[1];})?s.contacts.map(function(c){return '<div class="ct-line"><div class="r">'+esc(c[0])+'</div><div class="v'+(c[1]?'':' empty-v')+'">'+(c[1]?linkifyContact(c[1]):'— not yet recorded')+'</div></div>';}).join(''):'<div class="ct-line"><div class="v empty-v">No contacts recorded yet — add them on the school page and refresh.</div></div>';
   b+='<div class="sub-h">School Notes</div>';
-  b+=s.notes.length?'<ul class="notes-list">'+s.notes.map(function(n){return '<li>'+esc(n)+'</li>';}).join('')+'</ul>':'<div class="empty">No notes recorded.</div>';
+  b+=s.notes.length?'<ul class="notes-list">'+s.notes.map(function(n){return '<li'+(/^\s*\*\*/.test(n)?' class="flagged"':'')+'>'+escNote(n)+'</li>';}).join('')+'</ul>':'<div class="empty">No notes recorded.</div>';
   b+='<div class="sub-h">Open Issues</div>';
-  b+=s.issues.length?('<table><tr><th>Issue</th><th>Status</th><th>Article</th><th>Opened</th></tr>'+s.issues.map(function(r){return '<tr><td data-label="Issue">'+esc(r[0]||'')+'</td><td data-label="Status">'+esc(r[1]||'')+'</td><td data-label="Article">'+esc(r[2]||'')+'</td><td data-label="Opened">'+esc(r[3]||'')+'</td></tr>';}).join('')+'</table>'):'<div class="empty">No open issues.</div>';
+  // "No open issues" must not read as "nothing to know here" when the page carries a flagged note —
+  // that is how a school with a live budget or coach problem read as a clean record.
+  var nFlag=flaggedNotes(s).length;
+  b+=s.issues.length?('<table><tr><th>Issue</th><th>Status</th><th>Article</th><th>Opened</th></tr>'+s.issues.map(function(r){return '<tr><td data-label="Issue">'+esc(r[0]||'')+'</td><td data-label="Status">'+esc(r[1]||'')+'</td><td data-label="Article">'+esc(r[2]||'')+'</td><td data-label="Opened">'+esc(r[3]||'')+'</td></tr>';}).join('')+'</table>'):
+    ('<div class="empty">No open issues logged'+(nFlag?' — but '+nFlag+' flagged note'+(nFlag===1?'':'s')+' above needs a look.':'.')+'</div>');
   b+='<div class="sub-h">Visit &amp; Conversation Log</div>';
   b+=s.visits.length?('<table><tr><th>Date</th><th>Notes</th></tr>'+s.visits.slice().sort(function(a,b2){return b2[0].localeCompare(a[0]);}).map(function(v){return '<tr><td data-label="Date">'+pretty(v[0])+'</td><td data-label="Notes">'+esc(v[1])+'</td></tr>';}).join('')+'</table>'):'<div class="empty">No visits logged.</div>';
   document.getElementById('schModalTitle').textContent=s.name+' — Cluster '+s.cluster+(s.ward?' · Ward '+s.ward:'');
@@ -1058,6 +1193,34 @@ function closeSchool(){
   var m=document.getElementById('schModal');if(m)m.style.display='none';
   if(MODAL_RETURN&&MODAL_RETURN.focus){try{MODAL_RETURN.focus();}catch(e){}}
   MODAL_RETURN=null;
+}
+
+/* FOCUS TRAP for the two things that declare aria-modal="true": the school modal and the phone More
+   sheet. Both already moved focus in, closed on Escape, and returned focus on close — but Tab walked
+   straight out the back into the page behind, which for a keyboard or screen-reader user means the
+   dialog is "open" while they are reading the dashboard underneath it. aria-modal promises the
+   background is inert; this makes it true. One handler serves both, because only one can be topmost. */
+var DIALOG_FOCUSABLE='a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+function topDialog(){
+  var sh=document.getElementById('moreSheet');if(sh)return sh; // More sits above the modal
+  var m=document.getElementById('schModal');
+  if(m&&m.style.display!=='none'&&m.style.display!=='')return m;
+  return null;
+}
+function trapDialogTab(e){
+  if(e.key!=='Tab')return;
+  var d=topDialog();if(!d)return;
+  // getClientRects() rather than offsetParent: the sheet is position:fixed, where offsetParent lies.
+  var f=Array.prototype.filter.call(d.querySelectorAll(DIALOG_FOCUSABLE),function(el){
+    return el.getClientRects().length>0;
+  });
+  if(!f.length){e.preventDefault();return;}
+  var first=f[0],last=f[f.length-1],here=document.activeElement,inside=d.contains(here);
+  if(e.shiftKey){
+    if(!inside||here===first){e.preventDefault();last.focus();}
+  }else{
+    if(!inside||here===last){e.preventDefault();first.focus();}
+  }
 }
 function openSchoolFromUrl(){
   var m=(location.hash||'').match(/school=(.+)$/);
@@ -1233,11 +1396,13 @@ function renderChips(){
 
 // ---- Membership overlay (optional; from the data's membership.bySchool key) ----
 function memOf(name){return (MEMBERSHIP&&MEMBERSHIP[name])?MEMBERSHIP[name]:null;}
-function memPctCls(r){return r>=0.25?'hi':(r>=0.15?'mid':'lo');} // priority in red, watch amber, healthy muted
+function memPctCls(r){return r>=0.25?'hi':(r>=0.15?'mid':'lo');} // priority and watch are BOTH amber (hi carries a ring), healthy muted — red is deadlines only
 function memTags(name){
   var m=memOf(name);if(!m)return '';
   var pct=Math.round((m.nonRate||0)*100);
-  var t={lo:'dl-grey',mid:'dl-amber',hi:'dl-red'}[memPctCls(m.nonRate||0)];
+  // hi tier is AMBER here too (2026-08-14) — the membership table was corrected first and this chip
+  // was still painting recruitment priority red, which is reserved for past-due / <=3 school days.
+  var t={lo:'dl-grey',mid:'dl-amber',hi:'dl-amber'}[memPctCls(m.nonRate||0)];
   return '<span class="tag">'+m.members+' members</span><span class="tag">'+m.potential+' potential</span>'+
          '<span class="tag '+t+'">'+pct+'% non-member</span>';
 }
@@ -1295,13 +1460,16 @@ function renderMembership(){
        '<td><span class="mem-pct '+memPctCls(a.nonRate)+'">'+memPct1(a.nonRate)+'</span></td><td>'+bar(a.nonRate)+'</td></tr>';});
   h+='</table></div>';
   var ranked=view.slice().sort(memSortFn());
-  if(MEM_TIER==='red')ranked=ranked.filter(function(r){return r.nonRate>=0.25;});
-  else if(MEM_TIER==='amber')ranked=ranked.filter(function(r){return r.nonRate>=0.15&&r.nonRate<0.25;});
-  h+='<div class="cluster-h" style="margin-top:18px">Recruitment priorities<span class="ch-meta">red ≥25%, amber 15–25% · click a column to sort · school names open the viewer</span></div>';
+  // Tier keys are 'hi'/'mid' to match memPctCls(). They used to be 'red'/'amber' and the labels said so
+  // out loud, which survived the 2026-08-14 colour correction and left the copy describing a red tier
+  // that no longer renders red. Name the tiers by what they MEAN so a palette change can't strand them.
+  if(MEM_TIER==='hi')ranked=ranked.filter(function(r){return r.nonRate>=0.25;});
+  else if(MEM_TIER==='mid')ranked=ranked.filter(function(r){return r.nonRate>=0.15&&r.nonRate<0.25;});
+  h+='<div class="cluster-h" style="margin-top:18px">Recruitment priorities<span class="ch-meta">priority ≥25% non-member, watch 15–25% · click a column to sort · school names open the viewer</span></div>';
   h+='<div class="toolbar" style="margin-top:6px">'+
      '<button type="button" class="chip'+(MEM_TIER===''?' active':'')+'" data-mem-tier="">All tiers</button>'+
-     '<button type="button" class="chip'+(MEM_TIER==='red'?' active':'')+'" data-mem-tier="red">Red ≥25%</button>'+
-     '<button type="button" class="chip'+(MEM_TIER==='amber'?' active':'')+'" data-mem-tier="amber">Amber 15–25%</button></div>';
+     '<button type="button" class="chip'+(MEM_TIER==='hi'?' active':'')+'" data-mem-tier="hi">Priority ≥25%</button>'+
+     '<button type="button" class="chip'+(MEM_TIER==='mid'?' active':'')+'" data-mem-tier="mid">Watch 15–25%</button></div>';
   function th(k,l){if(!k)return '<th>'+l+'</th>';
     var cur=MEM_SORT.key===k,arr=cur?(MEM_SORT.dir<0?' ▾':' ▴'):'';
     return '<th class="mem-th'+(cur?' cur':'')+'" data-mem-sort="'+k+'" tabindex="0" aria-sort="'+(cur?(MEM_SORT.dir<0?'descending':'ascending'):'none')+'" title="Sort by '+l+'">'+l+arr+'</th>';}
@@ -1325,24 +1493,114 @@ function renderMembership(){
   }
   host.innerHTML=h;
 }
+/* Which seats are empty, in the order they matter to an organizer. Returns the count when everything
+   is filled (nothing to name) and the ROLE NAMES when it isn't — short forms, because this renders in
+   a chip and on a 390px phone. Reads the same contacts array Coverage Gaps reads; no second source. */
+var ROLE_SHORT=[['Building Rep','BR'],['SCAC Committee / Members','SCAC'],['WTU LSAT Reps','LSAT'],['Personnel Committee','Personnel'],['Principal','Principal']];
+function missingRoles(s){
+  var out=[];
+  ROLE_SHORT.forEach(function(r){if(!contactVal(s,r[0]))out.push(r[1]);});
+  return out;
+}
+function missingRoleTag(s){
+  var m=missingRoles(s);
+  if(!m.length)return s.cf+'/'+s.ct+' contacts';
+  // A `pending` school's committee seats are UNKNOWN, not empty — nobody has sent 26-27 results yet.
+  // Verified 2026-08-14: the 5 schools missing 3+ roles are exactly the 5 `pending` ones, and the 2
+  // missing only a BR are exactly the 2 `vacant` ones. Labelling pending schools "no SCAC, no LSAT"
+  // would report a committee that does not exist, when the real state is that we have not been told.
+  if(s.brStatus==='pending'&&m.length>2)return '26-27 results not in';
+  if(m.length>2)return 'no '+m[0]+', no '+m[1]+' +'+(m.length-2);
+  return 'no '+m.join(', no ');
+}
+/* ---- Why a school is worth your time, and what to do about it (2026-08-14).
+   ONE source for both the Schools "needs attention" view and the Visits plan, so the two surfaces can
+   never disagree about which schools matter. Reads only structured fields + the bolded-lead note
+   convention — no inference over arbitrary prose. Weights order the list; `act` is the recommended
+   next step, phrased as something Mike can actually do. Sorted strongest-first. */
+function schoolReasons(s){
+  var r=[],t=todayIso();
+  var f=flaggedNotes(s);
+  // ACUTE outranks any stack of routine reasons on purpose — it is Mike's own word for "priority
+  // visit", and at w:6 a recruitment-plus-note school (4+3) was sorting above it.
+  if(f.some(function(n){return /\bACUTE\b/.test(n);}))r.push({k:'flag',w:8,why:'flagged ACUTE',act:'Priority visit — read the flagged note'});
+  else if(f.length)r.push({k:'flag',w:3,why:f.length+' flagged note'+(f.length===1?'':'s'),act:'Read the flagged note before you go'});
+  if(s.issues.length)r.push({k:'issue',w:5,why:s.issues.length+' open issue'+(s.issues.length===1?'':'s'),act:'Work the open issue'});
+  if(s.brStatus==='vacant')r.push({k:'br',w:5,why:'Building Rep seat vacant',act:'Run a Building Rep election'});
+  else if(s.brStatus==='pending')r.push({k:'br',w:3,why:'26-27 results not in',act:'Chase the 26-27 election results'});
+  // Committee gaps only count once results are in — a pending school's seats are unknown, not empty.
+  if(s.brStatus!=='pending'){
+    var miss=missingRoles(s).filter(function(x){return x!=='BR';});
+    if(miss.length)r.push({k:'gap',w:2,why:'no '+miss.join(', no '),act:'Fill the '+miss[0]+' seat'});
+  }
+  var m=memOf(s.name),nr=m?(m.nonRate||0):0;
+  if(m&&nr>=0.25)r.push({k:'recruit',w:4,why:Math.round(nr*100)+'% non-member',act:'Recruitment conversation — top tier'});
+  else if(m&&nr>=0.15)r.push({k:'recruit',w:2,why:Math.round(nr*100)+'% non-member',act:'Recruitment conversation'});
+  /* "No visit yet" is TRUE OF EVERY SCHOOL on the first day of the year, so it is not a reason —
+     it is a constant, and at w:2 it lifted all 15 lone-flagged-note schools over ATTENTION_BAR the
+     moment duty began (caught by simulating 2026-08-17: the view went 14 -> 29). Two guards: it only
+     counts once the year is far enough in that not having gone is notable — the same 30-school-day
+     threshold the visit-staleness table already uses — and at w:1 it can only ever break a tie, never
+     promote a school on its own. */
+  var sy=currentSYStart();
+  var syDays=(inDuty(t)&&sy)?(workingDaysBetween(sy,t)||0):0;
+  if(syDays>=30&&!s.visits.length)r.push({k:'visit',w:1,why:'no visit in '+syDays+' school days',act:'Schedule a first visit'});
+  r.sort(function(a,b){return b.w-a.w;});
+  return r;
+}
+function schoolScore(s){return schoolReasons(s).reduce(function(a,x){return a+x.w;},0);}
+/* SEVERITY = the single strongest reason, not the sum. The sum rewards breadth (three small things
+   outrank one serious one), which is the wrong shape for "where should I go". Ranking and the
+   priority band both read this first and use the sum only to break ties. */
+function schoolSeverity(s){var r=schoolReasons(s);return r.length?r[0].w:0;}
+function schoolRank(a,b){return schoolSeverity(b)-schoolSeverity(a)||schoolScore(b)-schoolScore(a)||a.name.localeCompare(b.name);}
+// The view filters on the Schools panel. `attention` is the default: an undifferentiated 36-school
+// list makes Mike do the triage the page exists to do for him.
+/* ATTENTION_BAR sits at a real cliff in the data, not a round number: scored 2026-08-14, the schools
+   land at 0 (×6), 2 (×1), 3 (×15) and then jump straight to 5+ (×14) with nothing at 4. The 3s are all
+   a single flagged budget note and nothing else — genuine, but not triage. Anything at 5 carries either
+   a substantive reason on its own (ACUTE flag, open issue, vacant BR, top-tier recruitment) or two
+   stacked. A lone flagged note stays one click away under the "Flagged note" chip. Re-check this
+   number when the data shape changes — a bar that no longer sits on a gap is just an arbitrary cut. */
+var ATTENTION_BAR=5;
+var SCHOOL_VIEWS=[
+  {k:'attention',label:'Needs attention',test:function(s){return schoolScore(s)>=ATTENTION_BAR;}},
+  {k:'br',label:'BR needed',test:function(s){return s.brStatus==='vacant'||s.brStatus==='pending';}},
+  {k:'gap',label:'Contact gap',test:function(s){return s.brStatus!=='pending'&&missingRoles(s).length>0;}},
+  {k:'flag',label:'Flagged note',test:function(s){return flaggedNotes(s).length>0;}},
+  {k:'recruit',label:'Recruitment',test:function(s){var m=memOf(s.name);return !!m&&(m.nonRate||0)>=0.15;}},
+  {k:'novisit',label:'Not visited',test:function(s){return !s.visits.length;}},
+  {k:'all',label:'All schools',test:function(){return true;}}
+];
+var activeView='attention';
+function viewTest(){
+  for(var i=0;i<SCHOOL_VIEWS.length;i++)if(SCHOOL_VIEWS[i].k===activeView)return SCHOOL_VIEWS[i].test;
+  return function(){return true;};
+}
 function schoolCard(s){
   const lv=lastVisit(s);
   const issuesN=s.issues.length;
   const tags=[];
   if(s.ward)tags.push('<span class="tag">Ward '+esc(s.ward)+'</span>');
-  tags.push('<span class="tag'+(s.cf>0?' ok':'')+'">'+s.cf+'/'+s.ct+' contacts</span>');
+  // "5/6 contacts" made Mike open the record just to learn WHICH seat was empty — and looking up a
+  // Building Rep standing in a building is the main thing he does on the phone. Name the gap instead.
+  tags.push('<span class="tag'+(s.cf>0?' ok':'')+'">'+missingRoleTag(s)+'</span>');
   tags.push('<span class="tag'+(issuesN>0?' warn':'')+'">'+issuesN+' issue'+(issuesN===1?'':'s')+'</span>');
   tags.push('<span class="tag">'+(lv?'visit '+prettyNoYr(lv):'no visits')+'</span>');
   const memtag=memTags(s.name); if(memtag)tags.push(memtag);
   const contacts=s.cf>0?s.contacts.map(c=>'<div class="ct-line"><div class="r">'+esc(c[0])+'</div><div class="v'+(c[1]?'':' empty-v')+'">'+(c[1]?linkifyContact(c[1]):'— not yet recorded')+'</div></div>').join(''):'<div class="ct-line"><div class="v empty-v">No contacts recorded yet — add them on the school page and refresh.</div></div>';
-  const notes=s.notes.length?'<ul class="notes-list">'+s.notes.map(n=>'<li>'+esc(n)+'</li>').join('')+'</ul>':'<div class="empty" style="padding:2px 0">No notes recorded.</div>';
+  const notes=s.notes.length?'<ul class="notes-list">'+s.notes.map(n=>'<li'+(/^\s*\*\*/.test(n)?' class="flagged"':'')+'>'+escNote(n)+'</li>').join('')+'</ul>':'<div class="empty" style="padding:2px 0">No notes recorded.</div>';
   let issues;
   if(issuesN){
     issues='<table><tr><th>Issue</th><th>Status</th><th>Article</th><th>Opened</th></tr>'+
       s.issues.map(r=>'<tr><td data-label="Issue">'+esc(r[0]||'')+'</td><td data-label="Status">'+esc(r[1]||'')+'</td><td data-label="Article">'+esc(r[2]||'')+'</td><td data-label="Opened">'+esc(r[3]||'')+'</td></tr>').join('')+'</table>';
   }else{issues='<div class="empty" style="padding:2px 0">No open issues.</div>';}
+  // The recommended next step rides on the collapsed row, so the scan surface answers "and then what?"
+  // without an expand. Derived from schoolReasons(); absent when the school has no live reason.
+  const rs=schoolReasons(s);
+  const act=rs.length?'<div class="sch-act"><span class="sch-act-do">'+esc(rs[0].act)+'</span><span class="sch-act-why">'+esc(rs[0].why)+(rs.length>1?' · +'+(rs.length-1)+' more':'')+'</span></div>':'';
   return '<details class="sch"><summary><span class="caret">▶</span><span class="snm">'+esc(s.name)+'</span>'+
-    '<span class="mini">'+tags.join('')+'</span></summary>'+
+    '<span class="mini">'+tags.join('')+'</span>'+act+'</summary>'+
     '<div class="sch-body">'+
       memBlock(s.name)+
       '<div class="sub-h">Key Contacts</div>'+contacts+
@@ -1354,19 +1612,50 @@ function schoolCard(s){
 function renderSchools(){
   const wrap=document.getElementById('schoolSections');
   const clusters=orderedClusters();
-  let html='';
+  const vt=viewTest();
+  // Cluster / ward / text filters stack ON TOP of the view — the view narrows what matters, the
+  // filters narrow where. Cluster order stays VII, VIII, IX via orderedClusters().
+  const passes=s=>vt(s)&&(activeWard==='All'||String(s.ward)===activeWard)&&(!schoolFilterText||s.name.toLowerCase().indexOf(schoolFilterText)!==-1);
+  let html='',shown=0;
   clusters.forEach(c=>{
     if(activeCluster!=='All'&&activeCluster!==c)return;
-    const list=SCHOOLS.filter(s=>s.cluster===c&&(activeWard==='All'||String(s.ward)===activeWard)&&(!schoolFilterText||s.name.toLowerCase().indexOf(schoolFilterText)!==-1)).sort((a,b)=>a.name.localeCompare(b.name));
+    // Ranked in a filtered view (the ordering IS the point); alphabetical in "All schools", where
+    // Mike is looking a specific school up by name.
+    const list=SCHOOLS.filter(s=>s.cluster===c&&passes(s)).sort(
+      activeView==='all'?((a,b)=>a.name.localeCompare(b.name)):schoolRank);
     if(!list.length)return;
+    shown+=list.length;
     const issues=list.reduce((a,s)=>a+s.issues.length,0);
     const visited=list.filter(s=>s.visits.length).length;
     html+='<div class="cluster-block" data-cluster="'+c+'">';
-    html+='<div class="cluster-h"><button class="cluster-toggle" aria-expanded="true" title="Collapse or expand this cluster">▾</button>Cluster '+c+'<span class="ch-meta">'+list.length+' school'+(list.length===1?'':'s')+' · '+visited+' visited · '+issues+' open issues</span></div>';
+    html+='<div class="cluster-h"><button class="cluster-toggle" aria-expanded="true" aria-label="Collapse Cluster '+c+'" title="Collapse or expand Cluster '+c+'">▾</button>Cluster '+c+'<span class="ch-meta">'+list.length+' school'+(list.length===1?'':'s')+' · '+visited+' visited · '+issues+' open issues</span></div>';
     html+='<div class="cluster-schools">'+list.map(schoolCard).join('')+'</div>';
     html+='</div>';
   });
-  wrap.innerHTML=html||'<div class="empty">No schools match the current filters'+(schoolFilterText?' ("'+esc(schoolFilterText)+'")':'')+'.</div>';
+  const hidden=SCHOOLS.length-SCHOOLS.filter(vt).length;
+  let lead='';
+  if(activeView!=='all'&&hidden>0){
+    lead='<div class="sectnote view-note">Showing <b>'+shown+'</b> of '+SCHOOLS.length+' schools, strongest reason first. '+
+         (activeView==='attention'
+           ?hidden+' hidden — either nothing outstanding, or a single flagged note and no more (those are under <b>Flagged note</b>).'
+           :hidden+' do not match this view.')+
+         ' <button class="btn" id="viewAllSchools">Show all '+SCHOOLS.length+'</button></div>';
+  }
+  wrap.innerHTML=lead+(html||'<div class="empty">No schools match the current filters'+(schoolFilterText?' ("'+esc(schoolFilterText)+'")':'')+'. '+
+    (activeView!=='all'?'<button class="btn" id="viewAllSchools">Show all '+SCHOOLS.length+'</button>':'')+'</div>');
+  var va=document.getElementById('viewAllSchools');
+  if(va)va.onclick=function(){activeView='all';renderSchoolViews();renderSchools();};
+}
+function renderSchoolViews(){
+  var host=document.getElementById('schoolViews');if(!host)return;
+  host.innerHTML=SCHOOL_VIEWS.map(function(v){
+    var n=SCHOOLS.filter(v.test).length;
+    return '<button type="button" class="chip'+(v.k===activeView?' active':'')+'" data-v="'+v.k+'" aria-pressed="'+(v.k===activeView)+'">'+esc(v.label)+
+           '<span class="chip-n">'+n+'</span></button>';
+  }).join('');
+  Array.prototype.forEach.call(host.querySelectorAll('.chip'),function(ch){
+    ch.onclick=function(){activeView=ch.dataset.v;renderSchoolViews();renderSchools();};
+  });
 }
 
 /* "Needs a BR election" strip — the Building Rep is the most important seat, so schools without
@@ -1388,13 +1677,13 @@ function renderBrElection(){
   if(!DASH_COUNTS.brNeed){host.innerHTML='';return;}
   var chip=function(s,vacCls){
     var noC=!vacCls&&!contactVal(s,'Other key members');
-    var cls='brx-chip schlink'+(vacCls?' vac':'')+(noC?' red':'');
+    var cls='brx-chip schlink'+(vacCls?' vac':'')+(noC?' nocontact':'');
     return '<a href="#" class="'+cls+'" data-school="'+esc(s.name)+'">'+esc(s.name)+(s.ward?' · Ward '+esc(s.ward):'')+(noC?' · no contact on file':'')+'</a>';
   };
   var h='<div class="brx"><div class="brx-h">Needs a Building Rep election<span class="brx-n">'+DASH_COUNTS.brNeed+' school'+(DASH_COUNTS.brNeed===1?'':'s')+'</span></div>';
   if(pend.length)h+='<span class="brx-lab">Awaiting 26-27 election results ('+pend.length+')</span>'+pend.map(function(s){return chip(s,false);}).join('');
   if(vac.length)h+='<span class="brx-lab">Election held — BR seat vacant ('+vac.length+')</span>'+vac.map(function(s){return chip(s,true);}).join('');
-  h+='<div class="brx-note">The BR slot stays empty until a 26-27 election fills it; 25-26 holdovers sit under "Other key members" as the contact for getting the election run. Red = no union contact at the school at all.</div></div>';
+  h+='<div class="brx-note">The BR slot stays empty until a 26-27 election fills it; 25-26 holdovers sit under "Other key members" as the contact for getting the election run. A ringed chip means no union contact at the school at all.</div></div>';
   host.innerHTML=h;
 }
 
@@ -1414,9 +1703,9 @@ function renderCoverage(){
     if(!list.length)return;
     gapsShown+=list.length;
     html+='<div class="cluster-block" data-cluster="'+c+'">';
-    html+='<div class="cluster-h"><button class="cluster-toggle" aria-expanded="true" title="Collapse or expand this cluster">▾</button>Cluster '+c+'<span class="ch-meta">'+list.length+' school'+(list.length===1?'':'s')+' missing a rep</span></div>';
+    html+='<div class="cluster-h"><button class="cluster-toggle" aria-expanded="true" aria-label="Collapse Cluster '+c+'" title="Collapse or expand Cluster '+c+'">▾</button>Cluster '+c+'<span class="ch-meta">'+list.length+' school'+(list.length===1?'':'s')+' missing a rep</span></div>';
     html+='<div class="cluster-schools"><table><tr><th>School</th>'+(hasWards?'<th>Ward</th>':'')+'<th>Building Rep</th><th>SCAC Committee</th><th>LSAT Rep</th></tr>'+list.map(function(s){
-      return '<tr><td data-label="School">'+schoolLink(s.name)+'</td>'+(hasWards?'<td data-label="Ward">'+(s.ward?'Ward '+esc(s.ward):'—')+'</td>':'')+roles.map(function(r){return '<td data-label="'+r[1]+'">'+(contactVal(s,r[0])?'<span class="cov-yes">✓</span>':'<span class="cov-no">missing</span>')+'</td>';}).join('')+'</tr>';
+      return '<tr><td data-label="School">'+schoolLink(s.name)+'</td>'+(hasWards?'<td data-label="Ward">'+(s.ward?'Ward '+esc(s.ward):'—')+'</td>':'')+roles.map(function(r){return '<td data-label="'+r[1]+'">'+(contactVal(s,r[0])?'<span class="cov-yes">✓</span>':'<span class="cov-warn">missing</span>')+'</td>';}).join('')+'</tr>';
     }).join('')+'</table></div>';
     html+='</div>';
   });
@@ -1436,8 +1725,48 @@ function renderCoverage(){
 function setAllCoverage(collapsed){
   Array.prototype.forEach.call(document.querySelectorAll('#coverageBody .cluster-block'),function(b){
     b.classList.toggle('collapsed',collapsed);
-    var t=b.querySelector('.cluster-toggle');if(t)t.setAttribute('aria-expanded',String(!collapsed));
+    syncClusterToggle(b.querySelector('.cluster-toggle'),collapsed);
   });
+}
+/* ---- Visit plan (2026-08-14). Visits used to open with 36 rows of dashes and a "total visits: 0"
+   KPI — a backward-looking attendance sheet that answered a question Mike never asks. This block
+   leads instead with WHERE TO GO NEXT, ranked by schoolReasons() (the same engine the Schools
+   "needs attention" view uses, so the two can't disagree), and it does NOT manufacture urgency out
+   of season: outside the duty period it says so and shows the prep shortlist rather than a table of
+   empty rows. Nothing here recomputes a deadline or writes any state. */
+function renderVisitPlan(){
+  var host=document.getElementById('visitPlan');if(!host)return;
+  var t=todayIso(),duty=inDuty(t);
+  // Same bar as the Schools "needs attention" view, so the two surfaces can never quote different
+  // counts for the same question.
+  var ranked=SCHOOLS.filter(function(s){return schoolScore(s)>=ATTENTION_BAR;}).sort(schoolRank)
+                    .map(function(s){return {s:s,r:schoolReasons(s),n:schoolScore(s)};});
+  if(!ranked.length){host.innerHTML='<div class="empty">Nothing is flagged for a visit — no open issues, contact gaps, flagged notes or recruitment priorities on file.</div>';return;}
+  var head,note;
+  if(duty){
+    head='Next up'; note=ranked.length+' school'+(ranked.length===1?'':'s')+' with a live reason · ranked by what is open, not by how long since you were there';
+  }else{
+    var next=null;for(var i=0;i<DUTY.length;i++){if(DUTY[i][0]>t){next=DUTY[i][0];break;}}
+    head='Prep list'; note='Not in the duty period'+(next?' — school days resume '+prettyMed(next):'')+'. These are the schools to plan for, not a backlog.';
+  }
+  var rows=ranked.slice(0,8).map(function(x){
+    var lv=lastVisit(x.s);
+    var why=x.r.slice(0,2).map(function(z){return esc(z.why);}).join(' · ')+(x.r.length>2?' · +'+(x.r.length-2):'');
+    // Band off the STRONGEST reason: ACUTE flag / vacant BR / open issue = high; top-tier
+    // recruitment or a pending election = medium; anything else = low.
+    var sev=x.r[0].w;
+    // Visit priority is never red: "high" here means the strongest reason to go, not a contractual
+    // clock. The word carries the meaning; amber carries the weight. (2026-08-14 colour rule.)
+    var pr=sev>=5?'<span class="cov-warn">high</span>':sev>=3?'<span class="cov-amber">medium</span>':'<span class="cov-muted">low</span>';
+    return '<tr><td data-label="School">'+schoolLink(x.s.name)+'</td>'+
+           '<td data-label="Why">'+why+'</td>'+
+           '<td data-label="Do">'+esc(x.r[0].act)+'</td>'+
+           '<td data-label="Priority">'+pr+'</td>'+
+           '<td data-label="Last visit">'+(lv?prettyMed(lv):'never')+'</td></tr>';
+  }).join('');
+  host.innerHTML='<div class="cluster-h">'+head+'<span class="ch-meta">'+note+'</span></div>'+
+    '<table><tr><th>School</th><th>Why</th><th>Recommended next step</th><th>Priority</th><th>Last visit</th></tr>'+rows+'</table>'+
+    (ranked.length>8?'<div class="sectnote">Showing the top 8 of '+ranked.length+' — the rest are in Schools under “Needs attention”.</div>':'');
 }
 function renderVisitClusters(){
   const box=document.getElementById('visitClusters');
@@ -1451,35 +1780,40 @@ function renderVisitClusters(){
     if(!list.length)return;
     const visitedN=list.filter(function(s){return s.visits.length;}).length;
     html+='<div class="cluster-block" data-cluster="'+c+'">';
-    html+='<div class="cluster-h"><button class="cluster-toggle" aria-expanded="true" title="Collapse or expand this cluster">▾</button>Cluster '+c+'<span class="ch-meta">'+list.length+' school'+(list.length===1?'':'s')+' · '+visitedN+' visited</span></div>';
+    html+='<div class="cluster-h"><button class="cluster-toggle" aria-expanded="true" aria-label="Collapse Cluster '+c+'" title="Collapse or expand Cluster '+c+'">▾</button>Cluster '+c+'<span class="ch-meta">'+list.length+' school'+(list.length===1?'':'s')+' · '+visitedN+' visited</span></div>';
     html+='<div class="cluster-schools"><table><tr><th>School</th><th>Last visit</th><th>Visits</th><th>Status</th></tr>'+list.map(function(s){
       var lv=lastVisit(s);
       var status,cls;
       if(!inSession){status='Summer recess';cls='cov-muted';}
       else if(!lv){
         var sd0=sy?(workingDaysBetween(sy,t)||0):0;
-        if(sd0>=60){status='No visit this SY';cls='cov-no';}
+        if(sd0>=60){status='No visit this SY';cls='cov-warn';}
         else if(sd0>=30){status='No visit this SY';cls='cov-amber';}
         else{status='No visit yet this SY';cls='cov-muted';}
       }else{
         var sd=workingDaysBetween(lv,t);if(sd===null)sd=0;
-        if(sd>=60){status=sd+' school days ago';cls='cov-no';}
+        if(sd>=60){status=sd+' school days ago';cls='cov-warn';}
         else if(sd>=30){status=sd+' school days ago';cls='cov-amber';}
         else{status=(sd===0?'today':sd+' school day'+(sd===1?'':'s')+' ago');cls='cov-yes';}
       }
-      if(cls==='cov-no'||cls==='cov-amber')staleN++; // sidebar badge counts the same rows the table just classified
+      // Visit staleness is amber at both steps, never red — a school unvisited for 60 school days is
+      // overdue, not on a contractual clock. The day count is the signal; colour only ranks it.
+      if(cls==='cov-warn'||cls==='cov-amber')staleN++; // sidebar badge counts the same rows the table just classified
       return '<tr><td data-label="School">'+schoolLink(s.name)+'</td><td data-label="Last visit">'+(lv?prettyMed(lv):'—')+'</td><td data-label="Visits">'+s.visits.length+'</td><td data-label="Status"><span class="'+cls+'">'+status+'</span></td></tr>';
     }).join('')+'</table></div>';
     html+='</div>';
   });
   DASH_COUNTS.staleVisits=staleN; // 0 over breaks/summer by design — every row reads "Summer recess"
   if(!html){box.innerHTML='';return;}
-  box.innerHTML='<div class="cluster-h" style="margin-top:14px">Visit Coverage by Cluster<span class="ch-meta">every school · staleness counts school days, so the clock pauses over breaks and summer</span></div><div class="toolbar"><button class="btn" id="visExpandAll">Expand all</button><button class="btn" id="visCollapseAll">Collapse all</button></div>'+html;
+  box.innerHTML='<div class="cluster-h" style="margin-top:14px">Visit Coverage by Cluster<span class="ch-meta">the full backward-looking record · every school · staleness counts school days, so the clock pauses over breaks and summer</span></div><div class="toolbar"><button class="btn" id="visExpandAll">Expand all</button><button class="btn" id="visCollapseAll">Collapse all</button></div>'+html;
+  // Out of duty every row reads "Summer recess" and every date is a dash — 36 rows saying nothing.
+  // Ship it collapsed then; the plan above is the answer, this is the archive behind it.
+  if(!inSession)setAllVisitClusters(true);
 }
 function setAllVisitClusters(collapsed){
   Array.prototype.forEach.call(document.querySelectorAll('#visitClusters .cluster-block'),function(b){
     b.classList.toggle('collapsed',collapsed);
-    var t=b.querySelector('.cluster-toggle');if(t)t.setAttribute('aria-expanded',String(!collapsed));
+    syncClusterToggle(b.querySelector('.cluster-toggle'),collapsed);
   });
 }
 function renderVisits(){
@@ -1498,22 +1832,147 @@ function renderVisits(){
     (all.length>25?'<div class="sectnote">Showing the latest 25 of '+all.length+' visits — the full log lives on the school pages.</div>':'');
 }
 
+/* ---- Needs Attention (rebuilt 2026-08-14).
+   WHY THE REBUILD: the old version read only grievance deadlines, case health, routing, structured
+   `issues`, and the no-visits case. With 0 cases and 0 structured issues on file it printed "Nothing
+   flagged for today" while the same page showed a 17-day-old backup, 7 schools needing a BR election,
+   31 coverage gaps and two schools whose notes say "Priority visit". An empty queue must mean "no
+   eligible signal", never "I only looked at one shelf".
+
+   TWO GROUPS, and the split matters more than the tiers. TIME-BOUND items (a clock is running, or the
+   condition appeared recently) rank first and fill the visible list. STANDING items (`standing:true`)
+   are conditions that read identically tomorrow and next month — coverage gaps, flagged notes, unfilled
+   seats. They are genuine outstanding work, so they are never dropped, but they sit under a divider:
+   simulated at 2026-08-17 and 2026-09-15 the un-split queue was byte-identical on both days, which is
+   how a daily list turns into wallpaper.
+
+   RANKING within each group — first match wins its tier; ties sort by due date, then by school/member
+   name, so array order never decides Mike's priorities:
+     1  grievance deadline past due / <=3 school days / escalated outer limit   (engine output ONLY)
+     2  case data health + cases needing a Grievance Specialist
+     4  open structured member issues
+     6  BR vacancies and pending elections, during duty only                     [standing]
+     7  flagged school notes (rolled up, no school named), coverage gaps,
+        stale-visit sweeps                                                      [standing]
+     8  system health (backup age) once past its own warnDays threshold
+   (No tier 3: today's calendar events are rendered immediately to the left — see below.)
+   NOTHING HERE RECOMPUTES A DEADLINE — tier 1 displays activeDeadline() objects verbatim. */
+function attnSignals(){
+  var t=todayIso(),out=[];
+  // `standing` marks a condition that will read the same tomorrow and next month — a coverage gap, a
+  // flagged note, an unfilled seat. Those are real outstanding work (question 4 of the four this page
+  // answers) but they are NOT new pressure, and a queue that shows them identically every morning
+  // teaches Mike to stop reading it. They render dimmed under a divider, below the time-bound items.
+  var push=function(tier,sev,html,sort,standing){out.push({tier:tier,sev:sev,html:html,sort:sort||'',standing:!!standing});};
+  // Optional third argument is a SCHOOL_VIEWS key. An action that says "24 schools carry a flagged
+  // note" used to land on Schools still showing the default "Needs attention" view, so the 24 it just
+  // promised were nowhere on screen and Mike had to guess which chip to press. Naming the view here
+  // makes the destination match the sentence. Keys must exist in SCHOOL_VIEWS or the click is a no-op.
+  var link=function(target,txt,sview){
+    return '<a href="#" class="attn-link" data-target="'+target+'"'+(sview?' data-sview="'+sview+'"':'')+'>'+txt+'</a>';
+  };
+
+  GRIEVANCES.forEach(function(g){
+    var act=activeDeadline(g);
+    if(act){
+      var l=workingDaysLeft(act.date);
+      if(act.escalated)push(1,'urgent',link(grId(g),esc('FILING WINDOW CLOSING: '+g.member+' missed the 14-day date — outer limit '+prettyMed(act.date)+(l<0?' has PASSED':''))),act.date);
+      else if(l<0||l<=3)push(1,'urgent',link(grId(g),esc((l<0?'Grievance PAST DUE: ':'Grievance deadline near: ')+g.member+' — '+act.label+' '+prettyMed(act.date))),act.date);
+    }else{
+      var h=deadlineHealth(g);
+      if(h)push(2,'attention',link(grId(g),esc('Check case data: '+g.member+' — '+h)),g.member);
+    }
+    if(!g.outcome&&held(g.stage3FiledDate)&&!g.handedOff)push(2,'attention',link(grId(g),esc('Out of lane: '+g.member+' is past Step 1, Stage 2 — route to a Grievance Specialist')),g.member);
+  });
+
+  // Tier 3 — dated reminders from the `reminders` key (build 2026-08-14.2). This is the only AUTHORED
+  // row in the queue; everything above and below is derived. Still NOT a home for calendar events:
+  // Today's Calendar renders those immediately to the left, so listing them here printed the same
+  // lines twice, and event times are strings ("10:15 AM" sorts before "9:00 AM"). A reminder is a
+  // thing to DO on a day, not a thing that is happening on it.
+  // Counted in CALENDAR days on purpose — the working-day counters are for deadlines, and a Friday
+  // reminder about a Monday task has to read "in 3 days", not "tomorrow". Urgency still lands where
+  // the colour rule wants it: 'urgent' (red) on the day itself and after, muted before.
+  REMINDERS.forEach(function(r){
+    if(!r||!r.date||!r.title)return;
+    var lead=(typeof r.lead==='number')?r.lead:3;
+    var d=Math.round((parseD(r.date)-parseD(t))/86400000); // >0 upcoming, 0 today, <0 passed
+    if(d>lead||d<-7)return; // outside its window — invisible before, self-dropping a week after
+    var when=d>1?('in '+d+' days'):d===1?'tomorrow':d===0?'TODAY':d===-1?'was due YESTERDAY':('was due '+prettyNoYr(r.date));
+    var body=esc(r.title)+' — '+esc(when)+(r.detail?'<span class="attn-sub">'+esc(r.detail)+'</span>':'');
+    push(3,d<=0?'urgent':'attention',r.target?link(r.target,body):body,r.date);
+  });
+
+  var openIssues=SCHOOLS.reduce(function(a,s){return a+s.issues.length;},0);
+  if(openIssues)push(4,'attention',link('panel-issues',openIssues+' open member issue'+(openIssues>1?'s':'')+' in the queue'),'');
+
+  // Tier 7 — flags Mike authored in school notes. See flaggedNotes(): the marker is his own bolded
+  // lead, not a keyword guess.
+  // NO SCHOOL IS NAMED HERE, ACUTE INCLUDED (Mike, 2026-08-14). Two schools each had their own red row
+  // in Today's Brief off the word ACUTE in an FY27 budget note. He asked for both off the front page:
+  // the flag belongs with the school, not in the daily queue. So this is ONE
+  // rolled-up standing line over every flagged school, and the ACUTE weighting lives where it is
+  // actionable — schoolReasons() still ranks those two top of Schools and Visits at w:8, and the note
+  // itself still reads in full in the school modal and on the school page. Do not re-promote a school
+  // note to a named brief row; if a school needs to be named in the brief it comes through a
+  // structured signal (open issue, live deadline, reminder), not free text.
+  var flagged=SCHOOLS.map(function(s){return {s:s,f:flaggedNotes(s)};}).filter(function(x){return x.f.length;});
+  if(flagged.length)push(7,'attention',link('panel-schools',flagged.length+' school'+(flagged.length===1?' carries a':'s carry')+' flagged note'+(flagged.length===1?'':'s')+' — budget, coach and recruitment openings','flag'),'',true);
+
+  // Tier 6 — the #1 seat. Duty-period only: chasing an election in July is not a real action.
+  if(inDuty(t)){
+    var vac=SCHOOLS.filter(function(s){return s.brStatus==='vacant';});
+    var pend=SCHOOLS.filter(function(s){return s.brStatus==='pending';});
+    if(vac.length)push(6,'attention',link('panel-schools',vac.length+' school'+(vac.length===1?' has':'s have')+' a VACANT Building Rep seat — '+esc(vac.map(function(s){return s.name;}).join(', ')),'br'),'',true);
+    if(pend.length)push(6,'attention',link('panel-schools',pend.length+' school'+(pend.length===1?'':'s')+' still owe 26-27 election results','br'),'',true);
+  }
+
+  if(DASH_COUNTS.covGaps)push(7,'attention',link('panel-coverage',DASH_COUNTS.covGaps+' school'+(DASH_COUNTS.covGaps===1?'':'s')+' missing a Building Rep, SCAC or LSAT contact'),'',true);
+  var noVisit=SCHOOLS.filter(function(s){return !s.visits.length;}).length;
+  if(noVisit===SCHOOLS.length&&inDuty(t))push(7,'attention',link('panel-visits','No school visits logged yet — start filling Visit &amp; Conversation Logs'),'',true);
+
+  // Tier 8 — system health, and ONLY once it crosses the threshold the data file itself sets.
+  // Age comes from backupAge(), the same call the status strip uses — never recounted here.
+  var bk=backupAge();
+  if(bk&&bk.stale){
+    push(8,'attention',link('panel-runbook',bk.never
+      ?'External backup has never run — plug in the T7 Shield'
+      :'External backup is '+bk.age+' days old (warns at '+bk.warnAt+') — plug in the T7 Shield'),'');
+  }
+
+  // Time-bound first, standing after; tier then due-date/name inside each group.
+  out.sort(function(a,b){
+    if(a.standing!==b.standing)return a.standing?1:-1;
+    if(a.tier!==b.tier)return a.tier-b.tier;
+    return a.sort<b.sort?-1:a.sort>b.sort?1:0;
+  });
+  return out;
+}
 function renderAttention(){
   const box=document.getElementById('attnBox');
-  const items=[];
-  GRIEVANCES.forEach(g=>{const act=activeDeadline(g);
-    if(act){const l=workingDaysLeft(act.date);
-      if(act.escalated)items.push('<a href="#" class="attn-link" data-target="'+grId(g)+'">'+esc('FILING WINDOW CLOSING: '+g.member+' missed the 14-day date — outer limit '+prettyMed(act.date)+(l<0?' has PASSED':''))+'</a>');
-      else if(l<0||l<=3)items.push('<a href="#" class="attn-link" data-target="'+grId(g)+'">'+esc((l<0?'Grievance PAST DUE: ':'Grievance deadline near: ')+g.member+' — '+act.label+' '+prettyMed(act.date))+'</a>');
-    }else{const h=deadlineHealth(g);if(h)items.push('<a href="#" class="attn-link" data-target="'+grId(g)+'">'+esc('Check case data: '+g.member+' — '+h)+'</a>');}
-  });
-  GRIEVANCES.forEach(g=>{if(!g.outcome&&held(g.stage3FiledDate)&&!g.handedOff)items.push('<a href="#" class="attn-link" data-target="'+grId(g)+'">'+esc('Out of lane: '+g.member+' is past Step 1, Stage 2 — route to a Grievance Specialist')+'</a>');});
-  const openIssues=SCHOOLS.reduce((a,s)=>a+s.issues.length,0);
-  if(openIssues)items.push('<a href="#" class="attn-link" data-target="panel-issues">'+openIssues+' open member issue'+(openIssues>1?'s':'')+' in the queue</a>');
-  const noVisit=SCHOOLS.filter(s=>!s.visits.length).length;
-  if(noVisit===SCHOOLS.length&&inDuty(todayIso()))items.push('<a href="#" class="attn-link" data-target="panel-visits">No school visits logged yet — start filling Visit &amp; Conversation Logs</a>');
-  if(!items.length){box.innerHTML='<li class="empty">Nothing flagged for today.</li>';return;}
-  box.innerHTML=items.slice(0,3).map(t=>'<li>'+t+'</li>').join('');
+  var sig=attnSignals();
+  var live=sig.filter(function(x){return !x.standing;}),standing=sig.filter(function(x){return x.standing;});
+  var cnt=document.getElementById('attnCount');
+  if(cnt)cnt.textContent=live.length?(live.length+' now · '+standing.length+' standing'):(standing.length?standing.length+' standing':'');
+  if(!sig.length){
+    // Honest empty state: name the data it was derived from and how old that data is, so "nothing
+    // flagged" can never be read as "nothing to do" when the real cause is a stale snapshot.
+    box.innerHTML='<li class="empty">No actions derived from the '+prettyNoYr(SNAPSHOT_DATE)+' snapshot ('+relAge(SNAPSHOT_DATE)+'). Cases, member issues and visit logs are all empty — if that looks wrong, the snapshot is stale, not the day.</li>';
+    return;
+  }
+  var row=function(x){return '<li class="sev-'+x.sev+(x.standing?' standing':'')+'">'+x.html+'</li>';};
+  var h='';
+  // Time-bound block. When there is none, say so plainly rather than letting standing work occupy the
+  // slot silently — "nothing new today" and "nothing outstanding" are different answers.
+  h+=live.length?live.slice(0,5).map(row).join('')
+                :'<li class="empty">Nothing new today — no live deadlines, case-health flags or open member issues.</li>';
+  if(live.length>5)h+='<li class="attn-more">'+(live.length-5)+' more time-sensitive — see Cases</li>';
+  if(standing.length){
+    h+='<li class="attn-div">Standing — outstanding, but unchanged day to day</li>';
+    h+=standing.slice(0,4).map(row).join('');
+    if(standing.length>4)h+='<li class="attn-more">'+(standing.length-4)+' more — see Schools, Coverage and Runbook</li>';
+  }
+  box.innerHTML=h;
 }
 
 /* ---- Deadline runway (build 2026-07-11.1): the next 10 school days as cells, each case chip
@@ -1579,26 +2038,98 @@ function renderBriefTiles(){
   function tile(n,l,s,target,red){
     return '<div class="btile'+(red?' red':'')+'"'+(target?' data-target="'+target+'" role="button" tabindex="0"':'')+'><div class="n">'+n+'</div><div class="l">'+l+'</div>'+(s?'<div class="s">'+s+'</div>':'')+'</div>';
   }
-  var h='';
-  h+=tile(DASH_COUNTS.urgent,'urgent deadline'+(DASH_COUNTS.urgent===1?'':'s'),DASH_COUNTS.urgent?'≤3 school days or past due':'none within 3 school days','panel-griev',DASH_COUNTS.urgent>0);
-  h+=tile(openN,'open case'+(openN===1?'':'s'),acts.length?('next deadline '+prettyNoYr(acts[0].act.date)):'no live clocks','panel-griev',false);
-  if(nyf)h+=tile(nyf,'not yet filed',fileNext?((fileNext.act.escalated?'OUTER LIMIT ':'file by ')+prettyNoYr(fileNext.act.date)):'check case data','panel-griev',false);
-  h+=tile(DASH_COUNTS.issues,'open member issue'+(DASH_COUNTS.issues===1?'':'s'),DASH_COUNTS.issues?'don\'t let filing clocks age':'queue clear','panel-issues',false);
-  if(Object.keys(MEMBERSHIP||{}).length)h+=tile(DASH_COUNTS.recruit,'recruitment priorities','schools ≥15% non-member','panel-membership',false);
-  if(DASH_COUNTS.brNeed)h+=tile(DASH_COUNTS.brNeed,'school'+(DASH_COUNTS.brNeed===1?'':'s')+' need a BR election','the #1 seat — tap for the list','panel-schools',false);
-  if(DASH_COUNTS.covGaps)h+=tile(DASH_COUNTS.covGaps,'coverage gap'+(DASH_COUNTS.covGaps===1?'':'s'),'missing rep · SCAC · LSAT','panel-coverage',false);
-  if(DASH_COUNTS.staleVisits)h+=tile(DASH_COUNTS.staleVisits,'stale visit'+(DASH_COUNTS.staleVisits===1?'':'s'),'not visited in 30+ school days','panel-visits',false);
+  // CAP AT SIX (2026-08-14). Six tiles fill the row exactly at 1280px; a seventh orphaned onto its own
+  // line and cost ~137px of the first screen. Collected in priority order and sliced — every count
+  // dropped here is still one click away and now also named in Needs Attention, so nothing is lost.
+  var tiles=[];
+  tiles.push(tile(DASH_COUNTS.urgent,'urgent deadline'+(DASH_COUNTS.urgent===1?'':'s'),DASH_COUNTS.urgent?'≤3 school days or past due':'none within 3 school days','panel-griev',DASH_COUNTS.urgent>0));
+  tiles.push(tile(openN,'open case'+(openN===1?'':'s'),acts.length?('next deadline '+prettyNoYr(acts[0].act.date)):'no live clocks','panel-griev',false));
+  if(nyf)tiles.push(tile(nyf,'not yet filed',fileNext?((fileNext.act.escalated?'OUTER LIMIT ':'file by ')+prettyNoYr(fileNext.act.date)):'check case data','panel-griev',false));
+  tiles.push(tile(DASH_COUNTS.issues,'open member issue'+(DASH_COUNTS.issues===1?'':'s'),DASH_COUNTS.issues?'don\'t let filing clocks age':'queue clear','panel-issues',false));
   if(!inDuty(t)){
     var next=null;for(var i=0;i<DUTY.length;i++){if(DUTY[i][0]>t){next=DUTY[i][0];break;}}
-    if(next){var cd=Math.round((parseD(next)-parseD(t))/86400000);h+=tile(cd,'days until school year','calendar days · clocks resume '+prettyNoYr(next),'',false);}
+    if(next){var cd=Math.round((parseD(next)-parseD(t))/86400000);tiles.push(tile(cd,'days until school year','calendar days · clocks resume '+prettyNoYr(next),'',false));}
   }
+  if(Object.keys(MEMBERSHIP||{}).length)tiles.push(tile(DASH_COUNTS.recruit,'recruitment priorities','schools ≥15% non-member','panel-membership',false));
+  if(DASH_COUNTS.brNeed)tiles.push(tile(DASH_COUNTS.brNeed,'school'+(DASH_COUNTS.brNeed===1?'':'s')+' need a BR election','the #1 seat — tap for the list','panel-schools',false));
+  if(DASH_COUNTS.covGaps)tiles.push(tile(DASH_COUNTS.covGaps,'coverage gap'+(DASH_COUNTS.covGaps===1?'':'s'),'missing rep · SCAC · LSAT','panel-coverage',false));
+  if(DASH_COUNTS.staleVisits)tiles.push(tile(DASH_COUNTS.staleVisits,'stale visit'+(DASH_COUNTS.staleVisits===1?'':'s'),'not visited in 30+ school days','panel-visits',false));
+  host.innerHTML=tiles.slice(0,6).join('');
+}
+
+/* ---- Union Update (build 2026-08-09): the week's WTU newsletter on the Brief, because that is
+   the page Mike actually opens. Renders the optional `newsletter` key and NOTHING else — no
+   newsletter text is authored in this file, same rule as links/resources. WTU sends Sunday and
+   usually Thursday, so the block is refreshed on drop, never generated here.
+   Countdowns are CALENDAR days: these are union/DCPS deadlines, not grievance clocks, so no
+   school-day math — but the 3-day red convention still applies, widened to 7 because a Sept 3
+   filing deadline needs more than three days' warning to be useful.
+   SELF-RETIRING: a dated item disappears the day after its date; when the headline and every item
+   are past, the whole block hides. A stale newsletter can never sit on the Brief pretending to be
+   this week's. */
+function renderNewsletter(){
+  var host=document.getElementById('nwsBox');if(!host)return;
+  var n=NEWSLETTER;
+  if(!n){host.innerHTML='';return;}
+  var t=todayIso();
+  var cd=function(d){return Math.round((parseD(d)-parseD(t))/86400000);};
+  function live(x){return x&&(!x.due||x.due>=t);}
+  function dueTag(d){
+    if(!d)return '';
+    var k=cd(d);
+    var lbl=k===0?'today':(k===1?'tomorrow':'in '+k+' days');
+    return '<span class="nws-due'+(k<=7?' hot':'')+'">'+prettyMed(d)+' · '+lbl+'</span>';
+  }
+  function linkOut(x){
+    return x.link?' <a href="'+esc(x.link)+'" target="_blank" rel="noopener">'+esc(x.linkLabel||'Open')+'</a>':'';
+  }
+  // WTU sends TWICE some weeks and the Thursday one does not replace Sunday's (Mike, 2026-08-09):
+  // Sunday is the overview, Thursday is the take-action edition. So both drops' items coexist here,
+  // and `from` labels whichever one an item came from. Omit `from` entirely in a one-drop week —
+  // a label on every line when they all share a source is noise, not information.
+  function fromTag(x){return x.from?'<span class="nws-from">'+esc(x.from)+'</span>':'';}
+  var head=live(n.headline)?n.headline:null;
+  var items=(n.items||[]).filter(live);
+  if(!head&&!items.length){host.innerHTML='';return;} // everything has passed — retire the block
+  var h='<div class="aug"><div class="aug-h">From The Union Update<span class="aug-n">'+esc(n.source||'')+'</span></div>';
+  if(head){
+    h+='<div class="nws-lead">'+esc(head.title)+dueTag(head.due)+fromTag(head)+'</div>';
+    if(head.detail)h+='<div class="nws-detail">'+esc(head.detail)+linkOut(head)+'</div>';
+  }
+  items.forEach(function(it){
+    h+='<div class="aug-line">• <b>'+esc(it.title)+'</b> '+dueTag(it.due)+fromTag(it)+
+       (it.detail?'<div class="nws-detail">'+esc(it.detail)+linkOut(it)+'</div>':linkOut(it))+'</div>';
+  });
+  if(n.memberLine){
+    h+='<div class="nws-mem"><div class="nws-mem-h">Tell members this</div>'+
+       '<div class="nws-mem-t">'+esc(n.memberLine)+'</div>'+
+       '<button class="btn nws-copy" type="button" data-copy="'+esc(n.memberLine)+'">Copy</button></div>';
+  }
+  if((n.flags||[]).length){
+    h+='<div class="nws-flag">⚑ <b>Flagged, not on your calendar:</b><br>'+
+       n.flags.map(function(f){return esc(f);}).join('<br>')+
+       (n.flagNote?'<br><i>'+esc(n.flagNote)+'</i>':'')+'</div>';
+  }
+  // Twice-weekly cadence: past 10 days without a drop, say so rather than let it read as current.
+  if(n.updated){var age=cd(n.updated)*-1;if(age>10)h+='<div class="nws-stale">Last newsletter imported '+age+' days ago — WTU sends Sunday and usually Thursday.</div>';}
+  h+='</div>';
   host.innerHTML=h;
+  if(!host.__wired){ // delegated once: survives every re-render of the block
+    host.__wired=1;
+    host.addEventListener('click',function(e){
+      var b=e.target.closest&&e.target.closest('.nws-copy');if(!b)return;
+      var txt=b.getAttribute('data-copy');
+      function done(ok){b.textContent=ok?'Copied ✓':'Copy failed';setTimeout(function(){b.textContent='Copy';},1400);}
+      if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(function(){done(true);},function(){done(legacyCopy(txt));});
+      else done(legacyCopy(txt));
+    });
+  }
 }
 
 /* ---- August membership push (build 2026-07-18.2): a Brief block for the SY 26-27 startup
    drive. Renders only through Aug 31, 2026, then retires itself. The NEO dates and the Aug-31
    gate are event constants (like the CALDATA fixtures) — the duty-start date comes from CALDATA,
-   and the red-tier schools + starred recruit targets are computed from the LOADED DATA at render
+   and the priority-tier schools + starred recruit targets are computed from the LOADED DATA at render
    time, so no school or member data lives in this file. Countdowns here are calendar days
    (events, not deadlines — no school-day math, nothing red). */
 function renderAugustPush(){
@@ -1620,7 +2151,11 @@ function renderAugustPush(){
   Object.keys(MEMBERSHIP||{}).forEach(function(nm){var m=MEMBERSHIP[nm];if(m&&(m.nonRate||0)>=0.25)reds.push({name:nm,rate:m.nonRate||0});});
   if(reds.length){
     reds.sort(function(a,b){return b.rate-a.rate;});
-    lines.push('<div class="aug-line">🎯 <b>Red-tier schools</b> (≥25% non-member): '+reds.map(function(r){return '<span class="tag dl-red">'+schoolLink(r.name)+' · '+Math.round(r.rate*100)+'%</span>';}).join(' ')+'</div>');
+    // "Red-tier" was the old name AND the old chip class (.tag.dl-red). Two things wrong with it: the
+    // rule reserves red for deadlines, and .tag.dl-red is scoped to .sch, so out here the chips were
+    // rendering with no pill at all — named red, drawn as nothing. mem-pct.hi is the amber pill the
+    // Membership panel already uses for this exact number, so the two surfaces now match.
+    lines.push('<div class="aug-line">🎯 <b>Priority schools</b> (≥25% non-member): '+reds.map(function(r){return '<span class="mem-pct hi">'+schoolLink(r.name)+' · '+Math.round(r.rate*100)+'%</span>';}).join(' ')+'</div>');
   }
   // Count DISTINCT starred people per school: strip the "(* = not yet a WTU member)" legend first
   // (its own * would inflate the count and split one person into two keys), then dedupe names —
@@ -1746,6 +2281,12 @@ function wireButtons(){
     var t=e.target.closest&&e.target.closest('[data-target]');
     if(!t)return;
     if(t.tagName==='A')e.preventDefault();
+    // data-sview: switch the Schools view chip BEFORE scrolling, so an action that names a count
+    // ("24 schools carry a flagged note") lands on the view that actually holds those 24.
+    var sv=t.getAttribute&&t.getAttribute('data-sview');
+    if(sv&&SCHOOL_VIEWS.some(function(v){return v.k===sv;})){
+      activeView=sv;renderSchoolViews();renderSchools();
+    }
     var el=document.getElementById(t.getAttribute('data-target'));
     if(!el)return;
     revealSectionFor(el); // laptop mode: switch to the owning section first, or the scroll lands on a hidden panel
@@ -1765,13 +2306,12 @@ function wireButtons(){
     if(!t)return;
     var block=t.closest('.cluster-block');
     if(!block)return;
-    var collapsed=block.classList.toggle('collapsed');
-    t.setAttribute('aria-expanded',String(!collapsed));
+    syncClusterToggle(t,block.classList.toggle('collapsed'));
   });
   var cov=document.getElementById('coverageBody');
   if(cov)cov.addEventListener('click',function(e){
     var t=e.target.closest&&e.target.closest('.cluster-toggle');
-    if(t){var block=t.closest('.cluster-block');if(block){var collapsed=block.classList.toggle('collapsed');t.setAttribute('aria-expanded',String(!collapsed));}return;}
+    if(t){var block=t.closest('.cluster-block');if(block){syncClusterToggle(t,block.classList.toggle('collapsed'));}return;}
     if(e.target.closest&&e.target.closest('#covToggleEmpty')){covHideEmpty=!covHideEmpty;renderCoverage();return;}
     if(e.target.closest&&e.target.closest('#covExpandAll')){setAllCoverage(false);return;}
     if(e.target.closest&&e.target.closest('#covCollapseAll')){setAllCoverage(true);return;}
@@ -1779,7 +2319,7 @@ function wireButtons(){
   var vc=document.getElementById('visitClusters');
   if(vc)vc.addEventListener('click',function(e){
     var t=e.target.closest&&e.target.closest('.cluster-toggle');
-    if(t){var block=t.closest('.cluster-block');if(block){var collapsed=block.classList.toggle('collapsed');t.setAttribute('aria-expanded',String(!collapsed));}return;}
+    if(t){var block=t.closest('.cluster-block');if(block){syncClusterToggle(t,block.classList.toggle('collapsed'));}return;}
     if(e.target.closest&&e.target.closest('#visExpandAll')){setAllVisitClusters(false);return;}
     if(e.target.closest&&e.target.closest('#visCollapseAll')){setAllVisitClusters(true);return;}
   });
@@ -1790,7 +2330,13 @@ function wireButtons(){
   var mx=document.getElementById('schModalX');if(mx)mx.onclick=closeSchool;
   var modal=document.getElementById('schModal');
   if(modal)modal.addEventListener('click',function(e){if(e.target===modal)closeSchool();});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSchool();});
+  // Escape closes the topmost thing: the More sheet if it is open, otherwise the school modal.
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Escape')return;
+    if(document.getElementById('moreSheet')){closeMoreSheet();return;}
+    closeSchool();
+  });
+  document.addEventListener('keydown',trapDialogTab); // Tab stays inside whichever dialog is topmost
   window.addEventListener('hashchange',openSchoolFromUrl);
   // Laptop mode: number keys switch sections (1 = Brief …) — never while typing in a field.
   document.addEventListener('keydown',function(e){
@@ -2170,7 +2716,7 @@ function wireResources(){
 /* Contextual "Visit prep" chips in the school modal. Reads ONLY already-computed state —
    the membership tier (memOf), the school page's open-issue articles, and open grievance
    articles — and matches them to resource tags. Never recomputes a rate or a deadline.
-   The red-tier recruitment-kit chip links into the Restricted folder BY PATH ONLY (the
+   The priority-tier recruitment-kit chip links into the Restricted folder BY PATH ONLY (the
    kit's contents never enter this data file) and renders on the desktop surface only. */
 var ART_TAGS=[['23.17','art-23.17'],['23.6','art-23.6'],['23.8','art-23.8'],['24.3','art-24.3'],['18.2','art-18.2'],['4.5','art-4.5'],['24','art-24'],['17','art-17'],['7','art-7'],['6','art-6']];
 function artTags(s){
@@ -2253,22 +2799,27 @@ function gsResults(q){
   }
   return out;
 }
+/* The results panel is a sighted-only affordance: it appears below the field with no focus move and no
+   announcement, so a screen-reader user typing in the box got silence whether there were 30 matches or
+   none. gsSay() writes the count into a polite live region — same text the eye gets from the panel. */
+function gsSay(msg){var st=document.getElementById('gStatus');if(st&&st.textContent!==msg)st.textContent=msg;}
 function gsRender(){
   var inp=document.getElementById('gSearch'),box=document.getElementById('gResults');
   if(!inp||!box)return;
   var q=inp.value.trim();
-  if(q.length<2){box.style.display='none';box.innerHTML='';return;}
+  if(q.length<2){box.style.display='none';box.innerHTML='';gsSay('');return;}
   var res=gsResults(q);
   if(!res.length){
     box.innerHTML='<div class="gres-grp">No matches</div><span class="gres" style="cursor:default">Nothing found for “'+esc(q)+'” in schools, contacts, links, or resources.</span>';
-    box.style.display='block';return;
+    box.style.display='block';gsSay('No matches for '+q);return;
   }
   var h='',last='';
   res.forEach(function(r){if(r.grp!==last){h+='<div class="gres-grp">'+r.grp+'</div>';last=r.grp;}h+=r.html;});
   if(res.length>=GS_MAX)h+='<div class="gres-grp">keep typing to narrow the list…</div>';
   box.innerHTML=h;box.style.display='block';
+  gsSay(res.length+' result'+(res.length===1?'':'s')+' for '+q+(res.length>=GS_MAX?', keep typing to narrow the list':''));
 }
-function gsClose(){var box=document.getElementById('gResults');if(box)box.style.display='none';}
+function gsClose(){var box=document.getElementById('gResults');if(box)box.style.display='none';gsSay('');}
 function wireSearch(){
   var inp=document.getElementById('gSearch'),box=document.getElementById('gResults');
   if(!inp||!box)return;
@@ -2312,7 +2863,8 @@ var ICONS={
   pencil:'<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/>',
   data:'<path d="M21 15v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3"/><path d="M7.5 11l4.5 4.5L16.5 11"/><path d="M12 15.5V3"/>',
   printer:'<path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="13" width="12" height="8" rx="1"/>',
-  steps:'<path d="M4 7h3M4 12h3M4 17h3"/><path d="M10.5 7h9.5M10.5 12h9.5M10.5 17h6"/>'
+  steps:'<path d="M4 7h3M4 12h3M4 17h3"/><path d="M10.5 7h9.5M10.5 12h9.5M10.5 17h6"/>',
+  more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>'
 };
 function icon(n){return '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}
 function paintTabIcons(){Array.prototype.forEach.call(document.querySelectorAll('.ti[data-ic]'),function(el){el.innerHTML=icon(el.getAttribute('data-ic'));});}
@@ -2336,6 +2888,15 @@ var ACTIVE_SECT='panel-brief'; // default on every open: the morning driver
 var DASH_COUNTS={urgent:0,route:0,issues:0,covGaps:0,staleVisits:0,recruit:0,brNeed:0,huDraft:0}; // stashed by renderStatusStrip / renderCoverage / renderVisitClusters / renderMembership / renderBrElection / renderHustle
 var mqLaptop=window.matchMedia?window.matchMedia('(min-width:1100px)'):null;
 function isLaptop(){return !!(mqLaptop&&mqLaptop.matches&&DATA_MODE!=='none');}
+/* Phone view switching (2026-08-14). The phone used to render EVERY section into one document —
+   24,725px at 390px wide — and the tab bar called scrollIntoView() on it. Mike's phone use is
+   looking something up fast while standing in a building, which that layout is actively bad at:
+   every tap is a long animated scroll and the browser carries the weight of 36 school records,
+   three tables and the runbook no matter what he wanted. Sections now switch, exactly as they do
+   in laptop mode, reusing the same ACTIVE_SECT / .sect-active machinery — no second nav model. */
+var mqPhone=window.matchMedia?window.matchMedia('(max-width:700px)'):null;
+function isPhone(){return !!(mqPhone&&mqPhone.matches&&DATA_MODE!=='none');}
+function isSwitched(){return isLaptop()||isPhone();}
 // Jot and the import card exist only on the hosted/phone build (renderJot/renderImport hide them when embedded).
 function visibleSections(){return SECTIONS.filter(function(s){
   if(s.hosted&&DATA_MODE==='embedded')return false;
@@ -2353,18 +2914,31 @@ function showSection(id,opts){
   ACTIVE_SECT=id;
   Array.prototype.forEach.call(document.querySelectorAll('.card.full'),function(c){c.classList.toggle('sect-active',c.id===id);});
   Array.prototype.forEach.call(document.querySelectorAll('#sidebar .sb-btn[data-sect]'),function(b){b.classList.toggle('active',b.getAttribute('data-sect')===id);});
+  var onTab=false;
+  Array.prototype.forEach.call(document.querySelectorAll('.tabbar button[data-jump]'),function(b){
+    var on=b.getAttribute('data-jump')===id;
+    if(on)onTab=true;
+    b.classList.toggle('active',on);
+    b.setAttribute('aria-current',on?'true':'false');
+  });
+  // A section reached through the More sheet has no tab of its own — light More instead, so the
+  // tab bar always says where you are rather than going blank.
+  var mb=document.getElementById('tabMore');
+  if(mb){mb.classList.toggle('active',!onTab);mb.setAttribute('aria-current',onTab?'false':'true');}
   if(!opts.keepScroll)window.scrollTo(0,0);
 }
-// In laptop mode, switch to the section that contains `el` before scrolling to it; elsewhere a no-op.
+// In a switched view (laptop or phone), switch to the section that contains `el` before scrolling to
+// it — otherwise search results and attention links land on a panel that is display:none.
 function revealSectionFor(el){
-  if(!isLaptop()||!el)return;
+  if(!isSwitched()||!el)return;
   var p=(el.classList&&el.classList.contains('full'))?el:(el.closest?el.closest('.card.full'):null);
   if(p&&p.id&&p.id!==ACTIVE_SECT)showSection(p.id,{keepScroll:true});
 }
-// The one nav entry point (sidebar, actionbar, tabbar): switch sections in laptop mode, scroll otherwise.
+// The one nav entry point (sidebar, actionbar, tabbar): switch sections wherever the view is
+// switched, scroll only in the mid-width long-scroll layout.
 function navTo(id){
   var el=document.getElementById(id);if(!el)return;
-  if(isLaptop()&&el.classList&&el.classList.contains('full')){showSection(id);return;}
+  if(isSwitched()&&el.classList&&el.classList.contains('full')){showSection(id);return;}
   revealSectionFor(el);
   el.scrollIntoView({behavior:'smooth',block:'start'});
 }
@@ -2382,6 +2956,51 @@ function renderActionbar(){
   h+=visibleSections().filter(function(s){return !s.util;}).map(function(s){return '<button class="btn" data-jump="'+s.id+'">'+(s.short||s.label)+'</button>';}).join('');
   h+='<span class="sep"></span><button class="btn primary" id="printBtn">Print / Save PDF</button>';
   bar.innerHTML=h;
+}
+/* Phone tab bar — same visibleSections() source as the sidebar and jump bar, so a destination that
+   does not exist on this surface can never get a button. Mike's phone use is (1) what's on today and
+   (2) look up a Building Rep or contact standing in a building, so Brief and Schools always lead;
+   the rest fill the remaining slots in section order, capped at 5 so the targets stay 44px+. */
+function renderTabbar(){
+  var bar=document.getElementById('tabbar');if(!bar)return;
+  var secs=visibleSections();
+  var want=['panel-brief','panel-schools','panel-griev','panel-links'];
+  var picked=[];
+  want.forEach(function(id){var s=secs.filter(function(x){return x.id===id;})[0];if(s)picked.push(s);});
+  picked=picked.slice(0,4);
+  // Everything the four tabs don't cover. With view switching on, a section with no route is
+  // unreachable by browsing — links and search still find it, but nothing lets Mike go looking.
+  TAB_MORE=secs.filter(function(s){return picked.indexOf(s)===-1;});
+  bar.innerHTML=picked.map(function(s){
+    return '<button data-jump="'+s.id+'"><span class="ti" data-ic="'+s.ic+'"></span>'+(s.short||s.label)+'</button>';
+  }).join('')+(TAB_MORE.length?'<button id="tabMore" type="button" aria-haspopup="true" aria-expanded="false"><span class="ti" data-ic="more"></span>More</button>':'');
+  paintTabIcons();
+  var mb=document.getElementById('tabMore');
+  if(mb)mb.onclick=function(){toggleMoreSheet();};
+}
+var TAB_MORE=[];
+function closeMoreSheet(){
+  var sh=document.getElementById('moreSheet');if(sh)sh.remove();
+  var mb=document.getElementById('tabMore');
+  if(mb){mb.setAttribute('aria-expanded','false');mb.focus();}
+}
+function toggleMoreSheet(){
+  if(document.getElementById('moreSheet')){closeMoreSheet();return;}
+  var mb=document.getElementById('tabMore');if(mb)mb.setAttribute('aria-expanded','true');
+  var sh=document.createElement('div');
+  sh.id='moreSheet';sh.className='more-sheet';
+  sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');sh.setAttribute('aria-label','More sections');
+  sh.innerHTML='<div class="more-panel"><div class="more-h">More<button class="modal-x" id="moreX" aria-label="Close">×</button></div>'+
+    TAB_MORE.map(function(s){return '<button class="more-item" data-jump="'+s.id+'"><span class="more-ic">'+icon(s.ic)+'</span>'+esc(s.label.replace(/&amp;/g,'&'))+'</button>';}).join('')+
+    '<button class="more-item" id="moreTheme"><span class="more-ic">◐</span>Switch theme</button></div>';
+  document.body.appendChild(sh);
+  Array.prototype.forEach.call(sh.querySelectorAll('.more-item[data-jump]'),function(b){
+    b.onclick=function(){var id=b.getAttribute('data-jump');closeMoreSheet();navTo(id);};
+  });
+  sh.querySelector('#moreTheme').onclick=function(){toggleTheme();closeMoreSheet();};
+  sh.querySelector('#moreX').onclick=closeMoreSheet;
+  sh.onclick=function(e){if(e.target===sh)closeMoreSheet();};
+  var first=sh.querySelector('.more-item');if(first)first.focus();
 }
 function renderSidebar(){
   var sb=document.getElementById('sidebar');if(!sb)return;
@@ -2437,15 +3056,19 @@ function syncThemeUi(){
   var sl=document.getElementById('sbThemeLbl');if(sl)sl.textContent=dark?'Light mode':'Dark mode';
 }
 function wireTheme(){var tt=document.getElementById('themeToggle');if(tt)tt.onclick=toggleTheme;syncThemeUi();}
+// Sets BOTH view classes. Kept under its original name because boot(), the matchMedia listeners and
+// the resize fallback all call it; it stays idempotent. The 701-1099px band deliberately gets
+// neither class and keeps the long-scroll layout.
 function applyLaptopMode(){
-  var on=isLaptop();
-  document.body.classList.toggle('laptop',on);
-  if(on)showSection(ACTIVE_SECT,{keepScroll:true});
+  document.body.classList.toggle('laptop',isLaptop());
+  document.body.classList.toggle('phone',isPhone());
+  if(isSwitched())showSection(ACTIVE_SECT,{keepScroll:true});
 }
-if(mqLaptop){
-  if(mqLaptop.addEventListener)mqLaptop.addEventListener('change',applyLaptopMode);
-  else if(mqLaptop.addListener)mqLaptop.addListener(applyLaptopMode);
-}
+[mqLaptop,mqPhone].forEach(function(mq){
+  if(!mq)return;
+  if(mq.addEventListener)mq.addEventListener('change',applyLaptopMode);
+  else if(mq.addListener)mq.addListener(applyLaptopMode);
+});
 // Belt-and-braces: some webviews (Obsidian pane drags, emulated viewports) resize without firing
 // the matchMedia change event — re-check on plain window resize too (applyLaptopMode is idempotent).
 window.addEventListener('resize',applyLaptopMode);
@@ -2455,7 +3078,7 @@ function boot(){
   paintTabIcons(); // phone tab-bar SVG icons (harmless when the tab bar is hidden)
   var fns=DATA_MODE==='none'
     ?[renderSelfTest,renderImport,wireImport,wireTheme]
-    :[renderHeader,renderSelfTest,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderAugustPush,renderIssues,renderSchoolKpis,renderChips,renderSchools,renderBrElection,renderMembership,renderCoverage,renderVisitClusters,renderVisits,renderAttention,renderBriefTiles,renderLinks,renderResources,renderHustle,wireHustle,renderActionbar,wireCalc,wireButtons,wireSearch,renderImport,wireImport,renderJot,wireJot,wireLinks,wireResources,renderSidebar,wireTheme,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
+    :[renderHeader,renderSelfTest,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderNewsletter,renderAugustPush,renderIssues,renderSchoolKpis,renderChips,renderSchoolViews,renderSchools,renderBrElection,renderMembership,renderCoverage,renderVisitPlan,renderVisitClusters,renderVisits,renderAttention,renderBriefTiles,renderLinks,renderResources,renderHustle,wireHustle,renderActionbar,renderTabbar,wireCalc,wireButtons,wireSearch,renderImport,wireImport,renderJot,wireJot,wireLinks,wireResources,renderSidebar,wireTheme,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
   fns.forEach(function(fn){
     // Log the failure point but never the exception content — an error message must not echo member data (hardening).
     try{fn();}catch(e){console.error('dash:'+fn.name+' failed ('+((e&&e.name)||'error')+')');}
@@ -2471,7 +3094,11 @@ function rerenderForNewDay(){
   if(todayIso()===lastRenderedDay)return;
   lastRenderedDay=todayIso();
   var openIds=Array.prototype.map.call(document.querySelectorAll('details.sch[open]'),function(d){return d.id;}).filter(Boolean);
-  [renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderAugustPush,renderIssues,renderVisitClusters,renderAttention,renderBriefTiles,renderHustle,updateSidebarBadges].forEach(function(fn){
+  // ORDER MATTERS: renderVisitClusters stashes DASH_COUNTS.staleVisits and must precede
+  // renderAttention/renderBriefTiles, which display it. renderSchoolViews is paired with
+  // renderSchools — schoolReasons() reads inDuty() and school-days-since-SY-start, so the chip
+  // counts are date-dependent too; without it the list refreshed while its own counts went stale.
+  [renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderNewsletter,renderAugustPush,renderIssues,renderSchoolViews,renderSchools,renderVisitPlan,renderVisitClusters,renderAttention,renderBriefTiles,renderHustle,updateSidebarBadges].forEach(function(fn){
     try{fn();}catch(e){console.error('rollover:'+fn.name+' failed ('+((e&&e.name)||'error')+')');}
   });
   openIds.forEach(function(id){var el=document.getElementById(id);if(el)el.open=true;});
