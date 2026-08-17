@@ -121,6 +121,9 @@ header.hero{background:var(--card);border:1px solid var(--line);border-top:4px s
 .wk-ev{font-size:12.5px;margin:1px 0}
 .wk-ev .tm{color:var(--muted)}
 .wk-none{font-size:12.5px;color:var(--muted)}
+/* Calendar-exhaustion notice. Amber, not red: a stale calendar is a "send me a screenshot",
+   not a deadline. Same tokens as .cov-warn / .nws-due.hot, already contrast-checked both themes. */
+.cal-stale{background:var(--warn-tint);color:var(--warn-ink);box-shadow:0 0 0 1px var(--amber-fill);border-radius:6px;padding:7px 9px;font-size:12.5px;font-weight:600;margin-top:4px}
 /* Brief status tiles (build 2026-07-11.1): numbers the sidebar/status strip already computed, tile-sized */
 .brief-tiles{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
 .btile{flex:1 1 132px;min-width:122px;max-width:230px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
@@ -792,7 +795,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
   <footer>
     Snapshot data: WTU workspace (school pages + Filed Grievances) + calendar entered from Outlook screenshots, captured <span id="snapFoot">—</span>. Ask to "refresh" or "update" anytime.<br>
     This is a working-aid, not the official record. The CBA controls all grievance timelines — verify any deadline day-by-day before filing.<br>
-    <span class="build-note" id="buildPill">build 2026-08-14.3</span>
+    <span class="build-note" id="buildPill">build 2026-08-14.4</span>
   </footer>
 </div>
 
@@ -1082,6 +1085,15 @@ function renderSelfTest(){
 }
 
 function localIso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+// How far the calendar data actually reaches. Derived from the events themselves, NEVER from
+// snapshotDate: that bumps on every refresh, including automated ones that never touch the
+// calendar, so it made week-old events look newly transcribed and an exhausted calendar look
+// like an ordinary quiet day. Deriving it from the events array cannot drift out of sync.
+function eventsThrough(){
+  let m='';
+  EVENTS.forEach(function(e){if(e.date&&e.date>m)m=e.date;});
+  return m;
+}
 function renderCalendar(){
   // Anchored to the REAL today, matching the live countdowns — never to the snapshot date.
   const box=document.getElementById('calBox');
@@ -1098,7 +1110,16 @@ function renderCalendar(){
     return;
   }
   const today=EVENTS.filter(function(e){return e.date===t;});
-  box.innerHTML=today.length?today.map(function(e){return '<div class="ev"><div class="t">'+esc(e.summary)+'</div><div class="when">'+esc(e.time||'All day')+(e.location?' · '+esc(e.location):'')+'</div></div>';}).join(''):'<div class="empty">No events entered for today — events were last transcribed with the '+prettyNoYr(SNAPSHOT_DATE)+' snapshot. Send an Outlook screenshot and I\'ll fill it in.</div>';
+  const through=eventsThrough();
+  if(through&&through<t){
+    // The calendar has run out. This used to render as an ordinary empty day: the old copy cited
+    // SNAPSHOT_DATE, which moves on every refresh, so exhausted events read as freshly transcribed.
+    box.innerHTML='<div class="cal-stale">⚠ Calendar data ran out on '+prettyNoYr(through)+'. Send me an Outlook screenshot and I\'ll transcribe the new week.</div>';
+  }else if(today.length){
+    box.innerHTML=today.map(function(e){return '<div class="ev"><div class="t">'+esc(e.summary)+'</div><div class="when">'+esc(e.time||'All day')+(e.location?' · '+esc(e.location):'')+'</div></div>';}).join('')+(through===t?'<div class="cal-stale">Calendar data ends today — send an Outlook screenshot when you get a chance.</div>':'');
+  }else{
+    box.innerHTML='<div class="empty">No events entered for today — calendar data on file runs through '+prettyNoYr(through)+'.</div>';
+  }
 }
 function renderWeek(){
   const box=document.getElementById('weekBox');
