@@ -302,6 +302,16 @@ details.sch[open] .caret{transform:rotate(90deg)}
    two-step distinction from cov-amber without borrowing urgency the state does not have. Every one of
    these carries its own word ("missing", "high", "60 school days ago"), so colour is never the signal. */
 .cov-warn{display:inline-block;background:var(--warn-tint);color:var(--warn-ink);padding:1px 7px;border-radius:999px;font-weight:800;font-size:11px}
+/* Materials Distribution rows — a cluster label plus a wrapped run of school links. Deliberately
+   not a table: 25 one-word rows of ✓/✗ read slower than a list you can scan in one pass. */
+.dist-row{display:flex;gap:12px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--line)}
+.dist-row:last-child{border-bottom:none}
+.dist-cl{flex:0 0 84px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)}
+.dist-names{font-size:13px;line-height:1.8}
+.dist-sep{color:var(--line)}
+.dist-unit{font-size:12.5px;color:var(--muted);margin-top:10px;padding-left:2px}
+.dist-note{font-size:12.5px;color:var(--muted);margin:2px 0 8px}
+@media(max-width:700px){.dist-row{flex-direction:column;gap:2px}.dist-cl{flex:none}}
 .cov-amber{color:var(--amber);font-weight:700;font-size:11px}
 .cov-muted{color:var(--muted);font-weight:600;font-size:11px}
 .status-strip{margin-top:12px;background:none;border:none;border-top:1px solid var(--line);border-radius:0;padding:10px 0 0;font-size:13px;font-weight:600;display:flex;gap:8px;flex-wrap:wrap}
@@ -356,9 +366,8 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
 .lnk-e{flex:none;width:24px;text-align:center;font-size:17px}
 .lnk-t{line-height:1.3;overflow-wrap:anywhere}
 .lnk-copy{flex:none}
-.res-cats{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 10px}
-.res-cat{font-size:12px;padding:4px 10px}
-.res-cat.active{background:var(--maroon-fill);color:var(--on-accent);border-color:var(--maroon-fill)}
+/* .res-prep/.reslnk are the "Visit prep" chips in the school modal — NOT the removed Resource
+   Hub panel. The panel's own .res-cats/.res-cat category filters went with it on 2026-08-24. */
 .res-prep{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 2px}
 .reslnk{text-decoration:none;cursor:pointer}
 .reslnk:hover{border-color:var(--maroon)}
@@ -421,11 +430,18 @@ a.brx-chip.nocontact{background:var(--warn-tint);color:var(--warn-ink);box-shado
 #panel-membership{--sect:var(--j-emerald)}
 #panel-coverage{--sect:var(--j-teal)}
 #panel-visits{--sect:var(--j-orange)}
+#panel-dist{--sect:var(--j-emerald)}
 #panel-links{--sect:var(--j-slate)}
-#panel-resources{--sect:var(--j-jade)}
 #panel-runbook{--sect:var(--j-amethyst)}
 /* Runbook: static how-do-I list. No data, no member names — safe in the hosted shell,
-   but only SHOWN on the desktop artifact (the steps are desk work, not phone work). */
+   but only SHOWN on the desktop artifact (the steps are desk work, not phone work).
+   2026-08-24: no nav row either (navHidden) — it opens ONLY from a search hit, so it is hidden at
+   every width and revealed by .sect-active. The id+class selector is deliberate: a bare
+   .card.full.sect-active rule loses to the plain #panel-runbook id on specificity. The card still
+   ships in the document because runbookIndex() reads its DOM to build the search index. */
+#panel-runbook{display:none}
+#panel-runbook.sect-active{display:block}
+.rb-close{float:right;font-size:12px;padding:3px 12px}
 .rb-item{padding:10px 10px 11px;border-radius:10px;border:1px solid var(--line);margin-bottom:8px;background:var(--card)}
 .rb-item:hover{border-color:var(--sect)}
 .rb-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-weight:700;font-size:14px;color:var(--ink)}
@@ -434,6 +450,11 @@ a.brx-chip.nocontact{background:var(--warn-tint);color:var(--warn-ink);box-shado
 .rb-do code{background:var(--tint);border-radius:5px;padding:1px 5px;font-size:12px;word-break:break-word}
 .rb-file{margin-top:4px;font-size:11.5px;color:var(--muted)}
 .rb-file b{color:var(--ink);font-weight:600}
+/* Flash the procedure a search hit landed on. Fades back to the resting card so nothing is left
+   permanently highlighted — the point is "here it is", not a persistent selection state. */
+.rb-hit{animation:rbflash 2.4s ease-out}
+@keyframes rbflash{0%,35%{border-color:var(--j-amethyst);background:var(--tint)}100%{border-color:var(--line);background:var(--card)}}
+@media (prefers-reduced-motion:reduce){.rb-hit{animation:none;border-color:var(--j-amethyst)}}
 .sb-btn[data-sect="panel-brief"]{--sect-ic:var(--j-gold)}
 .sb-btn[data-sect="panel-griev"]{--sect-ic:var(--maroon)}
 .sb-btn[data-sect="panel-issues"]{--sect-ic:var(--j-amethyst)}
@@ -441,8 +462,8 @@ a.brx-chip.nocontact{background:var(--warn-tint);color:var(--warn-ink);box-shado
 .sb-btn[data-sect="panel-membership"]{--sect-ic:var(--j-emerald)}
 .sb-btn[data-sect="panel-coverage"]{--sect-ic:var(--j-teal)}
 .sb-btn[data-sect="panel-visits"]{--sect-ic:var(--j-orange)}
+.sb-btn[data-sect="panel-dist"]{--sect-ic:var(--j-emerald)}
 .sb-btn[data-sect="panel-links"]{--sect-ic:var(--j-slate)}
-.sb-btn[data-sect="panel-resources"]{--sect-ic:var(--j-jade)}
 .sb-btn[data-sect="panel-runbook"]{--sect-ic:var(--j-amethyst)}
 .tabbar button[data-jump="panel-brief"]{--sect-ic:var(--j-gold)}
 .tabbar button[data-jump="panel-griev"]{--sect-ic:var(--maroon)}
@@ -536,7 +557,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
 .hu-sel{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:7px 10px;font-size:12.5px;font-family:inherit;max-width:100%}
 .hu-log-row{display:flex;gap:10px;padding:7px 2px;border-top:1px solid var(--line);font-size:13px;align-items:baseline;flex-wrap:wrap}
 .hu-log-row .d{font-size:11px;font-weight:800;color:var(--muted);white-space:nowrap}
-@media print{#panel-import,#panel-jot,#panel-hustle,.tabbar,.lnk-copy{display:none !important}}
+@media print{#panel-import,#panel-jot,#panel-hustle,#panel-runbook,.tabbar,.lnk-copy{display:none !important}}
 </style>
 </head>
 <body>
@@ -552,7 +573,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
       <span class="pill diag" id="selftestPill">checking deadline math…</span>
       <button class="pill" id="themeToggle" type="button" aria-pressed="true" title="Switch to light mode">◐ Dark</button>
     </div>
-    <div class="gsearch"><input type="search" id="gSearch" class="schfilter" placeholder="Search schools, contacts, links, resources…" aria-label="Search the dashboard" autocomplete="off" title="Press / to jump here"><div class="gresults" id="gResults" style="display:none"></div><div id="gStatus" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div></div>
+    <div class="gsearch"><input type="search" id="gSearch" class="schfilter" placeholder="Search schools, contacts, links, resources, runbook…" aria-label="Search the dashboard" autocomplete="off" title="Press / to jump here"><div class="gresults" id="gResults" style="display:none"></div><div id="gStatus" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div></div>
     <div class="status-strip" id="statusStrip">—</div>
   </header>
 
@@ -655,6 +676,12 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
     <div id="visitLog"></div>
   </div>
 
+  <div class="card full" id="panel-dist" style="margin-top:16px">
+    <h2>Materials Distribution <span class="badge snap" id="distBadge">MATERIALS</span></h2>
+    <div id="distBody"><!-- built by renderDistribution(): who has it, who is still owed --></div>
+    <div class="sectnote">Who has received a piece of WTU gear or material and who has not. Only the <b>received</b> side is recorded; <b>still owed is worked out from your school list every time this page opens</b>, so it can never go stale against a rename or a new school. Tell me "log sweatshirts to &lt;school&gt;" after a delivery and I'll add it — a plain refresh never changes this list.</div>
+  </div>
+
   <div class="card full" id="panel-hustle" style="margin-top:16px">
     <h2>Hustle Texts <span class="badge snap" id="huBadge">HUSTLE</span></h2>
     <div id="huFlags"><!-- draft-needed / day-of reminder flags, built by renderHustle() from events + logged sends --></div>
@@ -678,24 +705,21 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
     <div class="sectnote">Every link opens in a new tab; <b>Copy</b> grabs the URL for texting or emailing a member. The list is maintained from <b>00_Resources/WTU Important Links.xlsx</b> — edit the spreadsheet, then ask me to "update links."</div>
   </div>
 
-  <div class="card full" id="panel-resources" style="margin-top:16px">
-    <h2>Resource Hub <span class="badge snap" id="resCount">RESOURCES</span></h2>
-    <div class="toolbar">
-      <input type="search" id="resFilter" class="schfilter" placeholder="Type to filter resources…" aria-label="Filter resources by name, topic, or tag">
-    </div>
-    <div class="res-cats" id="resCats"></div>
-    <div id="resBox"></div>
-    <div class="sectnote"><b>Open</b> is one click: PDFs open in a browser tab, Word/PowerPoint files open in the app (allow the "Open…?" prompt the first time). <b>Copy path</b> grabs the file's location for attaching to an email. Curated from <b>00_Resources/resource-manifest.json</b> — add the file there, then ask me to "update resources."</div>
-  </div>
+  <!-- The Resource Hub PANEL was removed 2026-08-24. Its 11 web-linked items were 100% duplicates of
+       Important Links above (and on the hosted phone shell those 11 were ALL it ever rendered), while
+       the browsing affordance itself went unused — Mike searches or asks, he does not browse a list.
+       The `resources` DATA stays and is still loaded: it feeds global search (type a topic in the header
+       box, open the file straight from the result) and the contextual "Visit prep" chips in the school
+       modal. Removing the panel removed a nav destination, not a capability. -->
 
   <div class="card full" id="panel-runbook" style="margin-top:16px">
-    <h2>Runbook <span class="badge snap">HOW DO I…</span></h2>
-    <div class="sectnote" style="margin-top:8px">The recurring procedures, each pointing at the one file that owns it. If a step here and the linked file ever disagree, <b>the file wins</b> — fix this list.</div>
+    <h2>Runbook <span class="badge snap">HOW DO I…</span> <button type="button" class="btn rb-close" id="rbClose" title="Close the Runbook">Close</button></h2>
+    <div class="sectnote" style="margin-top:8px">The recurring procedures, each pointing at the one file that owns it. If a step here and the linked file ever disagree, <b>the file wins</b> — fix this list. <b>Reached from the search box</b> — there is no nav row; type what you're trying to do.</div>
 
     <div class="rb-item">
       <div class="rb-h">Refresh this dashboard <span class="rb-when">· automatic weekdays ~6am from Aug 17; any time on demand</span></div>
       <div class="rb-do">Tell Cowork <code>refresh</code>. It re-parses the grievance log, rewrites the deadline heartbeat, and rebuilds this page.</div>
-      <div class="rb-file"><b>Scheduled/organizing-dashboard-refresh/SKILL.md</b> — the canonical spec. Events, links, membership, resources and Hustle templates carry over untouched.</div>
+      <div class="rb-file"><b>Scheduled/organizing-dashboard-refresh/SKILL.md</b> — the canonical spec. Events, links, membership, resources, the newsletter, source dates and the materials list all carry over untouched.</div>
     </div>
 
     <div class="rb-item">
@@ -725,7 +749,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
     <div class="rb-item">
       <div class="rb-h">Update Links or Resources <span class="rb-when">· only when you ask</span></div>
       <div class="rb-do">Edit <b>00_Resources/WTU Important Links.xlsx</b> then say <code>update links</code>. Add the file to <b>00_Resources/resource-manifest.json</b> then say <code>update resources</code>. Neither regenerates on a plain refresh.</div>
-      <div class="rb-file">The Restricted folder is never indexed into the Resource Hub.</div>
+      <div class="rb-file">Links get their own section above. <b>Resources have no section</b> — since 2026-08-24 the index feeds the header search box (type a topic, open the file from the result) and the <b>Visit prep</b> chips inside a school. Indexing a file is what makes it findable. The Restricted folder is never indexed.</div>
     </div>
 
     <div class="rb-item">
@@ -822,6 +846,24 @@ var HUSTLE=null; // optional Hustle Texts data ({capChars, segmentChars, templat
    Age is recomputed from lastRun at render time, never read from the file, so the number stays
    honest even when the data snapshot itself is a few days old. Dates only — no member data. */
 var BACKUP=null;
+/* Source freshness (build 2026-08-24): how old the files this workspace reconciles against are —
+   the DCPS LMER bargaining-unit list and the WTU database snapshot. Shape mirrors BACKUP on purpose
+   ({warnDays, items:[{key,label,short,date}]}); absent = the strip says nothing.
+   WHY THIS AND NOT THE RECONCILIATION ITSELF: a 344-row worklist would bury a daily-glance surface,
+   and a point-in-time comparison rots while still LOOKING current. An age counter ages honestly —
+   it gets louder as it drifts and tells Mike when the workbook stopped being trustworthy.
+   Dates and labels only — never member data, so this stays safe for the public shell. */
+var SOURCES=null;
+/* Materials distribution (build 2026-08-24.2): what WTU gear has reached which building. Optional
+   key ({updated, note, items:[{key,label,period,note,received:[school name],units:[{name,received,note}]}]});
+   absent = the section hides itself, exactly like Links and Resources.
+   ONLY THE RECEIVED SIDE IS STORED. "Still owed" is derived from SCHOOLS at render time rather than
+   written down, so a school rename or a new page can never leave a stale pending list sitting there
+   looking authoritative — the same reason the calendar's coverage notice is derived from the events.
+   `units` carries groups Mike is responsible for that are NOT dashboard schools (the Athletic
+   Trainers are itinerant — no LSAT, no page). They stay OUT of SCHOOLS on purpose: as a school they
+   would read as a permanent, unfillable Building Rep / LSAT / Personnel coverage gap forever. */
+var DISTRIBUTION=null;
 /* Union Update (build 2026-08-09): the week's WTU newsletter, curated down to one headline, up to
    three dated items, and one member-facing line. Optional key — absent = the Brief block hides.
    No newsletter text is ever authored in this file; it rides dashboard-data.json exactly like
@@ -858,6 +900,8 @@ function adoptData(d){
   RESOURCES=(d.resources&&Array.isArray(d.resources.items)&&d.resources.items.length)?d.resources:null; // optional (Resource Hub, 'update resources') — absent = section hides
   HUSTLE=(d.hustle&&Array.isArray(d.hustle.templates)&&d.hustle.templates.length)?d.hustle:null; // optional (Hustle Texts, 'update hustle templates') — absent = section hides
   BACKUP=(d.backup&&typeof d.backup==='object')?d.backup:null; // optional (backup freshness) — absent = status strip stays silent about it
+  SOURCES=(d.sources&&Array.isArray(d.sources.items)&&d.sources.items.length)?d.sources:null; // optional (source freshness) — absent = status strip stays silent about it
+  DISTRIBUTION=(d.distribution&&Array.isArray(d.distribution.items)&&d.distribution.items.length)?d.distribution:null; // optional (materials distribution) — absent = section hides
   NEWSLETTER=(d.newsletter&&typeof d.newsletter==='object')?d.newsletter:null; // optional (Union Update, 'update newsletter') — absent = Brief block hides
   REMINDERS=Array.isArray(d.reminders)?d.reminders:[]; // optional (dated reminders) — absent = no tier-3 rows in Needs Attention
 }
@@ -974,6 +1018,7 @@ function renderStatusStrip(){
   if(route)parts.push('<span class="seg-amber">'+route+' case'+(route===1?'':'s')+' needs routing to a Grievance Specialist</span>');
   parts.push('<span class="seg-muted">'+issues+' open member issue'+(issues===1?'':'s')+'</span>');
   var bk=backupSegment();if(bk)parts.push(bk);
+  var sq=sourcesSegment();if(sq)parts.push(sq);
   el.innerHTML=parts.join('<span class="seg-muted">·</span>');
 }
 /* Backup freshness segment. The T7 lives unplugged, so a stale external copy is invisible by
@@ -1000,6 +1045,31 @@ function backupSegment(){
   if(b.never)return '<span class="seg-amber">external backup has never run — plug in the T7 Shield</span>';
   if(b.stale)return '<span class="seg-amber">external backup '+b.age+' days old — plug in the T7 Shield</span>';
   return '<span class="seg-muted">backup '+(b.age===0?'today':b.age+'d ago')+'</span>';
+}
+/* ONE derivation of source age, same contract as backupAge(): recomputed from the dates at render
+   time, never stored. CALENDAR days deliberately — a file goes stale over a break like any other
+   week, and these are external deliveries, not school-day obligations. */
+function sourcesAge(){
+  if(!SOURCES||!Array.isArray(SOURCES.items)||!SOURCES.items.length)return null;
+  var warnAt=SOURCES.warnDays||30,out=[];
+  for(var i=0;i<SOURCES.items.length;i++){
+    var it=SOURCES.items[i];
+    if(!it||!it.date)continue;
+    var age=Math.floor((parseD(todayIso())-parseD(it.date))/86400000);
+    if(age<0)age=0;
+    out.push({label:it.label||it.key||'source',short:it.short||it.label||it.key||'source',date:it.date,age:age,stale:age>=warnAt});
+  }
+  if(!out.length)return null;
+  var oldest=out[0];
+  for(var j=1;j<out.length;j++){if(out[j].age>oldest.age)oldest=out[j];}
+  return {warnAt:warnAt,items:out,oldest:oldest,stale:oldest.stale};
+}
+function sourcesSegment(){
+  var s=sourcesAge();
+  if(!s)return '';
+  var bits=s.items.map(function(x){return x.short+' '+(x.age===0?'today':x.age+'d');}).join(', ');
+  if(s.stale)return '<span class="seg-amber">reconciliation sources stale — '+bits+' (warns at '+s.warnAt+'d)</span>';
+  return '<span class="seg-muted">sources: '+bits+'</span>';
 }
 
 let activeCluster='All';
@@ -2488,6 +2558,70 @@ function wireImport(){
    repo) — links ride dashboard-data.json like everything else. Source of truth for the list:
    00_Resources/WTU Important Links.xlsx. With no links in the data, the section + nav entries hide. */
 var linkFilterText='';
+/* ---- Materials Distribution (2026-08-24). Which buildings have a piece of WTU gear and which
+   are still owed one. The data file stores ONLY the received side; everything below the line is
+   worked out against SCHOOLS on every render, for the same reason the calendar's coverage notice
+   is derived from the events array — a written-down "pending" list rots silently while continuing
+   to look authoritative, and this one would rot the moment a school is renamed.
+   ORPHAN CHECK: a received name that matches no school is surfaced, never dropped. Dropping it
+   would move that school back into "still owed" and send Mike to deliver twice. */
+function distGroupHtml(list){
+  var out='';
+  orderedClusters().forEach(function(c){
+    var g=list.filter(function(s){return s.cluster===c;}).sort(function(a,b){return a.name.localeCompare(b.name);});
+    if(!g.length)return;
+    out+='<div class="dist-row"><span class="dist-cl">Cluster '+esc(c)+'</span><span class="dist-names">'+
+      g.map(function(s){return schoolLink(s.name);}).join('<span class="dist-sep"> · </span>')+'</span></div>';
+  });
+  return out;
+}
+function renderDistribution(){
+  var body=document.getElementById('distBody'),badge=document.getElementById('distBadge');
+  if(!body)return;
+  if(!DISTRIBUTION){var p=document.getElementById('panel-dist');if(p)p.style.display='none';return;}
+  var items=DISTRIBUTION.items||[],html='',firstBadge='',owed=0;
+  items.forEach(function(it){
+    var rec=Array.isArray(it.received)?it.received:[];
+    var units=Array.isArray(it.units)?it.units:[];
+    var known={};SCHOOLS.forEach(function(s){known[s.name]=1;});
+    var orphans=rec.filter(function(n){return !known[n];});
+    var got={};rec.forEach(function(n){got[n]=1;});
+    var delivered=SCHOOLS.filter(function(s){return got[s.name];});
+    var pending=SCHOOLS.filter(function(s){return !got[s.name];});
+    var unitsGot=units.filter(function(u){return u.received;});
+    var n=delivered.length+unitsGot.length,tot=SCHOOLS.length+units.length;
+    owed+=pending.length+(units.length-unitsGot.length);
+    if(!firstBadge)firstBadge=n+' OF '+tot;
+    html+='<div class="cluster-h" style="margin-top:20px">'+esc(it.label||'Materials')+
+      '<span class="ch-meta">'+(it.period?esc(it.period)+' · ':'')+n+' of '+tot+' delivered</span></div>';
+    if(it.note)html+='<div class="dist-note">'+esc(it.note)+'</div>';
+    html+='<div class="kpis" style="margin-bottom:6px">'+
+      '<div class="kpi"><div class="n">'+n+'</div><div class="l">delivered</div></div>'+
+      '<div class="kpi"><div class="n">'+pending.length+'</div><div class="l">still owed</div></div>'+
+      '<div class="kpi"><div class="n">'+(tot?Math.round(n/tot*100):0)+'%</div><div class="l">of your turf</div></div>'+
+      '</div>';
+    html+='<div class="sub-h">Still owed — '+pending.length+'</div>';
+    html+=pending.length?distGroupHtml(pending):'<div class="empty">Every school on your turf has these.</div>';
+    html+='<div class="sub-h">Delivered — '+delivered.length+'</div>';
+    html+=delivered.length?distGroupHtml(delivered):'<div class="empty">Nothing delivered yet.</div>';
+    if(units.length){
+      html+='<div class="dist-unit">'+units.map(function(u){
+        return (u.received?'<span class="cov-yes">✓</span> ':'<span class="cov-warn">still owed</span> ')+
+          '<b>'+esc(u.name)+'</b>'+(u.note?' — '+esc(u.note):'');
+      }).join('<br>')+'</div>';
+    }
+    if(orphans.length){
+      html+='<div class="dist-unit"><span class="cov-warn">check</span> '+orphans.length+
+        ' name'+(orphans.length===1?'':'s')+' on the delivered list match'+(orphans.length===1?'es':'')+
+        ' no school page — '+orphans.map(esc).join(', ')+
+        '. Fix the name in dashboard-data.json or the school would show as still owed.</div>';
+    }
+  });
+  body.innerHTML=html;
+  if(badge)badge.textContent=firstBadge||'MATERIALS';
+  DASH_COUNTS.distOwed=owed;
+  updateSidebarBadges();
+}
 function renderLinks(){
   var card=document.getElementById('panel-links'),tab=document.getElementById('tabLinks');
   if(!card)return;
@@ -2651,15 +2785,18 @@ function wireHustle(){
   };
 }
 
-/* ===== RESOURCE HUB: reads the optional `resources` key ({base, items:[…]}) =====
+/* ===== RESOURCE LOOKUP: reads the optional `resources` key ({base, items:[…]}) =====
    The shell ships ZERO paths or URLs — everything rides dashboard-data.json (curated in
    00_Resources/resource-manifest.json; regenerated on "update resources"). Open logic is
    per-surface: on file:// (the desktop artifact in Chrome) local files open one-click —
    PDFs/MD via file:///, Office docs via ms-word:/ms-excel:/ms-powerpoint: ofe URIs; on
-   http(s) (the hosted phone shell) only items with a web twin URL render, local-only items
-   hide entirely (a C:\ path is dead weight on the phone). NOTE: local anchors would wedge
-   the old Obsidian Custom Frames pane — Chrome is the desktop surface (2026-07-12). */
-var RES_FILTER='',RES_CAT='';
+   http(s) (the hosted phone shell) only items with a web twin URL are reachable, local-only
+   items drop out (a C:\ path is dead weight on the phone). NOTE: local anchors would wedge
+   the old Obsidian Custom Frames pane — Chrome is the desktop surface (2026-07-12).
+   The browsable PANEL these helpers used to feed was removed 2026-08-24 (see the note where
+   it stood, above Runbook). They are NOT dead code: gsResults() and visitPrep() are the two
+   live consumers, and both call resVisible()/resHref() to build their own hrefs — which is
+   why the per-surface logic still has to live here and not inside a renderer. */
 function resItems(){return (RESOURCES&&Array.isArray(RESOURCES.items))?RESOURCES.items:[];}
 function resLocal(){return location.protocol==='file:';}
 function resVisible(){return resLocal()?resItems():resItems().filter(function(it){return it.url;});}
@@ -2687,52 +2824,6 @@ function resHref(it){
 function resWinPath(it){
   var base=String((RESOURCES&&RESOURCES.base)||'').replace(/\//g,'\\').replace(/\\$/,'');
   return base+'\\'+String(it.path||'').replace(/\//g,'\\');
-}
-function renderResources(){
-  var card=document.getElementById('panel-resources');if(!card)return;
-  var items=resVisible();
-  if(!items.length){card.style.display='none';return;}
-  card.style.display='';
-  var badge=document.getElementById('resCount');if(badge)badge.textContent=items.length+' ITEMS';
-  var cats=[];items.forEach(function(it){if(it.cat&&cats.indexOf(it.cat)<0)cats.push(it.cat);});
-  if(RES_CAT&&cats.indexOf(RES_CAT)<0)RES_CAT='';
-  var ch='<button type="button" class="btn res-cat'+(RES_CAT?'':' active')+'" data-cat="">All</button>';
-  cats.forEach(function(c){ch+='<button type="button" class="btn res-cat'+(RES_CAT===c?' active':'')+'" data-cat="'+esc(c)+'">'+esc(c)+'</button>';});
-  var cbox=document.getElementById('resCats');if(cbox)cbox.innerHTML=ch;
-  var q=RES_FILTER.toLowerCase(),shown=0,h='';
-  items.forEach(function(it){
-    if(RES_CAT&&it.cat!==RES_CAT)return;
-    var hay=(it.title+' '+(it.use||'')+' '+(it.cat||'')+' '+(it.tags||[]).join(' ')).toLowerCase();
-    if(q&&hay.indexOf(q)<0)return;
-    shown++;
-    var href=resHref(it);
-    h+='<div class="lnkrow">'+
-      (href?'<a class="lnk" href="'+esc(href)+'" target="_blank" rel="noopener" title="'+esc(it.use||'')+'">':'<span class="lnk" title="'+esc(it.use||'')+'">')+
-      '<span class="lnk-e">'+esc(it.emoji||'📄')+'</span><span class="lnk-t">'+esc(it.title)+' <span class="mini">'+esc(it.cat||'')+'</span></span>'+
-      (href?'</a>':'</span>');
-    if(resLocal()&&it.path)h+='<button class="btn lnk-copy res-copy" type="button" data-copy="'+esc(resWinPath(it))+'" title="Copy the file path">Copy path</button>';
-    else if(it.url)h+='<button class="btn lnk-copy res-copy" type="button" data-copy="'+esc(it.url)+'" title="Copy the link">Copy</button>';
-    h+='</div>';
-  });
-  var box=document.getElementById('resBox');
-  if(box)box.innerHTML=shown?h:'<div class="empty" style="padding:10px 6px">No resources match.</div>';
-}
-function wireResources(){
-  var f=document.getElementById('resFilter');
-  if(f)f.oninput=function(){RES_FILTER=f.value.trim();renderResources();};
-  var cats=document.getElementById('resCats');
-  if(cats)cats.addEventListener('click',function(e){ // delegated: survives re-renders
-    var b=e.target.closest&&e.target.closest('.res-cat');if(!b)return;
-    RES_CAT=b.getAttribute('data-cat')||'';renderResources();
-  });
-  var box=document.getElementById('resBox');
-  if(box)box.addEventListener('click',function(e){
-    var b=e.target.closest&&e.target.closest('.res-copy');if(!b)return;
-    var u=b.getAttribute('data-copy');
-    function done(ok){b.textContent=ok?'Copied ✓':'Copy failed';setTimeout(function(){b.textContent=b.title==='Copy the file path'?'Copy path':'Copy';},1400);}
-    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(function(){done(true);},function(){done(legacyCopy(u));});
-    else done(legacyCopy(u));
-  });
 }
 /* Contextual "Visit prep" chips in the school modal. Reads ONLY already-computed state —
    the membership tier (memOf), the school page's open-issue articles, and open grievance
@@ -2773,6 +2864,69 @@ function visitPrep(name){
   }
   if(!chips.length)return '';
   return '<div class="sub-h">Visit prep</div><div class="res-prep">'+chips.join('')+'</div>';
+}
+
+/* ===== RUNBOOK SEARCH INDEX (2026-08-24) =====
+   The Runbook is authored as static HTML in this file, so it was invisible to the search box —
+   findable only by remembering the panel exists, which is the same reason the Resource Hub panel
+   was removed the same day. This indexes it from ITS OWN DOM rather than from a parallel JS array:
+   the panel markup stays the single source, a new .rb-item is picked up with no second edit, and
+   the two can never drift. Gated on visibleSections() so it inherits the panel's desktop:true rule
+   from one place — a phone hit would otherwise jump to a section the phone has no nav entry for. */
+var RB_INDEX=null;
+function rbSearchable(){
+  // availableSections(), NOT visibleSections() — the Runbook is navHidden, so it has no nav row but
+  // is still openable here. Reading the availability rule keeps the desktop-only gate in one place.
+  return availableSections().some(function(s){return s.id==='panel-runbook';});
+}
+function runbookIndex(){
+  if(RB_INDEX)return RB_INDEX;
+  RB_INDEX=[];
+  var card=document.getElementById('panel-runbook');
+  if(!card)return RB_INDEX;
+  var flat=function(s){return String(s||'').replace(/\s+/g,' ').trim();};
+  Array.prototype.forEach.call(card.querySelectorAll('.rb-item'),function(it,i){
+    if(!it.id)it.id='rb-'+i;                       // stable target for the search result to jump to
+    var h=it.querySelector('.rb-h'),w=it.querySelector('.rb-when');
+    var title=flat(h?h.textContent:'');
+    var when=flat(w?w.textContent:'').replace(/^·\s*/,'');
+    if(when)title=flat(title.replace(flat(w.textContent),''));  // the "when" rides inside .rb-h; split it out
+    var body=flat(Array.prototype.map.call(it.querySelectorAll('.rb-do,.rb-file'),function(n){return n.textContent;}).join(' '));
+    RB_INDEX.push({id:it.id,title:title,when:when,hay:(title+' '+when+' '+body).toLowerCase()});
+  });
+  return RB_INDEX;
+}
+/* Close any navHidden panel except `keep`. A search-only panel has no nav row to click away from,
+   so something has to put it back — this is that something, called from navTo and Close. */
+function hideNavHidden(keep){
+  SECTIONS.forEach(function(s){
+    if(!s.navHidden||s.id===keep)return;
+    var c=document.getElementById(s.id);
+    if(c)c.classList.remove('sect-active');
+  });
+}
+function closeRunbook(){
+  hideNavHidden(null);
+  if(isSwitched())showSection('panel-brief');
+  else if(ACTIVE_SECT==='panel-runbook')ACTIVE_SECT='panel-brief';
+}
+function wireRunbook(){
+  var b=document.getElementById('rbClose');
+  if(b)b.onclick=closeRunbook;
+}
+/* Jump to one procedure and flash it, so a search hit lands on the STEP rather than dumping you at
+   the top of a nine-item panel to hunt for the one you asked for. */
+function openRunbook(id){
+  runbookIndex();                 // assigns the rb-N ids; harmless if the index is already built
+  var el=document.getElementById(id);if(!el)return;
+  // ALWAYS showSection, at every width — the card is display:none until .sect-active, so the old
+  // isSwitched() branch would have scrolled to a hidden element in the 701-1099px long-scroll band.
+  showSection('panel-runbook',{keepScroll:true});
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  el.classList.remove('rb-hit');
+  void el.offsetWidth;                              // reflow, so re-opening the same item replays the flash
+  el.classList.add('rb-hit');
+  setTimeout(function(){el.classList.remove('rb-hit');},2400);
 }
 
 /* ===== GLOBAL SEARCH (build 2026-07-18.2): one header box over schools, key contacts,
@@ -2818,6 +2972,14 @@ function gsResults(q){
       if(!push('Resources',href?'<a class="gres" href="'+esc(href)+'" target="_blank" rel="noopener">'+inner+'</a>':'<span class="gres" style="cursor:default">'+inner+'</span>'))return out;
     }
   }
+  if(rbSearchable()){
+    var rb=runbookIndex();
+    for(var n=0;n<rb.length;n++){
+      var p=rb[n];
+      if(p.hay.indexOf(q)<0)continue;
+      if(!push('Runbook','<button type="button" class="gres" data-gs-rb="'+esc(p.id)+'">'+esc(p.title)+'<span class="gsub">'+esc(p.when||'Runbook')+'</span></button>'))return out;
+    }
+  }
   return out;
 }
 /* The results panel is a sighted-only affordance: it appears below the field with no focus move and no
@@ -2831,7 +2993,7 @@ function gsRender(){
   if(q.length<2){box.style.display='none';box.innerHTML='';gsSay('');return;}
   var res=gsResults(q);
   if(!res.length){
-    box.innerHTML='<div class="gres-grp">No matches</div><span class="gres" style="cursor:default">Nothing found for “'+esc(q)+'” in schools, contacts, links, or resources.</span>';
+    box.innerHTML='<div class="gres-grp">No matches</div><span class="gres" style="cursor:default">Nothing found for “'+esc(q)+'” in schools, contacts, links, resources, or the runbook.</span>';
     box.style.display='block';gsSay('No matches for '+q);return;
   }
   var h='',last='';
@@ -2850,6 +3012,8 @@ function wireSearch(){
   box.addEventListener('click',function(e){
     var b=e.target.closest&&e.target.closest('[data-gs-school]');
     if(b){openSchool(b.getAttribute('data-gs-school'));gsClose();return;}
+    var rb=e.target.closest&&e.target.closest('[data-gs-rb]');
+    if(rb){openRunbook(rb.getAttribute('data-gs-rb'));gsClose();return;}
     if(e.target.closest&&e.target.closest('a.gres'))gsClose(); // link/resource: browser handles the href, just close the panel
   });
   document.addEventListener('click',function(e){
@@ -2885,7 +3049,8 @@ var ICONS={
   data:'<path d="M21 15v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3"/><path d="M7.5 11l4.5 4.5L16.5 11"/><path d="M12 15.5V3"/>',
   printer:'<path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="13" width="12" height="8" rx="1"/>',
   steps:'<path d="M4 7h3M4 12h3M4 17h3"/><path d="M10.5 7h9.5M10.5 12h9.5M10.5 17h6"/>',
-  more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>'
+  more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
+  shirt:'<path d="M8.6 3.2 4.5 5.4 3.2 9l2.9 1.2V20.3h11.8V10.2L20.8 9l-1.3-3.6-4.1-2.2"/><path d="M8.6 3.2a3.4 3.4 0 0 0 6.8 0"/>'
 };
 function icon(n){return '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}
 function paintTabIcons(){Array.prototype.forEach.call(document.querySelectorAll('.ti[data-ic]'),function(el){el.innerHTML=icon(el.getAttribute('data-ic'));});}
@@ -2898,15 +3063,19 @@ var SECTIONS=[
   {id:'panel-membership',ic:'users',label:'Membership',short:'Membership'},
   {id:'panel-coverage',ic:'target',label:'Coverage Gaps',short:'Coverage'},
   {id:'panel-visits',ic:'pin',label:'Visits',short:'Visits'},
+  {id:'panel-dist',ic:'shirt',label:'Materials',short:'Materials'},
   {id:'panel-hustle',ic:'pencil',label:'Hustle Texts',short:'Hustle'},
   {id:'panel-links',ic:'link',label:'Important Links',short:'Links'},
-  {id:'panel-resources',ic:'book',label:'Resource Hub',short:'Resources'},
-  {id:'panel-runbook',ic:'steps',label:'Runbook',short:'Runbook',desktop:true},
+  // navHidden 2026-08-24: no nav row anywhere — the Runbook is a search destination, not a place to
+  // browse. Mike never opened it in the month it sat in the sidebar, which is the same reason the
+  // Resource Hub panel went. The card stays in the document because it IS the content store:
+  // runbookIndex() reads its DOM, so deleting the markup would delete the search results with it.
+  {id:'panel-runbook',ic:'steps',label:'Runbook',short:'Runbook',desktop:true,navHidden:true},
   {id:'panel-jot',ic:'pencil',label:'Jot &amp; Share',short:'Jot',hosted:true},
   {id:'panel-import',ic:'data',label:'Data on This Device',short:'Data',hosted:true,util:true}
 ];
 var ACTIVE_SECT='panel-brief'; // default on every open: the morning driver
-var DASH_COUNTS={urgent:0,route:0,issues:0,covGaps:0,staleVisits:0,recruit:0,brNeed:0,huDraft:0}; // stashed by renderStatusStrip / renderCoverage / renderVisitClusters / renderMembership / renderBrElection / renderHustle
+var DASH_COUNTS={urgent:0,route:0,issues:0,covGaps:0,staleVisits:0,recruit:0,brNeed:0,huDraft:0,distOwed:0}; // stashed by renderStatusStrip / renderCoverage / renderVisitClusters / renderMembership / renderBrElection / renderHustle
 var mqLaptop=window.matchMedia?window.matchMedia('(min-width:1100px)'):null;
 function isLaptop(){return !!(mqLaptop&&mqLaptop.matches&&DATA_MODE!=='none');}
 /* Phone view switching (2026-08-14). The phone used to render EVERY section into one document —
@@ -2919,15 +3088,21 @@ var mqPhone=window.matchMedia?window.matchMedia('(max-width:700px)'):null;
 function isPhone(){return !!(mqPhone&&mqPhone.matches&&DATA_MODE!=='none');}
 function isSwitched(){return isLaptop()||isPhone();}
 // Jot and the import card exist only on the hosted/phone build (renderJot/renderImport hide them when embedded).
-function visibleSections(){return SECTIONS.filter(function(s){
+/* availableSections() = "exists on THIS surface"; visibleSections() = "and gets a nav row".
+   Split 2026-08-24 for the Runbook, which is now reachable only through search: it must stay
+   *available* (so search may index it and showSection may reveal it) while owning no nav row.
+   Keeping one rule source matters — rbSearchable() reads availableSections(), so the desktop-only
+   gate is still written once, and search can never offer a section this surface cannot open. */
+function availableSections(){return SECTIONS.filter(function(s){
   if(s.hosted&&DATA_MODE==='embedded')return false;
   if(s.desktop&&DATA_MODE!=='embedded')return false; // Runbook: desk work, not phone work
   if(s.id==='panel-links'&&!LINKS.length)return false; // older data file without the links key
-  if(s.id==='panel-resources'&&!resVisible().length)return false; // no resources for this surface (hosted shows web twins only)
   if(s.id==='panel-membership'&&!Object.keys(MEMBERSHIP||{}).length)return false; // no membership overlay in this data
   if(s.id==='panel-hustle'&&!HUSTLE)return false; // no Hustle templates in this data
+  if(s.id==='panel-dist'&&!DISTRIBUTION)return false; // nothing being distributed in this data
   return true;
 });}
+function visibleSections(){return availableSections().filter(function(s){return !s.navHidden;});}
 function showSection(id,opts){
   opts=opts||{};
   var target=document.getElementById(id);
@@ -2960,6 +3135,9 @@ function revealSectionFor(el){
 function navTo(id){
   var el=document.getElementById(id);if(!el)return;
   if(isSwitched()&&el.classList&&el.classList.contains('full')){showSection(id);return;}
+  // Long-scroll band (701-1099px): nothing calls showSection here, so a navHidden panel revealed by
+  // a search hit would keep its .sect-active and sit on the page forever. Navigating away closes it.
+  hideNavHidden(id);
   revealSectionFor(el);
   el.scrollIntoView({behavior:'smooth',block:'start'});
 }
@@ -3056,7 +3234,7 @@ function updateSidebarBadges(){
   put('panel-visits',DASH_COUNTS.staleVisits?'<span class="sb-chip" title="schools not visited in 30+ school days">'+DASH_COUNTS.staleVisits+'</span>':'');
   put('panel-hustle',DASH_COUNTS.huDraft?'<span class="sb-chip" title="upcoming events within 7 days with no Hustle send logged">'+DASH_COUNTS.huDraft+'</span>':'');
   put('panel-links',chip(LINKS.length));
-  put('panel-resources',chip(resVisible().length)); // items available on THIS surface (desktop: all; hosted: web twins only)
+  put('panel-dist',DASH_COUNTS.distOwed?'<span class="sb-chip" title="schools and units still owed a piece of WTU gear">'+DASH_COUNTS.distOwed+'</span>':'');
   put('panel-membership',chip(DASH_COUNTS.recruit)); // stashed by renderMembership — neutral count of priority/watch schools (red stays reserved for deadlines)
 }
 /* ---- Theme (build 2026-07-17.1): dark is the default; the toggle saves a per-device
@@ -3099,7 +3277,7 @@ function boot(){
   paintTabIcons(); // phone tab-bar SVG icons (harmless when the tab bar is hidden)
   var fns=DATA_MODE==='none'
     ?[renderSelfTest,renderImport,wireImport,wireTheme]
-    :[renderHeader,renderSelfTest,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderNewsletter,renderAugustPush,renderIssues,renderSchoolKpis,renderChips,renderSchoolViews,renderSchools,renderBrElection,renderMembership,renderCoverage,renderVisitPlan,renderVisitClusters,renderVisits,renderAttention,renderBriefTiles,renderLinks,renderResources,renderHustle,wireHustle,renderActionbar,renderTabbar,wireCalc,wireButtons,wireSearch,renderImport,wireImport,renderJot,wireJot,wireLinks,wireResources,renderSidebar,wireTheme,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
+    :[renderHeader,renderSelfTest,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderNewsletter,renderAugustPush,renderIssues,renderSchoolKpis,renderChips,renderSchoolViews,renderSchools,renderBrElection,renderMembership,renderCoverage,renderVisitPlan,renderVisitClusters,renderVisits,renderDistribution,renderAttention,renderBriefTiles,renderLinks,renderHustle,wireHustle,renderActionbar,renderTabbar,wireCalc,wireButtons,wireSearch,renderImport,wireImport,renderJot,wireJot,wireLinks,wireRunbook,renderSidebar,wireTheme,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
   fns.forEach(function(fn){
     // Log the failure point but never the exception content — an error message must not echo member data (hardening).
     try{fn();}catch(e){console.error('dash:'+fn.name+' failed ('+((e&&e.name)||'error')+')');}
