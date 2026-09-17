@@ -819,7 +819,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
   <footer>
     Snapshot data: WTU workspace (school pages + Filed Grievances) + calendar entered from Outlook screenshots, captured <span id="snapFoot">—</span>. Ask to "refresh" or "update" anytime.<br>
     This is a working-aid, not the official record. The CBA controls all grievance timelines — verify any deadline day-by-day before filing.<br>
-    <span class="build-note" id="buildPill">build 2026-08-24.2</span>
+    <span class="build-note" id="buildPill">build 2026-09-15.1</span>
   </footer>
 </div>
 
@@ -981,7 +981,18 @@ function workingDaysLeftFrom(fromStr,deadlineStr){
 function workingDaysLeft(deadlineStr){return workingDaysLeftFrom(todayIso(),deadlineStr);}
 function pretty(s){return parseD(s).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});}
 function prettyNoYr(s){return parseD(s).toLocaleDateString('en-US',{month:'short',day:'numeric'});}
-function lastVisit(s){return s.visits.length?s.visits.map(v=>v[0]).sort().slice(-1)[0]:null;}
+/* A school page's log is a "Visit & CONVERSATION Log" — it legitimately holds both, and until
+   2026-09-15 every row in it was counted as a visit. That put Kramer on the board as "visited
+   2026-08-19" when 8/19 was a master schedule arriving by EMAIL, and it is the same shape of bug as
+   Sousa's SCAC count: a display convention and a counting rule disagreeing silently. Rows now carry
+   a type — v[2] is "visit" or "conversation" — and ONLY visit rows feed lastVisit(), the Visited
+   KPI, the per-cluster counts, the "Not visited" view and the staleness clock. An untagged row
+   defaults to CONVERSATION on purpose: the failure mode worth preventing is a desk contact silently
+   promoting itself to a visit, not the reverse. The Visit Log panel and the school modal still show
+   both kinds, labelled — nothing is hidden, it is only counted correctly. */
+function visitRows(s){return s.visits.filter(function(v){return (v[2]||'conversation')==='visit';});}
+function visitType(v){return (v[2]||'conversation')==='visit'?'visit':'conversation';}
+function lastVisit(s){var vr=visitRows(s);return vr.length?vr.map(v=>v[0]).sort().slice(-1)[0]:null;}
 // Key by member + school + violation date so one member with two grievances never collides.
 function grId(g){return 'gr-'+String(g.member+'-'+(g.school||'')+'-'+(g.violationDate||'')).replace(/[^A-Za-z0-9]+/g,'-');}
 // Counted-day list for the calculator's "show the day-by-day count" (mirrors nthWorkingInclusive / addWorkingDays).
@@ -1272,7 +1283,9 @@ function openSchool(name){
   b+=s.issues.length?('<table><tr><th>Issue</th><th>Status</th><th>Article</th><th>Opened</th></tr>'+s.issues.map(function(r){return '<tr><td data-label="Issue">'+esc(r[0]||'')+'</td><td data-label="Status">'+esc(r[1]||'')+'</td><td data-label="Article">'+esc(r[2]||'')+'</td><td data-label="Opened">'+esc(r[3]||'')+'</td></tr>';}).join('')+'</table>'):
     ('<div class="empty">No open issues logged'+(nFlag?' — but '+nFlag+' flagged note'+(nFlag===1?'':'s')+' above needs a look.':'.')+'</div>');
   b+='<div class="sub-h">Visit &amp; Conversation Log</div>';
-  b+=s.visits.length?('<table><tr><th>Date</th><th>Notes</th></tr>'+s.visits.slice().sort(function(a,b2){return b2[0].localeCompare(a[0]);}).map(function(v){return '<tr><td data-label="Date">'+pretty(v[0])+'</td><td data-label="Notes">'+esc(v[1])+'</td></tr>';}).join('')+'</table>'):'<div class="empty">No visits logged.</div>';
+  // Both kinds show here — the log is a visit AND conversation log — but the Type column makes plain
+  // which rows move the Visited count, so the page can never again imply a visit that never happened.
+  b+=s.visits.length?('<table><tr><th>Date</th><th>Type</th><th>Notes</th></tr>'+s.visits.slice().sort(function(a,b2){return b2[0].localeCompare(a[0]);}).map(function(v){var ty=visitType(v);return '<tr><td data-label="Date">'+pretty(v[0])+'</td><td data-label="Type"><span class="'+(ty==='visit'?'cov-yes':'cov-muted')+'">'+(ty==='visit'?'Visit':'Conversation')+'</span></td><td data-label="Notes">'+esc(v[1])+'</td></tr>';}).join('')+'</table>'):'<div class="empty">Nothing logged yet.</div>';
   document.getElementById('schModalTitle').textContent=s.name+' — Cluster '+s.cluster+(s.ward?' · Ward '+s.ward:'');
   document.getElementById('schModalBody').innerHTML=b;
   document.getElementById('schModal').style.display='flex';
@@ -1462,7 +1475,7 @@ function renderSchoolKpis(){
   const k=document.getElementById('schoolKpis');
   const totIssues=SCHOOLS.reduce((a,s)=>a+s.issues.length,0);
   const withContacts=SCHOOLS.filter(s=>s.cf>0).length;
-  const visited=SCHOOLS.filter(s=>s.visits.length).length;
+  const visited=SCHOOLS.filter(s=>visitRows(s).length).length;
   k.innerHTML=[['Schools',SCHOOLS.length],['Open issues',totIssues],['Profiles started',withContacts+' / '+SCHOOLS.length],['Visited',visited+' / '+SCHOOLS.length]]
     .map(x=>'<div class="kpi"><div class="n">'+x[1]+'</div><div class="l">'+x[0]+'</div></div>').join('');
 }
@@ -1635,7 +1648,7 @@ function schoolReasons(s){
      promote a school on its own. */
   var sy=currentSYStart();
   var syDays=(inDuty(t)&&sy)?(workingDaysBetween(sy,t)||0):0;
-  if(syDays>=30&&!s.visits.length)r.push({k:'visit',w:1,why:'no visit in '+syDays+' school days',act:'Schedule a first visit'});
+  if(syDays>=30&&!visitRows(s).length)r.push({k:'visit',w:1,why:'no visit in '+syDays+' school days',act:'Schedule a first visit'});
   r.sort(function(a,b){return b.w-a.w;});
   return r;
 }
@@ -1660,7 +1673,7 @@ var SCHOOL_VIEWS=[
   {k:'gap',label:'Contact gap',test:function(s){return s.brStatus!=='pending'&&missingRoles(s).length>0;}},
   {k:'flag',label:'Flagged note',test:function(s){return flaggedNotes(s).length>0;}},
   {k:'recruit',label:'Recruitment',test:function(s){var m=memOf(s.name);return !!m&&(m.nonRate||0)>=0.15;}},
-  {k:'novisit',label:'Not visited',test:function(s){return !s.visits.length;}},
+  {k:'novisit',label:'Not visited',test:function(s){return !visitRows(s).length;}},
   {k:'all',label:'All schools',test:function(){return true;}}
 ];
 var activeView='attention';
@@ -1717,7 +1730,7 @@ function renderSchools(){
     if(!list.length)return;
     shown+=list.length;
     const issues=list.reduce((a,s)=>a+s.issues.length,0);
-    const visited=list.filter(s=>s.visits.length).length;
+    const visited=list.filter(s=>visitRows(s).length).length;
     html+='<div class="cluster-block" data-cluster="'+c+'">';
     html+='<div class="cluster-h"><button class="cluster-toggle" aria-expanded="true" aria-label="Collapse Cluster '+c+'" title="Collapse or expand Cluster '+c+'">▾</button>Cluster '+c+'<span class="ch-meta">'+list.length+' school'+(list.length===1?'':'s')+' · '+visited+' visited · '+issues+' open issues</span></div>';
     html+='<div class="cluster-schools">'+list.map(schoolCard).join('')+'</div>';
@@ -1869,7 +1882,7 @@ function renderVisitClusters(){
   orderedClusters().forEach(function(c){
     const list=SCHOOLS.filter(function(s){return s.cluster===c;}).sort(function(a,b){return a.name.localeCompare(b.name);});
     if(!list.length)return;
-    const visitedN=list.filter(function(s){return s.visits.length;}).length;
+    const visitedN=list.filter(function(s){return visitRows(s).length;}).length;
     html+='<div class="cluster-block" data-cluster="'+c+'">';
     html+='<div class="cluster-h"><button class="cluster-toggle" aria-expanded="true" aria-label="Collapse Cluster '+c+'" title="Collapse or expand Cluster '+c+'">▾</button>Cluster '+c+'<span class="ch-meta">'+list.length+' school'+(list.length===1?'':'s')+' · '+visitedN+' visited</span></div>';
     html+='<div class="cluster-schools"><table><tr><th>School</th><th>Last visit</th><th>Visits</th><th>Status</th></tr>'+list.map(function(s){
@@ -1890,7 +1903,7 @@ function renderVisitClusters(){
       // Visit staleness is amber at both steps, never red — a school unvisited for 60 school days is
       // overdue, not on a contractual clock. The day count is the signal; colour only ranks it.
       if(cls==='cov-warn'||cls==='cov-amber')staleN++; // sidebar badge counts the same rows the table just classified
-      return '<tr><td data-label="School">'+schoolLink(s.name)+'</td><td data-label="Last visit">'+(lv?prettyMed(lv):'—')+'</td><td data-label="Visits">'+s.visits.length+'</td><td data-label="Status"><span class="'+cls+'">'+status+'</span></td></tr>';
+      return '<tr><td data-label="School">'+schoolLink(s.name)+'</td><td data-label="Last visit">'+(lv?prettyMed(lv):'—')+'</td><td data-label="Visits">'+visitRows(s).length+'</td><td data-label="Status"><span class="'+cls+'">'+status+'</span></td></tr>';
     }).join('')+'</table></div>';
     html+='</div>';
   });
@@ -1910,17 +1923,20 @@ function setAllVisitClusters(collapsed){
 function renderVisits(){
   const k=document.getElementById('visitKpis');
   const log=document.getElementById('visitLog');
+  // The log lists BOTH kinds, newest first, each labelled. The KPIs count only visits — a number
+  // headed "Total visits" that includes emails is exactly the mislabel this panel got wrong before.
   const all=[];
-  SCHOOLS.forEach(s=>s.visits.forEach(v=>all.push({school:s.name,cluster:s.cluster,date:v[0],note:v[1]})));
+  SCHOOLS.forEach(s=>s.visits.forEach(v=>all.push({school:s.name,cluster:s.cluster,date:v[0],note:v[1],type:visitType(v)})));
   const byCluster={};
-  SCHOOLS.forEach(s=>{byCluster[s.cluster]=(byCluster[s.cluster]||0)+s.visits.length;});
-  const kpis=[['Total visits',all.length]].concat(orderedClusters().filter(c=>byCluster[c]!==undefined).map(c=>['Cluster '+c,byCluster[c]]));
+  SCHOOLS.forEach(s=>{byCluster[s.cluster]=(byCluster[s.cluster]||0)+visitRows(s).length;});
+  const visitsN=all.filter(v=>v.type==='visit').length;
+  const kpis=[['Total visits',visitsN]].concat(orderedClusters().filter(c=>byCluster[c]!==undefined).map(c=>['Cluster '+c,byCluster[c]]));
   k.innerHTML=kpis.map(x=>'<div class="kpi"><div class="n">'+x[1]+'</div><div class="l">'+x[0]+'</div></div>').join('');
-  if(!all.length){log.innerHTML='<div class="sectnote">No visits logged yet. Each dated entry in a school’s "Visit & Conversation Log" counts here, newest first.</div>';return;}
+  if(!all.length){log.innerHTML='<div class="sectnote">Nothing logged yet. Each dated entry in a school’s "Visit &amp; Conversation Log" appears here, newest first — tagged <b>(Visit)</b> or <b>(Conversation)</b> on the school page. Only Visit rows count toward the totals above.</div>';return;}
   all.sort((a,b)=>b.date.localeCompare(a.date));
-  log.innerHTML='<table><tr><th>Date</th><th>School</th><th>Notes</th></tr>'+
-    all.slice(0,25).map(v=>'<tr><td data-label="Date">'+pretty(v.date)+'</td><td data-label="School">'+schoolLink(v.school)+'</td><td data-label="Notes">'+esc(v.note)+'</td></tr>').join('')+'</table>'+
-    (all.length>25?'<div class="sectnote">Showing the latest 25 of '+all.length+' visits — the full log lives on the school pages.</div>':'');
+  log.innerHTML='<table><tr><th>Date</th><th>School</th><th>Type</th><th>Notes</th></tr>'+
+    all.slice(0,25).map(v=>'<tr><td data-label="Date">'+pretty(v.date)+'</td><td data-label="School">'+schoolLink(v.school)+'</td><td data-label="Type"><span class="'+(v.type==='visit'?'cov-yes':'cov-muted')+'">'+(v.type==='visit'?'Visit':'Conversation')+'</span></td><td data-label="Notes">'+esc(v.note)+'</td></tr>').join('')+'</table>'+
+    (all.length>25?'<div class="sectnote">Showing the latest 25 of '+all.length+' entries — the full log lives on the school pages.</div>':'');
 }
 
 /* ---- Needs Attention (rebuilt 2026-08-14).
@@ -2019,7 +2035,7 @@ function attnSignals(){
   }
 
   if(DASH_COUNTS.covGaps)push(7,'attention',link('panel-coverage',DASH_COUNTS.covGaps+' school'+(DASH_COUNTS.covGaps===1?'':'s')+' missing a Building Rep, SCAC or LSAT contact'),'',true);
-  var noVisit=SCHOOLS.filter(function(s){return !s.visits.length;}).length;
+  var noVisit=SCHOOLS.filter(function(s){return !visitRows(s).length;}).length;
   if(noVisit===SCHOOLS.length&&inDuty(t))push(7,'attention',link('panel-visits','No school visits logged yet — start filling Visit &amp; Conversation Logs'),'',true);
 
   // Tier 8 — system health, and ONLY once it crosses the threshold the data file itself sets.
@@ -2181,7 +2197,27 @@ function renderNewsletter(){
   function fromTag(x){return x.from?'<span class="nws-from">'+esc(x.from)+'</span>':'';}
   var head=live(n.headline)?n.headline:null;
   var items=(n.items||[]).filter(live);
-  if(!head&&!items.length){host.innerHTML='';return;} // everything has passed — retire the block
+  var flags=(n.flags||[]);
+  if(!head&&!items.length){
+    // RETIRED, BUT NOT NECESSARILY EMPTY (build 2026-09-15.1). `flags` carry no dates by design —
+    // they are things to know, deliberately off the calendar — so they can never expire on their
+    // own, and the old unconditional early return took them down with the dated content. Live case:
+    // the 8/30 Update's last dated item passed 9/11, the block hid on 9/12, and it took a Sept 16
+    // Council Zoom with it four days before the event. Dated content still retires exactly on time;
+    // what survives is a compact notice that says outright the Update is spent, so nothing here can
+    // read as this week's — which is the rule the original early return existed to protect.
+    if(!flags.length){host.innerHTML='';return;}
+    var age0=n.updated?cd(n.updated)*-1:null;
+    host.innerHTML='<div class="aug"><div class="aug-h">From The Union Update<span class="aug-n">'+
+      esc(n.source||'')+'</span></div>'+
+      '<div class="nws-stale">Every dated item in this Update has passed'+
+      (age0!==null?' — imported '+age0+' days ago':'')+
+      '. It is kept only for the undated flags below. Drop a newer Update to replace it.</div>'+
+      '<div class="nws-flag">⚑ <b>Flagged, not on your calendar:</b><br>'+
+      flags.map(function(f){return esc(f);}).join('<br>')+
+      (n.flagNote?'<br><i>'+esc(n.flagNote)+'</i>':'')+'</div></div>';
+    return;
+  }
   var h='<div class="aug"><div class="aug-h">From The Union Update<span class="aug-n">'+esc(n.source||'')+'</span></div>';
   if(head){
     h+='<div class="nws-lead">'+esc(head.title)+dueTag(head.due)+fromTag(head)+'</div>';
@@ -2196,9 +2232,9 @@ function renderNewsletter(){
        '<div class="nws-mem-t">'+esc(n.memberLine)+'</div>'+
        '<button class="btn nws-copy" type="button" data-copy="'+esc(n.memberLine)+'">Copy</button></div>';
   }
-  if((n.flags||[]).length){
+  if(flags.length){
     h+='<div class="nws-flag">⚑ <b>Flagged, not on your calendar:</b><br>'+
-       n.flags.map(function(f){return esc(f);}).join('<br>')+
+       flags.map(function(f){return esc(f);}).join('<br>')+
        (n.flagNote?'<br><i>'+esc(n.flagNote)+'</i>':'')+'</div>';
   }
   // Twice-weekly cadence: past 10 days without a drop, say so rather than let it read as current.
