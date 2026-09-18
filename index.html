@@ -834,7 +834,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
       </div>
       <label class="jot-chk" for="jotDeliv"><input type="checkbox" id="jotDeliv"> Something was handed over</label>
       <div id="jotDelivWrap" style="display:none"><label class="jot-lbl" for="jotDelivWhat">Delivered <span class="jot-opt">— leave blank for WTU sweatshirts</span></label><input id="jotDelivWhat" class="schfilter" style="min-width:230px" placeholder="WTU sweatshirts"></div>
-      <div style="margin-top:12px"><label class="jot-lbl" for="jotDone">Done <span class="jot-opt">— optional; the date of the earlier row whose Next this closes</span></label><input type="date" id="jotDone" class="schfilter" style="min-width:150px"></div>
+      <div style="margin-top:12px"><label class="jot-lbl" for="jotDone">Closes an earlier row's Next <span class="jot-opt">— optional; pick that earlier row's date, not today's</span></label><input type="date" id="jotDone" class="schfilter" style="min-width:150px"></div>
     </div>
     <div class="jot-warn" id="jotWarn"></div>
     <label class="jot-lbl" for="jotOut" style="margin-top:14px">What you'll paste to Claude</label>
@@ -880,7 +880,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
   <footer>
     Snapshot data: WTU workspace (school pages + Filed Grievances) + calendar entered from Outlook screenshots, captured <span id="snapFoot">—</span>. Ask to "refresh" or "update" anytime.<br>
     This is a working-aid, not the official record. The CBA controls all grievance timelines — verify any deadline day-by-day before filing.<br>
-    <span class="build-note" id="buildPill">build 2026-09-17.3</span>
+    <span class="build-note" id="buildPill">build 2026-09-17.4</span>
   </footer>
 </div>
 
@@ -2730,7 +2730,13 @@ function jotRowText(){
     row+=' Next: '+nx+trailer+'.';
   }
   if(jotChecked('jotDeliv'))row+=' Delivered: '+jotStop(jotV('jotDelivWhat')||'WTU sweatshirts');
-  var dn=jotV('jotDone');if(dn)row+=' Done: '+dn+'.';
+  // A `Done:` that is not EARLIER than this row closes nothing — the parser flags it and the record
+  // carries a field that means nothing. The first real capture through this panel (River Terrace,
+  // 2026-09-17) set it to the row's own date meaning "this is finished", with the warning showing,
+  // so an advisory line is not enough: an impossible value is not emitted at all (build 2026-09-17.4).
+  // A date that is merely unmatched in the imported data still goes in — the page may hold a row this
+  // device has not imported yet. Impossible is refused; unverifiable is warned about.
+  var dn=jotV('jotDone');if(dn&&dn<jotDate())row+=' Done: '+dn+'.';
   return row;
 }
 function jotCompose(){
@@ -2773,7 +2779,7 @@ function jotWarnings(){
   }
   var dn=jotV('jotDone');
   if(dn){
-    if(dn>=date)w.push('Done: names an EARLIER row on the same page — '+prettyNoYr(dn)+' is not before '+prettyNoYr(date)+'.');
+    if(dn>=date)w.push('Left out of the row: '+prettyNoYr(dn)+' is not earlier than '+prettyNoYr(date)+', so it would close nothing. That field closes the Next on an EARLIER row — pick that row’s date, or clear it and let the Outcome say the work is finished.');
     else if(s&&Array.isArray(s.visits)){
       var found=false;
       for(var j=0;j<s.visits.length;j++){if(s.visits[j][0]===dn){found=true;break;}}
@@ -2868,6 +2874,9 @@ function jotRefresh(){
     typ==='Visit'?'Visit = you were in the building, whatever the occasion. A meeting with the Building Rep is a Conversation even inside the building, and so is a drop-off.'
    :typ==='Conversation'?'Conversation = email, phone, text, a document received, any virtual meeting, a drop-off, or a meeting with the Building Rep.'
    :'Not a log row — this reaches Claude as a plain note, with the time you wrote it.';
+  // Native guard to match the composer's: the picker cannot offer a date this row could not close.
+  var dnEl=document.getElementById('jotDone');
+  if(dnEl){var c=parseD(jotDate());c.setDate(c.getDate()-1);dnEl.max=localIso(c);}
   var out=document.getElementById('jotOut');if(out&&document.activeElement!==out)out.value=jotCompose()||'';
   var wb=document.getElementById('jotWarn');
   if(wb){var w=jotWarnings();wb.innerHTML=w.map(function(t){return '⚠ '+esc(t);}).join('<br>');}
