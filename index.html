@@ -880,7 +880,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
   <footer>
     Snapshot data: WTU workspace (school pages + Filed Grievances) + calendar entered from Outlook screenshots, captured <span id="snapFoot">—</span>. Ask to "refresh" or "update" anytime.<br>
     This is a working-aid, not the official record. The CBA controls all grievance timelines — verify any deadline day-by-day before filing.<br>
-    <span class="build-note" id="buildPill">build 2026-09-17.5</span>
+    <span class="build-note" id="buildPill">build 2026-09-17.6</span>
   </footer>
 </div>
 
@@ -3820,6 +3820,21 @@ window.addEventListener('focus',rerenderForNewDay);
 // Offline shell (Step 5): register the service worker on secure origins only. The desktop
 // artifact runs from file:// (and the Obsidian frame), where this is deliberately a no-op.
 if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){
+  /* Reload ONCE when a new service worker takes over (build 2026-09-17.6). The cache is now named
+     per build, so a new worker's activate purges the old one and the next fetch must go to the
+     network — but the page in front of you was already served from the OLD cache before any of that
+     happened. Without this, a publish still needed a second launch to be seen. `hadController`
+     is the guard that matters: on a FIRST-EVER registration the worker claims an uncontrolled page
+     and controllerchange fires for a page that is already current, so reloading there would be a
+     pointless flash. `reloaded` stops any chance of a loop.
+     The no-signal property is untouched: activate only runs after the new script is fetched, so
+     offline there is no update, no purge, and the cached shell still opens instantly. */
+  var hadController=!!navigator.serviceWorker.controller,swReloaded=false;
+  navigator.serviceWorker.addEventListener('controllerchange',function(){
+    if(!hadController||swReloaded)return;
+    swReloaded=true;
+    location.reload();
+  });
   navigator.serviceWorker.register('sw.js')['catch'](function(e){console.error('sw register failed ('+((e&&e.name)||'error')+')');});
 }
 </script>

@@ -1,9 +1,23 @@
 /* Organizing Dashboard service worker — makes the shell open offline (plan v4 Step 5).
    Strategy: stale-while-revalidate for same-origin GETs. The cached shell is served
-   instantly (no-signal school buildings), and a background fetch refreshes the cache,
-   so a pushed code update arrives by the second launch after it lands on Pages.
-   Data never touches this cache — imports live in localStorage on the device. */
-var CACHE = 'dash-shell-v1';
+   instantly (no-signal school buildings) and a background fetch refreshes the cache.
+   Data never touches this cache — imports live in localStorage on the device.
+
+   CACHE IS NAMED PER BUILD (2026-09-17.6). It used to be the fixed 'dash-shell-v1', which
+   made an update depend on that background fetch having completed before the next launch —
+   if it had not, the app quietly kept serving old code with nothing to show for it. A name
+   that changes with the build means activate below deletes the old cache outright, so the
+   next fetch CANNOT be served from stale storage. Paired with the reload-once handler in
+   the page, a publish now lands on the first relaunch instead of the second.
+
+   The placeholder in the CACHE line below is substituted by dashboard/build-dashboard.ps1 from
+   the shell's own build pill, so there is one source of truth for the version and this file
+   changes on every build — which is itself what makes the browser notice a new worker at all.
+   (The builder asserts the placeholder appears exactly once, so do not name it in prose here.)
+
+   Opening with no signal is unaffected: activate only runs after the new script has been
+   fetched, so offline there is no update, no purge, and the cached shell opens instantly. */
+var CACHE = 'dash-shell-2026-09-17.6';
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
