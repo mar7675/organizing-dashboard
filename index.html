@@ -880,7 +880,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
   <footer>
     Snapshot data: WTU workspace (school pages + Filed Grievances) + calendar entered from Outlook screenshots, captured <span id="snapFoot">—</span>. Ask to "refresh" or "update" anytime.<br>
     This is a working-aid, not the official record. The CBA controls all grievance timelines — verify any deadline day-by-day before filing.<br>
-    <span class="build-note" id="buildPill">build 2026-09-17.4</span>
+    <span class="build-note" id="buildPill">build 2026-09-17.5</span>
   </footer>
 </div>
 
@@ -938,6 +938,15 @@ var NEWSLETTER=null;
 var REMINDERS=[];
 var DATA_MODE='none'; // 'embedded' | 'imported' | 'none'
 var DATA_META=null;   // {importedAt, source} for imported mode
+/* Which BUILD of the data file this device is holding (build 2026-09-17.5). snapshotDate is a DAY,
+   so two files written on the same day were indistinguishable from in here — and on 2026-09-17 that
+   turned a two-day OneDrive outage into a guessing game: the import "worked" every time and quietly
+   loaded a file from 9/15. `generatedAt` is written by dashboard/build-dashboard.ps1 on every run.
+   Absent = a file built before this stamp existed, which is itself a useful thing to see. */
+var DATA_BUILT='';
+/* Desktop copy only: was the OneDrive client running when this was built? The builder cannot put a
+   "your phone is not receiving files" warning in the file the phone never receives. */
+var PHONE_SYNC=null;
 var SHELL_SCHEMA=1;   // highest dashboard-data.json schemaVersion this build understands
 var LS_DATA='dash.data',LS_META='dash.meta';
 
@@ -965,6 +974,18 @@ function adoptData(d){
   DISTRIBUTION=(d.distribution&&Array.isArray(d.distribution.items)&&d.distribution.items.length)?d.distribution:null; // optional (materials distribution) — absent = section hides
   NEWSLETTER=(d.newsletter&&typeof d.newsletter==='object')?d.newsletter:null; // optional (Union Update, 'update newsletter') — absent = Brief block hides
   REMINDERS=Array.isArray(d.reminders)?d.reminders:[]; // optional (dated reminders) — absent = no tier-3 rows in Needs Attention
+  DATA_BUILT=(typeof d.generatedAt==='string')?d.generatedAt:''; // build stamp (builder writes it; older files have none)
+  PHONE_SYNC=(d.phoneSync&&typeof d.phoneSync==='object')?d.phoneSync:null; // desktop copy only
+}
+// "Sep 17, 10:32 PM" from the builder's local-time stamp. Returns '' for anything unparseable rather
+// than printing a broken date — an unreadable stamp must not look like a fresh one.
+function builtStamp(s){
+  if(!s||typeof s!=='string')return '';
+  var m=s.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
+  if(!m)return '';
+  var dt=new Date(+m[1],+m[2]-1,+m[3],+m[4],+m[5]);
+  if(isNaN(dt.getTime()))return '';
+  return dt.toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
 }
 function resolveData(){
   if(window.__DATA__){
@@ -1119,6 +1140,15 @@ function renderStatusStrip(){
   if(route)parts.push('<span class="seg-amber">'+route+' case'+(route===1?'':'s')+' needs routing to a Grievance Specialist</span>');
   parts.push('<span class="seg-muted">'+issues+' open member issue'+(issues===1?'':'s')+'</span>');
   var bk=backupSegment();if(bk)parts.push(bk);
+  /* The phone's data route, made visible (build 2026-09-17.5). The builder records whether the
+     OneDrive CLIENT was running when it wrote the phone copy; if it was not, the file never left
+     this PC and the phone keeps importing whatever last reached the cloud. That failed silently for
+     two days on 2026-09-17. Amber, like the backup nudge: nothing here is wrong, something out
+     there is not moving. Desktop only — the field rides the desktop artifact by design. */
+  if(PHONE_SYNC&&PHONE_SYNC.clientRunning===false){
+    var ck=builtStamp(PHONE_SYNC.checkedAt);
+    parts.push('<span class="seg-amber">OneDrive was not running at the last build'+(ck?' ('+ck+')':'')+' — the phone’s copy did not leave this PC</span>');
+  }
   var dq=dataSegment();if(dq)parts.push(dq); // replaces sourcesSegment() — same ages, plus the case and calendar dates (build 2026-09-17.2)
   el.innerHTML=parts.join('<span class="seg-muted">·</span>');
 }
@@ -1140,7 +1170,14 @@ function dataSegment(){
     });
     stale=s.stale;
   }else if(MEMBERSHIP_DATE)bits.push('members '+prettyNoYr(MEMBERSHIP_DATE));
-  if(DATA_MODE==='imported'&&DATA_META&&DATA_META.importedAt)bits.push('imported '+new Date(DATA_META.importedAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}));
+  // On the phone, WHICH build of the file this device holds is the fact that goes wrong silently —
+  // so it sits next to the import date, not behind a panel (build 2026-09-17.5). The desktop rebuilds
+  // its own artifact from the data, so the stamp would only ever say "moments ago" there.
+  if(DATA_MODE==='imported'){
+    var bs=builtStamp(DATA_BUILT);
+    bits.push(bs?('file built '+bs):'file built before the build stamp existed — older than Sep 17');
+    if(DATA_META&&DATA_META.importedAt)bits.push('imported '+new Date(DATA_META.importedAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}));
+  }
   if(!bits.length)return '';
   return '<span class="'+(stale?'seg-amber':'seg-muted')+'">data: '+bits.join(' · ')+(stale?' — reconciliation source stale (warns at '+warnAt+'d)':'')+'</span>';
 }
@@ -2957,7 +2994,10 @@ function renderImport(){
   if(DATA_MODE==='imported'){
     badge.textContent='IMPORTED';
     var when=DATA_META&&DATA_META.importedAt?new Date(DATA_META.importedAt).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'—';
-    st.innerHTML='Snapshot <b>'+(SNAPSHOT_DATE?esc(prettyMed(SNAPSHOT_DATE)):'—')+'</b> · imported '+esc(when)+(DATA_META&&DATA_META.source?' via '+esc(DATA_META.source):'')+' · '+GRIEVANCES.length+' case'+(GRIEVANCES.length===1?'':'s')+' · '+SCHOOLS.length+' school'+(SCHOOLS.length===1?'':'s')+'. Re-import anytime after a refresh lands in OneDrive.';
+    // The build stamp leads, because "which file am I holding" is the question this card exists to
+    // answer and the one that had no answer on 2026-09-17 (build 2026-09-17.5).
+    var bs=builtStamp(DATA_BUILT);
+    st.innerHTML='Holding the file <b>built '+(bs?esc(bs):'before the build stamp existed — so older than Sep 17, 2026')+'</b> · snapshot '+(SNAPSHOT_DATE?esc(prettyMed(SNAPSHOT_DATE)):'—')+' · imported '+esc(when)+(DATA_META&&DATA_META.source?' via '+esc(DATA_META.source):'')+' · '+GRIEVANCES.length+' case'+(GRIEVANCES.length===1?'':'s')+' · '+SCHOOLS.length+' school'+(SCHOOLS.length===1?'':'s')+'.<br>If the build time is not the one you expect, the OneDrive app handed this device a cached copy — open OneDrive, check the file’s own modified time, then import again.';
   }else{
     badge.textContent='NO DATA YET';
     st.innerHTML='<b>First run:</b> this app ships data-free. Import <b>dashboard-data.json</b> from OneDrive to load your dashboard — it stays on this device.';
