@@ -110,9 +110,9 @@ header.hero{background:var(--card);border:1px solid var(--line);border-top:4px s
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
   padding:16px 20px;box-shadow:var(--shadow-card)}
 .card.full{grid-column:1 / -1}
-.card h2{margin:0 0 4px;font-size:17px;font-weight:700;color:var(--ink);
+.card .sect-title{margin:0 0 4px;font-size:17px;font-weight:700;color:var(--ink);
   display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);padding-bottom:9px}
-.card h2 .badge{margin-left:auto;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
+.card .sect-title .badge{margin-left:auto;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
 .badge.snap{background:var(--tint);color:var(--maroon);border:1px solid var(--line)}
 .sectnote{font-size:12px;color:var(--muted);margin:10px 0 0}
 .brief-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
@@ -311,7 +311,7 @@ tr:last-child td{border-bottom:none}
 /* schools detailed */
 .cluster-h{margin:18px 0 8px;font-weight:700;color:var(--maroon);font-size:13px;text-transform:uppercase;letter-spacing:.5px;border-left:4px solid var(--maroon);padding-left:8px}
 .cluster-h .ch-meta{font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0;font-size:12px;margin-left:6px}
-.cluster-toggle{cursor:pointer;border:1px solid var(--edge);background:var(--card);color:var(--maroon);border-radius:6px;width:22px;height:22px;font-size:11px;line-height:1;padding:0;margin-right:8px;font-weight:700;transition:transform .15s;vertical-align:middle}
+.cluster-toggle{min-width:24px;min-height:24px;cursor:pointer;border:1px solid var(--edge);background:var(--card);color:var(--maroon);border-radius:6px;width:22px;height:22px;font-size:11px;line-height:1;padding:0;margin-right:8px;font-weight:700;transition:transform .15s;vertical-align:middle}
 .cluster-toggle:hover{background:var(--tint)}
 .cluster-block.collapsed .cluster-toggle{transform:rotate(-90deg)}
 .cluster-block.collapsed .cluster-schools{display:none}
@@ -385,90 +385,70 @@ details.sch[open] .caret{transform:rotate(90deg)}
    `schoolCard()` (list) had drifted into two different renderers, and the list's version never
    rendered the Visit & Conversation Log at all. That is why River Terrace's first visit looked
    like it had not been logged. One renderer now, two containers. */
-/* THE GRID HAS TO RESOLVE IDENTICALLY IN EVERY CONTAINER (build 2026-09-18.4). The header row and
-   each school row are SEPARATE grid containers, so a track whose size depends on its own content —
-   `auto`, or an `fr` with an intrinsic minimum — is free to come out a different width in each one.
-   That is what happened: the header's last cell is empty (76px) while a row's badge cell is as wide
-   as its badges, so the leftover space divided differently in every container and the MEMBERS label
-   sat 119px away from the numbers underneath it. Measured on the generated build at 1440: header
-   `190px 116px 84px 116px 140px 76px` against a row's `264px 116px 84px 116px 176px 259px`.
-   Every track here is either a fixed pixel value or `minmax(0,Nfr)`. An fr share depends only on the
-   container's width, which the header and the rows share, so all six columns now land on the same
-   x-positions by construction rather than by luck of content. The 0 minimum is the other half: it
-   lets a long Building Rep name WRAP inside its column instead of inflating it and dragging every
-   other column out of line. */
-.gh,.schrow{display:grid;grid-template-columns:minmax(0,1.55fr) 100px 80px 118px minmax(0,1.35fr) minmax(0,.65fr);gap:12px;align-items:baseline}
-.gh{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:700;padding:4px 10px 6px;border-bottom:1px solid var(--line-strong)}
-.gh .r{text-align:right}
-.schrow{width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:9px 10px;font:inherit;font-size:13px;cursor:pointer;color:var(--ink);border-radius:0;line-height:1.35}
-.schrow:hover{background:var(--hover)}
-.schrow .nm{font-weight:700;min-width:0;overflow-wrap:anywhere}
-.schrow .wd{color:var(--muted);font-weight:400;font-size:12px;margin-left:6px;white-space:nowrap}
-.schrow .c-mem{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.schrow .c-mem.hi{color:var(--amber);font-weight:700}
-.schrow .mu{color:var(--muted)}
-.schrow .st{color:var(--amber);font-weight:700}
-.schrow .ok{color:var(--green)}
-.schrow .c-x{display:flex;flex-wrap:wrap;gap:3px;justify-content:flex-end}
-/* The per-cell label is PHONE-ONLY. On the desk the column header names the value; on a two-line
-   phone row there is no header, so the value has to name itself ("last visit Sep 11", not a bare
-   "Sep 11" sitting next to another bare date). One cell, one value, one place it is written — the
-   build this replaces carried a whole second summary element, .c-meta, which printed the same three
-   facts again in a seventh grid cell that nothing hid on the desktop. */
-.schrow .cl{display:none}
-.sbadge{display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border-radius:999px;background:var(--warn-tint);color:var(--warn-ink);white-space:nowrap}
-.sbadge.grey{background:var(--chip-tint);color:var(--chip-ink);font-weight:600}
+/* School comparison: native table relationships remain explicit in the compact layout. */
+.school-table{table-layout:fixed;width:100%;border-collapse:collapse}
+.school-table .gh{display:table-row}
+.school-table th,.school-table td{padding:12px 10px;vertical-align:top;font-size:14px;overflow-wrap:anywhere;white-space:normal;border-bottom:1px solid var(--line)}
+.school-table thead th{font-size:12px;font-weight:600;text-transform:none;letter-spacing:0;text-align:left;background:var(--bg);position:sticky;top:0;z-index:3;border-bottom:1px solid var(--line-strong)}
+.school-table thead th.r,.school-table .c-mem{text-align:right;font-variant-numeric:tabular-nums}
+.school-table .schrow{display:table-row;cursor:pointer}
+.school-table .schrow.selected{background:var(--tint)}
+.school-table .schrow>td{border-bottom:1px solid var(--line)}
+.school-table .schrow:hover{background:var(--hover)}
+.school-table .schrow:focus-within{background:var(--tint)}
+.school-table .nm{text-align:left;font-weight:600;text-transform:none;letter-spacing:0}
+.school-open{scroll-margin-top:6em;font:inherit;font-weight:600;text-align:left;color:var(--ink);background:none;border:0;padding:0;cursor:pointer;max-width:100%;overflow-wrap:anywhere;text-decoration:underline;text-decoration-color:var(--line-strong);text-underline-offset:3px}
+.school-open:hover{text-decoration-color:currentColor}
+.wd,.cell-secondary{display:block;font-size:12px;font-weight:400;color:var(--muted);margin-top:2px}
+.school-table .hi,.school-table .st{color:var(--amber);font-weight:600}
+.school-table .ok{color:var(--green)}
+.school-table .cl{display:none}
+.school-table .c-x .sbadge{display:inline-block;margin:0 3px 4px 0}
+.sbadge{font-size:12px;font-weight:600;padding:2px 6px;border-radius:4px;background:var(--warn-tint);color:var(--warn-ink);max-width:100%;white-space:normal}
+.sbadge.grey{background:var(--chip-tint);color:var(--chip-ink)}
 .sbadge.red{background:var(--red-tint);color:var(--red-ink)}
-.cl-h{margin:16px 0 2px;font-size:13px;font-weight:700;padding-left:10px;border-left:3px solid var(--maroon)}
-/* The approved composition keeps the cluster hues on the Schools headings — VII gold, VIII teal,
-   IX amethyst, duty order, the one place colour still encodes something. The existing rule below
-   targets `.cluster-h`, which Coverage and Visits use; the Schools list was rebuilt on `.cl-h` in
-   build .2 and quietly lost them, so all three clusters have been drawing the same maroon rule.
-   Only the RULE is coloured, not the text, exactly as the study has it. (build 2026-09-18.4) */
-.cluster-block[data-cluster="VII"]>.cl-h{border-left-color:var(--j-gold)}
-.cluster-block[data-cluster="VIII"]>.cl-h{border-left-color:var(--j-teal)}
-.cluster-block[data-cluster="IX"]>.cl-h{border-left-color:var(--j-amethyst)}
-.cl-h .m{font-weight:400;color:var(--muted);margin-left:8px;font-size:12px}
-.notes-more{margin-top:4px;font-size:12px;color:var(--muted)}
-.notes-more>summary{font-size:12px}
-.brline{margin:6px 0 10px;font-size:12px;color:var(--ink);max-width:96ch}
-.brline .mu,.mu{color:var(--muted)}
-.brline a{color:var(--link)}
-/* PHONE (review D6 + the composition's phone rows): two lines, not six columns. Name and Building
-   Rep lead, because looking a BR up while standing in a building is what the phone is for.
-   BUILD 2026-09-18.4 — this was `display:block` with three inline cells and no separators between
-   them, so the row read as one run-on string: "A SchoolWard N83% · 30/36Sep 1✓ Sep 1". Measured off
-   the rendered innerText, not guessed at. It is a named grid now, matching the approved study: the
-   name and the Rep on line one, the three facts on line two, exceptions under both. Each fact
-   carries its own label (.cl) and the separators are drawn by CSS, so the values are still exactly
-   the values the desktop columns show.
-   THE SAME TWO-LINE ROW ALSO SERVES A NARROW DESK LIST. Six columns need roughly 690px: 298px of
-   fixed tracks, 60px of gaps and workable minimums for the name, the Rep and the badges. With the
-   detail panel open the list gets `viewport - 224 rail - 56 padding - 476 panel`, so six columns
-   only fit from about 1500px up. Below that the fr tracks collapse to their 0 minimum and the name
-   column renders one letter per line — seen at exactly 1100 in `detail-1100-dark.png`, which is why
-   the breakpoint captures earn their place. So: compact rows at phone width, and at desk widths
-   under 1500 whenever the panel is taking half the list. One media query, two selectors, one set of
-   declarations — they must never drift apart, which is why they are not written twice. */
-@media (max-width:700px), screen and (min-width:1100px) and (max-width:1499px){
-  body.phone .gh,body.with-panel .gh{display:none}
-  body.phone .schrow,body.with-panel .schrow{display:grid;grid-template-columns:auto auto 1fr;grid-template-areas:"nm nm br" "mem vis swt" "x x x";gap:2px 10px;padding:11px 8px;align-items:baseline}
-  body.phone .schrow .nm,body.with-panel .schrow .nm{grid-area:nm;min-width:0}
-  body.phone .schrow .c-br,body.with-panel .schrow .c-br{grid-area:br;justify-self:end;text-align:right;color:var(--muted);font-size:12px;min-width:0;overflow-wrap:anywhere}
-  body.phone .schrow .c-br.st,body.with-panel .schrow .c-br.st{color:var(--amber)}
-  body.phone .schrow .c-mem,body.with-panel .schrow .c-mem{grid-area:mem;text-align:left}
-  body.phone .schrow .c-vis,body.with-panel .schrow .c-vis{grid-area:vis}
-  body.phone .schrow .c-swt,body.with-panel .schrow .c-swt{grid-area:swt}
-  body.phone .schrow .c-mem,body.phone .schrow .c-vis,body.phone .schrow .c-swt,body.with-panel .schrow .c-mem,body.with-panel .schrow .c-vis,body.with-panel .schrow .c-swt{font-size:12px;color:var(--muted);white-space:nowrap;font-weight:400}
-  body.phone .schrow .c-mem.hi,body.with-panel .schrow .c-mem.hi{color:var(--amber);font-weight:700}
-  body.phone .schrow .c-swt.ok,body.with-panel .schrow .c-swt.ok{color:var(--green)}
-  body.phone .schrow .cl,body.with-panel .schrow .cl{display:inline;font-style:normal;color:var(--muted);font-weight:400}
-  /* The separator is a pseudo-element on the cell to its LEFT, so it can never be orphaned onto a
-     line of its own the way a literal " · " in the markup would be. */
-  body.phone .schrow .c-mem::after,body.phone .schrow .c-vis::after,body.with-panel .schrow .c-mem::after,body.with-panel .schrow .c-vis::after{content:' ·';color:var(--muted);font-weight:400;opacity:.7}
-  body.phone .schrow .c-x,body.with-panel .schrow .c-x{grid-area:x;justify-content:flex-start;margin-top:3px}
-  body.phone .schrow .c-x:empty,body.with-panel .schrow .c-x:empty{display:none}
+.school-group th{text-align:left;padding:14px 10px 5px;border:0;font-weight:600;text-transform:none;letter-spacing:0}
+.cl-h{font-size:14px;padding-left:9px;border-left:3px solid var(--maroon)}
+.school-group .m{font-size:12px;font-weight:400;color:var(--muted);margin-left:10px}
+.cluster-block[data-cluster="VII"] .cl-h{border-color:var(--j-gold)}
+.cluster-block[data-cluster="VIII"] .cl-h{border-color:var(--j-teal)}
+.cluster-block[data-cluster="IX"] .cl-h{border-color:var(--j-amethyst)}
+.notes-more{margin-top:8px;font-size:14px;color:var(--muted)}
+.brline{font-size:13px;margin:8px 0;max-width:95ch}
+.mu{color:var(--muted)}
+@media(max-width:979px){
+  body:is(.phone,.laptop) .school-table,body:is(.phone,.laptop) .school-table tbody,body:is(.phone,.laptop) .school-table .school-group{display:block}
+  body:is(.phone,.laptop) .school-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  body:is(.phone,.laptop) .school-table .schrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 14px;padding:12px 0;border-bottom:1px solid var(--line)}
+  body:is(.phone,.laptop) .school-table .schrow>*{border:0;padding:0;min-width:0;text-align:left}
+  body:is(.phone,.laptop) .school-table .nm{grid-column:1/3;grid-row:1}
+  body:is(.phone,.laptop) .school-table .c-br{grid-column:3;grid-row:1}
+  body:is(.phone,.laptop) .school-table .c-mem{grid-column:1;grid-row:2}
+  body:is(.phone,.laptop) .school-table .c-vis{grid-column:2;grid-row:2}
+  body:is(.phone,.laptop) .school-table .c-swt{grid-column:3;grid-row:2}
+  body:is(.phone,.laptop) .school-table .c-x{grid-column:1/-1}
+  body:is(.phone,.laptop) .school-table .c-x.no-exceptions{display:none}
+  body:is(.phone,.laptop) .school-table .cl{display:block;font-size:12px;color:var(--muted);font-weight:400;margin-bottom:2px}
+  body:is(.phone,.laptop) .school-table .school-group th{display:block}
+  body:is(.phone,.laptop) .school-table colgroup{display:none}
 }
+@media(min-width:1100px) and (max-width:1499px){
+  body.with-panel .school-table,body.with-panel .school-table tbody,body.with-panel .school-table .school-group{display:block}
+  body.with-panel .school-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  body.with-panel .school-table .schrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 14px;padding:12px 0;border-bottom:1px solid var(--line)}
+  body.with-panel .school-table .schrow>*{border:0;padding:0;min-width:0;text-align:left}
+  body.with-panel .school-table .nm{grid-column:1/3;grid-row:1}
+  body.with-panel .school-table .c-br{grid-column:3;grid-row:1}
+  body.with-panel .school-table .c-mem{grid-column:1;grid-row:2}
+  body.with-panel .school-table .c-vis{grid-column:2;grid-row:2}
+  body.with-panel .school-table .c-swt{grid-column:3;grid-row:2}
+  body.with-panel .school-table .c-x{grid-column:1/-1}
+  body.with-panel .school-table .c-x.no-exceptions{display:none}
+  body.with-panel .school-table .cl{display:block;font-size:12px;color:var(--muted);font-weight:400;margin-bottom:2px}
+  body.with-panel .school-table .school-group th{display:block}
+  body.with-panel .school-table colgroup{display:none}
+}
+
 /* The detail view, in either container. Same markup both ways — that is the whole point of D2. */
 .side{display:none;position:fixed;top:0;right:0;bottom:0;width:460px;max-width:100%;background:var(--card);border-left:1px solid var(--line);box-shadow:var(--shadow-modal);z-index:50;overflow:auto}
 .side.open{display:block}
@@ -520,7 +500,7 @@ details.sch[open] .caret{transform:rotate(90deg)}
 .wk-nav{display:inline-flex;align-items:center;gap:4px;margin-left:auto;flex-wrap:wrap}
 .wk-btn{padding:1px 9px;font-size:12px;min-height:24px;line-height:1.4;text-transform:none;letter-spacing:0}
 @media(max-width:700px){.wk-btn{min-height:32px;padding:2px 12px}}
-.wk-day.past{opacity:.75}
+.wk-day.past{opacity:1}
 /* Committee-line legend "(* = not yet a WTU member …)" rendered as its own muted line, not inside the value run. */
 .ct-legend{display:block;font-size:11px;color:var(--muted);font-style:italic;margin-top:2px}
 .ct-line .v{min-width:0;overflow-wrap:anywhere}
@@ -553,7 +533,7 @@ details.sch[open] .caret{transform:rotate(90deg)}
 .dist-row:last-child{border-bottom:none}
 .dist-cl{flex:0 0 84px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)}
 .dist-names{font-size:13px;line-height:1.8}
-.dist-sep{color:var(--line)}
+.dist-sep{color:var(--muted)}
 .dist-unit{font-size:12px;color:var(--muted);margin-top:10px;padding-left:2px}
 .dist-note{font-size:12px;color:var(--muted);margin:2px 0 8px}
 @media(max-width:700px){.dist-row{flex-direction:column;gap:2px}.dist-cl{flex:none}}
@@ -577,16 +557,17 @@ details.sch{scroll-margin-top:64px}
 .calc h3{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--maroon);font-weight:700}
 .calc .fields{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
 .calc label{display:block;font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px}
-.calc input,.calc select{padding:6px 8px;border:1px solid var(--edge);border-radius:6px;font-size:13px;font-family:inherit;background:var(--card);color:var(--ink)}
+.calc .fields>div{min-width:0;max-width:100%}
+.calc input,.calc select{min-width:0;max-width:100%;padding:6px 8px;border:1px solid var(--edge);border-radius:6px;font-size:13px;font-family:inherit;background:var(--card);color:var(--ink)}
 .calc button{background:var(--maroon-fill);color:var(--on-accent);border:none;border-radius:6px;padding:7px 14px;font-weight:700;cursor:pointer;font-size:13px}
 .calc button:hover{background:var(--maroon-deep)}
 .calc .out{margin-top:10px;font-size:13px;font-weight:600;color:var(--ink)}
 .calc .out b{color:var(--maroon);font-size:17px}
 footer{margin-top:22px;font-size:11px;color:var(--muted);text-align:center;line-height:1.6}
-.build-note{font-size:11px;opacity:.6}
+.build-note{font-size:11px}
 .err{color:var(--red-ink);font-size:12px;margin-top:6px}
 /* school viewer modal */
-.modal{display:none;position:fixed;inset:0;background:var(--backdrop);z-index:50;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+.modal{display:none;position:fixed;inset:0;background:var(--backdrop);z-index:90;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
 .modal-card{background:var(--card);border:1px solid var(--line);border-radius:14px;max-width:680px;width:100%;box-shadow:var(--shadow-modal)}
 .modal-head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:2px solid var(--maroon);position:sticky;top:0;background:var(--card);border-radius:14px 14px 0 0}
 .modal-head span{font-weight:700;font-size:17px;color:var(--ink)}
@@ -816,7 +797,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
 .ic{width:18px;height:18px;display:block}
 .sb-grp{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:8px 10px 4px}
 .sb-btn{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:10px;padding:8px 10px;margin:2px 0;font:inherit;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;text-decoration:none}
-.sb-btn:hover{background:var(--tint);text-decoration:none}
+.sb-btn:hover{background:var(--hover);text-decoration:none}
 /* TINTED selected nav (build 2026-09-18.3) — Mike's ruling, review §8 step 4. The filled maroon
    block was the second-loudest element on the Brief and it announced the one thing already known:
    which page you are on. That let the rail compete with the exception strip, which is the thing
@@ -904,6 +885,189 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
 .hu-log-row{display:flex;gap:10px;padding:7px 2px;border-top:1px solid var(--line);font-size:13px;align-items:baseline;flex-wrap:wrap}
 .hu-log-row .d{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap}
 @media print{#panel-import,#panel-jot,#panel-hustle,#panel-runbook,.tabbar,.lnk-copy{display:none !important}}
+
+/* Build 2026-09-18.5: readable task hierarchy, shared across complete destinations. */
+.app-name{font-size:14px;font-weight:600;color:var(--muted)}
+.hero .top{gap:12px;align-items:center}
+.hero .when{font-size:12px;font-weight:400;margin-top:5px}
+.source-status summary{cursor:pointer;line-height:1.5}
+.source-status>div{margin-top:8px;padding:10px 0;border-top:1px solid var(--line);max-width:85ch}
+.source-status .warn{font-weight:600}
+.card .sect-title{font-size:26px;line-height:1.25;font-weight:600;border:0;padding:0;margin:0 0 16px;align-items:baseline;flex-wrap:wrap;gap:10px}
+.card .sect-title .daystamp{font-size:13px;line-height:1.5;margin:0;flex-basis:auto;font-weight:400}
+.card .sect-title .badge{font-size:12px;font-weight:400;padding:0;border:0;background:none;color:var(--muted)}
+.xstrip{font-size:13px;line-height:1.5;gap:8px 22px;padding:10px 12px;background:transparent;border-bottom:1px solid var(--line)}
+.xstrip .system-note{color:var(--muted);font-weight:400}
+.btn,.chip{font-size:13px;line-height:1.4;font-weight:600;min-height:34px}
+.bstats{gap:12px 26px;margin-bottom:20px;font-size:13px}
+.bstats b{font-size:22px;vertical-align:0}
+.brief-grid{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px}
+.brief-block h3{font-size:16px;line-height:1.5;text-transform:none;letter-spacing:0;font-weight:600;align-items:center;flex-wrap:wrap}
+.brief-block .daystamp{font-size:12px;font-weight:400}
+.wk-nav{gap:5px}
+.wk-btn{min-width:32px;min-height:32px;padding:3px 9px}
+.wk-day{gap:12px;padding:12px 0}
+.wk-date{width:3.7em;font-size:13px;line-height:1.5}
+.wk-ev{font-size:14px;line-height:1.5;margin:0 0 6px;gap:10px}
+.wk-ev .tm{width:10.8em;font-size:13px;padding-top:1px;line-height:1.6}
+.wk-ev>span:last-child{min-width:0}
+.wk-ev .loc,.wk-none{font-size:13px}
+.act{padding:12px 0 12px 12px;margin-bottom:0}
+.act .t{font-size:14px;font-weight:600;line-height:1.5}
+.act .why,.act .m,.act .when,.act summary{font-size:13px;line-height:1.5}
+.br-followup{font-size:13px;margin:16px 0 12px;color:var(--muted)}
+.br-followup summary{cursor:pointer;padding:4px 0;min-height:28px}
+.school-toolbar{display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin:12px 0 8px}
+.school-options{display:contents}.school-options-toggle{display:none}
+.school-options-toggle::before{content:"▸";margin-right:6px}.school-options-toggle[aria-expanded="true"]::before{content:"▾"}
+.school-toolbar label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted);font-weight:600;min-width:0}
+.school-toolbar .school-search{flex:1 1 180px;max-width:360px}
+.school-toolbar select,.school-toolbar input{font:inherit;font-size:14px;font-weight:400;line-height:1.4;color:var(--ink);background:var(--card);border:1px solid var(--edge);padding:7px 9px;border-radius:6px;min-height:36px;max-width:100%;min-width:0}
+.school-toolbar #schoolSort{max-width:230px}
+.view-note{font-size:13px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0}
+#schoolViews{margin-top:6px;gap:7px}
+.chip-n{font-size:12px;opacity:1;font-weight:400}
+.d-body{font-size:14px;padding:6px 20px 24px}
+.d-head h2{font-size:20px;font-weight:600}
+.d-x,.modal-x{min-width:36px;min-height:36px}
+.d-br{padding:12px 0}
+.d-br .v{font-size:15px;line-height:1.6;font-weight:600}
+.d-br .lbl,.fact .lbl{font-size:12px;text-transform:none;letter-spacing:0;font-weight:600}
+.facts{gap:12px 18px;padding:14px 0;grid-template-columns:repeat(2,minmax(0,1fr))}
+.fact .v{font-size:14px;font-weight:600}
+.fact .v small{font-size:12px;line-height:1.5}
+.sub-h{font-size:14px;text-transform:none;letter-spacing:0;margin:20px 0 8px;font-weight:600}
+.ct-line{font-size:14px;line-height:1.55;padding:7px 0;gap:12px}
+.ct-line .v{font-weight:400}
+.ct-line .r{width:132px;font-size:13px;color:var(--muted)}
+.latest-activity{padding:16px 0;border-bottom:1px solid var(--line)}
+.latest-activity h3,.detail-flags h3{margin:0 0 6px;font-size:14px;font-weight:600}
+.latest-activity h3 span{font-size:12px;color:var(--muted);font-weight:400;display:block;margin-top:3px}
+.latest-activity p{margin:6px 0 8px;font-size:14px;line-height:1.6;overflow-wrap:anywhere}
+.text-action{font:inherit;font-size:13px;color:var(--link);background:none;border:0;padding:5px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.detail-flags{padding:14px 0;border-bottom:1px solid var(--line)}
+.notes-list li{font-size:14px;line-height:1.6;margin:5px 0;overflow-wrap:anywhere}
+.detail-history,.detail-resources,.filed-totals,.dist-provenance,.round-history{margin-top:18px}
+.detail-history>summary,.detail-resources>summary,.filed-totals>summary,.dist-provenance>summary,.round-history>summary{font-size:14px;font-weight:600;cursor:pointer;padding:8px 0;min-height:36px}
+.detail-resources .res-prep{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.detail-resources .reslnk{font-size:14px;white-space:normal}
+.detail-resources .sub-h{display:none}
+.detail-history table{font-size:14px}
+.detail-history .lg-d{white-space:normal;width:110px}
+.notes-more>summary{font-size:14px;line-height:1.5}
+.detail-history td,.detail-history th{font-size:14px;line-height:1.6;overflow-wrap:anywhere}
+.detail-history .lg-t{font-size:12px}
+.dist-note,.dist-unit,.sectnote,.ch-meta,.mem-note,.gr-health,.gr-line{font-size:13px;line-height:1.6}
+.dist-provenance .dist-note{margin-top:6px}
+.round-history{border-top:1px solid var(--line);padding-top:10px}
+.current-round>.cluster-h{margin-top:0!important}
+.cluster-h{font-size:14px;text-transform:none;letter-spacing:0}
+.kpi .l{font-size:12px;text-transform:none;letter-spacing:0}
+.kpi .n{font-weight:600}
+td,.mem-tbl td{font-size:14px;line-height:1.5}
+th,.mem-tbl th{font-size:12px;text-transform:none;letter-spacing:0}
+.mem-pct{font-size:12px}
+.mem-tbl th,.mem-tbl td{padding:9px 8px}
+.lnk-copy{font-weight:400;background:transparent;min-width:60px}
+.lnkrow{gap:16px}
+.gp-seg .gp-l{font-size:12px;text-transform:none;letter-spacing:0}
+.gr-overview .ov-schools{font-size:13px}
+.card.full,.school-open,summary{scroll-margin-top:16px}
+@media screen and (min-width:701px){
+  body.laptop .sidebar{display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;width:224px;background:var(--card);border-right:1px solid var(--line);padding:14px 10px;overflow-y:auto;z-index:45}
+  body.laptop .wrap{margin:0 auto 0 224px;padding:20px 28px 60px}
+  body.laptop .actionbar{display:none}
+  body.laptop .card.full{display:none;margin-top:24px!important}
+  body.laptop .card.full.sect-active{display:block}
+  body.laptop header.hero,body.laptop .card{background:none;border:0;border-radius:0;box-shadow:none;padding:0}
+  body.laptop header.hero{padding-bottom:12px;border-bottom:1px solid var(--line)}
+}
+@media(min-width:701px) and (max-width:1099px){
+  body.laptop .sidebar{width:184px}
+  body.laptop .wrap{margin-left:184px;padding:20px 22px 60px}
+  .hero .gsearch{width:100%}
+  .brief-grid{grid-template-columns:1fr;gap:24px}
+}
+@media(min-width:1100px){body.laptop.with-panel .wrap{margin-right:476px;max-width:none}}
+@media(min-width:1100px) and (max-width:1499px){body.with-panel .school-toolbar label{flex:1 1 130px}body.with-panel .school-toolbar .school-search{flex-basis:100%;max-width:none}body.with-panel .school-toolbar #schoolSort{width:100%;max-width:none}}
+@media(max-width:700px){
+  .card .sect-title{font-size:24px;margin-bottom:16px}
+  .brief-grid{grid-template-columns:1fr;gap:24px}
+  .hero .top{gap:10px}.hero .gsearch{width:100%}
+  .gsearch .schfilter{width:100%;min-width:0;font-size:16px}
+  .xstrip{padding:8px 10px;font-size:13px;gap:7px}
+  .bstats{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:20px}
+  .bstats b{font-size:20px}
+  .wk-date{width:3.7em}.wk-ev{display:block}.wk-ev .tm{display:block;width:auto}
+  .wk-btn,.btn,.chip,.text-action{min-height:44px}
+  .school-toolbar{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+  .school-toolbar .school-search{grid-column:1/-1;max-width:none}
+  .school-options-toggle{display:inline-flex;grid-column:1/-1;justify-self:start}
+  .school-options{display:none;grid-column:1/-1}
+  .school-toolbar.filters-open .school-options{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+  .school-options label:last-child{grid-column:1/-1}
+  .cluster-toggle{width:44px;height:44px}
+  .modal-body{padding:4px 0 16px}
+  .ct-line .r{text-transform:none;letter-spacing:0}
+  .school-toolbar input,.school-toolbar select{font-size:16px;min-height:44px;width:100%}
+  .school-toolbar #schoolSort{max-width:none}
+  #schoolViews{overflow-x:auto;scrollbar-width:thin;padding:2px 0 6px}
+  .br-followup{margin-bottom:8px}.br-followup summary{min-height:44px;display:flex;align-items:center}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .d-body{padding:4px 16px 20px}
+  .ct-line{display:block}.ct-line .r{width:auto;margin-bottom:3px}
+  .d-x,.modal-x{min-width:44px;min-height:44px}
+  .detail-history>summary,.detail-resources>summary,.notes-more>summary{min-height:44px}
+  .school-table .school-open{min-height:44px}
+  body.phone .school-table .nm{grid-column:1/-1}
+  body.phone .school-table .c-br{grid-column:1/-1;grid-row:2}
+  body.phone .school-table .c-br .cl{display:inline;margin-right:6px}
+  body.phone .school-table :is(.c-mem,.c-vis,.c-swt){grid-row:3}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+/* Build 2026-09-18.6: complete task paths and remaining-width layout. */
+.wrap{container-type:inline-size;container-name:workspace}
+.brief-block{min-width:0;container-type:inline-size;container-name:brief-column}
+@container workspace (max-width:60em){.brief-grid{grid-template-columns:1fr;gap:24px}}
+@container brief-column (max-width:32em){.wk-ev{display:block}.wk-ev .tm{display:block;width:auto}.wk-ev .nm{overflow-wrap:anywhere}}
+.act .when{white-space:normal;overflow-wrap:anywhere}
+.gp-seg{flex-basis:7em;min-width:7em}
+.lnk-e{width:1.5em}
+.contact-jump{margin-left:18px}
+.d-body summary,.d-body [data-contact-heading]{scroll-margin-top:90px}
+.flag-index{margin:8px 0;padding:0;list-style:none}
+.flag-index li{margin:4px 0;padding-left:10px;border-left:3px solid var(--amber)}
+.flag-index .text-action{text-align:left;line-height:1.5;font-size:14px}
+.detail-flag{padding:10px 0;border-bottom:1px solid var(--line)}
+.detail-flag>summary{font-size:14px;font-weight:600;cursor:pointer;line-height:1.5;padding:4px 0}
+.detail-flag p{margin:8px 0;font-size:14px;line-height:1.6;overflow-wrap:anywhere}
+.record-field strong{font-weight:600}.record-field.next{border-left:3px solid var(--maroon);padding-left:10px}
+.record-excerpt{color:var(--muted)}
+.recent-more>summary{cursor:pointer;font-size:14px;padding:10px 0;min-height:44px}
+@media(max-width:700px){
+  .school-toolbar{grid-template-columns:minmax(0,1fr) auto;align-items:end}
+  .school-toolbar .school-search{grid-column:1}
+  .school-options-toggle{grid-column:2;max-width:110px;min-height:44px;align-items:center;justify-content:center}
+  .school-options-toggle::before{margin-right:4px}
+  .school-options{grid-column:1/-1}
+  .detail-flag>summary{min-height:44px}
+}
+@container workspace (max-width:620px){
+  :is(#coverageBody,#visitPlan,#visitClusters,#visitLog,#issueBox) table,:is(#coverageBody,#visitPlan,#visitClusters,#visitLog,#issueBox) tbody,:is(#coverageBody,#visitPlan,#visitClusters,#visitLog,#issueBox) tr,:is(#coverageBody,#visitPlan,#visitClusters,#visitLog,#issueBox) td{display:block;width:100%;box-sizing:border-box}
+  :is(#coverageBody,#visitPlan,#visitClusters,#visitLog,#issueBox) tr:first-child{display:none}
+  :is(#coverageBody,#visitPlan,#visitClusters,#visitLog,#issueBox) tr{border:1px solid var(--line);border-radius:8px;margin:0 0 8px;padding:6px 0;background:var(--card)}
+  :is(#coverageBody,#visitPlan,#visitClusters,#visitLog,#issueBox) td{border:0;padding:5px 12px;white-space:normal;overflow-wrap:anywhere}
+  :is(#coverageBody,#visitPlan,#visitClusters,#visitLog,#issueBox) td::before{content:attr(data-label);display:block;font-size:12px;color:var(--muted);font-weight:600}
+}
+@container workspace (min-width:621px){
+  #visitLog table{table-layout:fixed}
+  #visitLog th:nth-child(1){width:120px}#visitLog th:nth-child(2){width:155px}#visitLog th:nth-child(3){width:110px}
+  #visitLog td{overflow-wrap:anywhere}
+}
+@media print{.school-toolbar{display:none}.source-status>div,.round-history>div{display:block}.school-table{display:table}.school-table thead{display:table-header-group;position:static;width:auto;height:auto;clip-path:none}.school-table .schrow{display:table-row}}
+
+
+.shared-activity{margin:0 0 20px;padding-bottom:12px;border-bottom:1px solid var(--line)}.shared-entry{display:flex;align-items:center;justify-content:space-between;gap:16px}.shared-entry p{margin:0;font-size:14px}.shared-entry .btn{min-height:44px;display:inline-flex;align-items:center;white-space:nowrap}.shared-activity li{overflow-wrap:anywhere;margin:10px 0}.shared-activity summary{min-height:44px;cursor:pointer;padding:10px 0}@media(max-width:600px){.shared-entry{align-items:flex-start;flex-direction:column;gap:10px}}
 </style>
 </head>
 <body>
@@ -917,7 +1081,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
   <header class="hero">
     <div class="top">
       <div style="min-width:0">
-        <h1>Organizing Dashboard</h1>
+        <div class="app-name">Organizing Dashboard</div>
         <div class="when" id="whenLine">—</div>
       </div>
       <div class="gsearch"><input type="search" id="gSearch" class="schfilter" placeholder="Search schools, contacts, links, resources, runbook…" aria-label="Search the dashboard" autocomplete="off" title="Press / to jump here"><div class="gresults" id="gResults" style="display:none"></div><div id="gStatus" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div></div>
@@ -939,7 +1103,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
   </div>
 
   <div class="card full" id="panel-brief" style="margin-top:16px">
-    <h2>Today's Brief</h2>
+    <h1 class="sect-title">Today's Brief</h1>
     <!-- Three stats, each stated once (build 2026-09-18.3), replacing the six tiles. The tiles
          re-printed counts the strip and the rail were already showing; these are the three
          standing measures that are NOT exceptions, so they belong here and not on the strip. -->
@@ -973,16 +1137,16 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
   </div>
 
   <div class="card full" id="panel-griev" style="margin-top:16px">
-      <h2>Grievance Deadlines</h2>
+      <h1 class="sect-title">Grievance Deadlines</h1>
       <div id="grievBox"></div>
       <div class="calc">
         <h3>Grievance Deadline Calculator</h3>
         <div class="fields">
           <div><label for="cMode">What am I counting?</label>
             <select id="cMode">
-              <option value="filing">Filing deadline (violation → file)</option>
-              <option value="meeting">Step 1/Stage 1 meeting (filed → meet)</option>
-              <option value="count">Count school days between two dates</option>
+              <option value="filing">Filing deadline</option>
+              <option value="meeting">Step 1/Stage 1 meeting</option>
+              <option value="count">School days between dates</option>
             </select>
           </div>
           <div><label id="cFromLbl" for="cFrom">Violation date</label><input type="date" id="cFrom"></div>
@@ -996,7 +1160,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
     </div>
 
   <div class="card full" id="panel-issues" style="margin-top:16px">
-      <h2>Member Issue Queue</h2>
+      <h1 class="sect-title">Member Issue Queue</h1>
       <div id="issueBox"></div>
   </div>
 
@@ -1006,48 +1170,53 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
          sweatshirts moved into the meta line, open issues became a per-row badge, and
          "Profiles started" was dropped outright — it had read 36/36 since the pages were built,
          which is a number that cannot change and therefore cannot inform a decision (review B5). -->
-    <h2>Schools <span class="daystamp" id="schMeta"></span></h2>
-    <p class="brline" id="brElection"><!-- built by renderBrElection(): one line naming the schools --></p>
-    <div class="toolbar" id="schoolViews" role="group" aria-label="School view"><!-- built by renderSchoolViews(); defaults to Needs attention --></div>
-    <div class="toolbar sub" id="clusterChips" role="group" aria-label="Filter by cluster"></div>
-    <div class="toolbar sub" id="wardChips" role="group" aria-label="Filter by ward"><!-- ward filter chips — renders only when the data carries wards --></div>
-    <div class="toolbar">
-      <input type="search" id="schoolFilter" class="schfilter" placeholder="Type to filter schools…" aria-label="Filter schools by name">
+    <h1 class="sect-title">Schools <span class="daystamp" id="schMeta"></span></h1>
+    <div class="toolbar" id="schoolViews" role="group" aria-label="School views within current search and geography filters"><!-- built by renderSchoolViews(); defaults to Needs attention --></div>
+    <div class="school-toolbar" id="schoolToolbar">
+      <label class="school-search">Find school<input type="search" id="schoolFilter" class="schfilter" placeholder="School name…"></label>
+      <button type="button" class="btn school-options-toggle" id="schoolOptionsToggle" aria-controls="schoolOptions" aria-expanded="false">Filters and sort</button>
+      <div class="school-options" id="schoolOptions">
+      <label>Cluster<select id="clusterFilter" aria-label="Filter by cluster"></select></label>
+      <label id="wardFilterLabel">Ward<select id="wardFilter" aria-label="Filter by ward"></select></label>
+      <label>Sort within cluster<select id="schoolSort"><option value="default">Default order</option><option value="name">School A–Z</option><option value="density">Membership: lowest first</option><option value="visit">Visit: oldest first</option></select></label>
+      </div>
     </div>
+    <div id="schoolResultsStatus" class="view-note" role="status" aria-live="polite" aria-atomic="true"></div>
     <div id="schoolSections"></div>
-    <div class="sectnote">Every row opens the school's full record — contacts, notes, open issues and the Visit &amp; Conversation Log. Fields fill in as you log them on the school pages — ask me to "refresh" or "update" afterward.</div>
+    <details class="br-followup"><summary>Building Rep follow-up details</summary><div class="brline" id="brElection"></div></details>
+    <div class="sectnote">Open a school for contacts, notes and its Visit &amp; Conversation Log. Changes on school pages appear after a dashboard refresh.</div>
   </div>
 
   <div class="card full" id="panel-membership" style="margin-top:16px">
-    <h2>Membership <span class="badge snap" id="memSnap">MEMBERSHIP</span></h2>
+    <h1 class="sect-title">Membership <span class="badge snap" id="memSnap">MEMBERSHIP</span></h1>
     <div id="memBody"></div>
     <div class="sectnote">Cluster-wide density and each school's non-member rate from the WTU database snapshot. Priorities are ranked by non-member rate (priority ≥25%, watch 15–25%). Sourced from <b>Organizing/Membership Database (Restricted)</b> — ask me to "update membership" after importing a new snapshot.</div>
   </div>
 
   <div class="card full" id="panel-coverage" style="margin-top:16px">
-    <h2>Coverage Gaps</h2>
+    <h1 class="sect-title">Coverage Gaps</h1>
     <div class="kpis" id="coverageKpis"></div>
     <div id="coverageBody"></div>
     <div class="sectnote">Seat states per school: <b>✓ seated</b> · <b>vacant</b> (election held, BR seat empty) · <b>results outstanding</b> (no 26-27 results received — unknown, not empty) · <b>none listed</b> (results in, committee line blank). The Building Rep <em>is</em> the SCAC Chair (one person), but every school still needs a SCAC committee, tracked separately. A school drops off once all three are filled in on its page. Fills in as you log contacts; ask me to "refresh" after updating school pages.</div>
   </div>
 
   <div class="card full" id="panel-visits" style="margin-top:16px">
-    <h2>Visits — Where to Go Next</h2>
+    <h1 class="sect-title">Visits</h1>
     <div id="visitPlan"><!-- built by renderVisitPlan(): ranked next schools, or a seasonal state out of duty --></div>
     <div class="kpis" id="visitKpis"></div>
-    <div id="visitClusters"></div>
-    <div class="cluster-h" style="margin-top:18px">Visit Log<span class="ch-meta">most recent, newest first</span></div>
+    <div class="cluster-h" style="margin-top:18px">Recent visits and conversations<span class="ch-meta">newest first · only visits count above</span></div>
     <div id="visitLog"></div>
+    <div id="visitClusters"></div>
   </div>
 
   <div class="card full" id="panel-dist" style="margin-top:16px">
-    <h2>Materials Distribution <span class="badge snap" id="distBadge">MATERIALS</span></h2>
+    <h1 class="sect-title">Materials Distribution <span class="badge snap" id="distBadge">MATERIALS</span></h1>
     <div id="distBody"><!-- built by renderDistribution(): who has it, who is still owed --></div>
-    <div class="sectnote">Who has received a piece of WTU gear or material and who has not. Only the <b>received</b> side is recorded; <b>still owed is worked out from your school list every time this page opens</b>, so it can never go stale against a rename or a new school. Tell me "log sweatshirts to &lt;school&gt;" after a delivery and I'll add it — a plain refresh never changes this list.</div>
+    <div class="sectnote">Who has received a piece of WTU gear or material and who has not. Only the <b>received</b> side is recorded. For the current round, <b>still owed is worked out from your school list every time this page opens</b>. Earlier rounds show delivery history, so it can never go stale against a rename or a new school. Tell me "log sweatshirts to &lt;school&gt;" after a delivery and I'll add it — a plain refresh never changes this list.</div>
   </div>
 
   <div class="card full" id="panel-hustle" style="margin-top:16px">
-    <h2>Hustle Texts <span class="badge snap" id="huBadge">HUSTLE</span></h2>
+    <h1 class="sect-title">Hustle Texts <span class="badge snap" id="huBadge">HUSTLE</span></h1>
     <div id="huFlags"><!-- draft-needed / day-of reminder flags, built by renderHustle() from events + logged sends --></div>
     <div class="toolbar">
       <select class="hu-sel" id="huTpl" aria-label="Choose a template"></select>
@@ -1061,7 +1230,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
   </div>
 
   <div class="card full" id="panel-links" style="margin-top:16px">
-    <h2>Important Links <span class="badge snap" id="lnkCount">LINKS</span></h2>
+    <h1 class="sect-title">Important Links <span class="badge snap" id="lnkCount">LINKS</span></h1>
     <div class="toolbar">
       <input type="search" id="lnkFilter" class="schfilter" placeholder="Type to filter links…" aria-label="Filter links by name">
     </div>
@@ -1077,7 +1246,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
        modal. Removing the panel removed a nav destination, not a capability. -->
 
   <div class="card full" id="panel-runbook" style="margin-top:16px">
-    <h2>Runbook <span class="badge snap">HOW DO I…</span> <button type="button" class="btn rb-close" id="rbClose" title="Close the Runbook">Close</button></h2>
+    <h1 class="sect-title">Runbook <span class="badge snap">HOW DO I…</span> <button type="button" class="btn rb-close" id="rbClose" title="Close the Runbook">Close</button></h1>
     <div class="sectnote" style="margin-top:8px">The recurring procedures, each pointing at the one file that owns it. If a step here and the linked file ever disagree, <b>the file wins</b> — fix this list. <b>Reached from the search box</b> — there is no nav row; type what you're trying to do.</div>
 
     <div class="rb-item">
@@ -1136,7 +1305,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
   </div>
 
   <div class="card full" id="panel-jot" style="margin-top:16px">
-    <h2>Jot &amp; Share <span class="badge snap">FIELD NOTE</span></h2>
+    <h1 class="sect-title">Jot &amp; Share <span class="badge snap">FIELD NOTE</span></h1>
     <div class="sectnote" style="margin-top:8px">Capture it before you forget. A Visit or a Conversation builds the exact <b>Visit &amp; Conversation Log</b> row its school page takes, so pasting it to Claude at the desk logs it as written. Share or Copy sends it out (Mail, Messages, Notes) and keeps a copy here, <b>pending until logged</b> — nothing on this page writes to the dashboard or the school page.</div>
     <div class="toolbar" style="align-items:flex-end">
       <div><label class="jot-lbl" for="jotSchool">School</label><select id="jotSchool" class="schfilter" style="min-width:200px"></select></div>
@@ -1172,7 +1341,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
   </div>
 
   <div class="card full" id="panel-import" style="margin-top:16px">
-    <h2>Data on This Device <span class="badge snap" id="importBadge">IMPORT</span></h2>
+    <h1 class="sect-title">Data on This Device <span class="badge snap" id="importBadge">IMPORT</span></h1>
     <div class="sectnote" id="importStatus" style="margin-top:8px"></div>
     <div class="toolbar">
       <button class="btn primary" id="impPick">Import dashboard-data.json</button>
@@ -1209,7 +1378,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
   <footer>
     Snapshot data: WTU workspace (school pages + Filed Grievances) + calendar entered from Outlook screenshots, captured <span id="snapFoot">—</span>. Ask to "refresh" or "update" anytime.<br>
     This is a working-aid, not the official record. The CBA controls all grievance timelines — verify any deadline day-by-day before filing.<br>
-    <span class="build-note" id="buildPill">build 2026-09-18.4</span>
+    <span class="build-note" id="buildPill">build 2026-09-20.2</span>
   </footer>
 </div>
 
@@ -1266,6 +1435,7 @@ var NEWSLETTER=null;
    links/resources — the refresh never regenerates it. */
 var REMINDERS=[];
 var DATA_MODE='none'; // 'embedded' | 'imported' | 'none'
+var SHARED_ACTIVITY=null;
 var DATA_META=null;   // {importedAt, source} for imported mode
 /* Which BUILD of the data file this device is holding (build 2026-09-17.5). snapshotDate is a DAY,
    so two files written on the same day were indistinguishable from in here — and on 2026-09-17 that
@@ -1292,6 +1462,7 @@ function validateData(d){
   return null;
 }
 function adoptData(d){
+  SHARED_ACTIVITY=d.sharedActivity||null;
   if(d.calendar&&Array.isArray(d.calendar.duty)&&Array.isArray(d.calendar.nonWorking)){NON_WORKING=new Set(d.calendar.nonWorking);DUTY=d.calendar.duty;}
   SNAPSHOT_DATE=d.snapshotDate;EVENTS=d.events||[];SCHOOLS=d.schools||[];GRIEVANCES=d.grievances||[];
   LINKS=Array.isArray(d.links)?d.links:[]; // optional key (added build .4) — older data files simply hide the Links section
@@ -1485,14 +1656,14 @@ function renderStatusStrip(){
       var q=[];
       if(vacN)q.push(vacN+' vacan'+(vacN===1?'cy':'cies'));
       if(pendN)q.push(pendN+' result'+(pendN===1?'':'s')+' outstanding');
-      parts.push(go('panel-schools','Building Rep follow-up: '+q.join(' · ')));
+      parts.push(go('panel-schools','Building Rep follow-up: '+q.join(' · ')).replace('data-target="panel-schools"','data-target="panel-schools" data-sview="br"'));
     }
   }
   // The calendar running out is an exception too — it used to be a notice buried in the calendar column.
   var thru=eventsThrough();
   if(thru&&thru<t0)parts.push(go('panel-brief','calendar ran out '+prettyNoYr(thru)+' — give Claude the Outlook week PDF'));
   var bk=backupAge();
-  if(bk&&bk.stale)parts.push('<span>'+(bk.never?'external backup has never run — plug in the T7 Shield':'external backup '+bk.age+' days old — plug in the T7 Shield')+'</span>');
+  if(bk&&bk.stale)parts.push('<span class="system-note">'+(bk.never?'external backup has never run — plug in the T7 Shield':'external backup '+bk.age+' days old — plug in the T7 Shield')+'</span>');
   /* The phone's data route, made visible (build 2026-09-17.5). The builder records whether the
      OneDrive CLIENT was running when it wrote the phone copy; if it was not, the file never left
      this PC and the phone keeps importing whatever last reached the cloud. That failed silently for
@@ -1686,7 +1857,11 @@ function renderHeader(){
   if(!st)right.push('<span class="bad">DEADLINE MATH CHECK FAILED — do not trust deadlines</span>');
   var html=left.join(' · ');
   if(right.length)html+='<span class="sep">|</span>'+right.join(' · ')+(d.stale?' <span class="warn">— reconciliation source stale (warns at '+d.warnAt+'d)</span>':'');
-  line.innerHTML=html;
+  var previous=line.querySelector('details'),wasOpen=previous&&previous.open;
+  var status=left.join(' · ')+(d.stale?' · <span class="warn">Reconciliation source stale</span>':'');
+  if(DATA_MODE==='imported')status+=' · '+d.bits.filter(function(x){return !x.desk;}).map(function(x){return esc(x.text);}).join(' · ');
+  if(!st)status+=' · <span class="bad">DEADLINE MATH CHECK FAILED — do not trust deadlines</span>';
+  line.innerHTML='<details class="source-status"'+(wasOpen?' open':'')+'><summary>'+status+'</summary><div>'+html+'</div></details>';
 }
 // On-load engine self-test against the known-good cases in the build plan's Verification Plan.
 // Returns a boolean now (build 2026-09-18.3) instead of painting a pill: renderHeader() prints the
@@ -1763,7 +1938,7 @@ function renderWeek(){
   if(h3)h3.innerHTML=esc(label)+' <span class="daystamp" id="calDay">'+fmt(start)+' &ndash; '+fmt(end)+'</span>'+
     '<span class="wk-nav"><button type="button" class="btn wk-btn" data-wk="-1" aria-label="Previous week" title="Previous week">&lsaquo;</button>'+
     '<button type="button" class="btn wk-btn" data-wk="+1" aria-label="Next week" title="Next week">&rsaquo;</button>'+
-    (WEEK_OFFSET?'<button type="button" class="btn wk-btn" data-wk="0">This week</button>':'')+'</span>';
+    '<button type="button" class="btn wk-btn" data-wk="0">This week</button>'+'</span>';
   let html='';
   for(let i=0;i<7;i++){
     const d=new Date(start);d.setDate(d.getDate()+i);
@@ -1874,6 +2049,22 @@ function roundDate(r,name){var d=(r&&r.dates)||{};var v=d[name];return v?String(
    ORDER IS THE POINT: Building Rep → four facts → committees and contacts → notes → open issues →
    the log. The old card opened with a membership block, which pushed the Building Rep — the single
    thing Mike looks up while standing in a building — below the fold on a phone. */
+function recordPreview(prose){
+  var text=String(prose||''),rx=/(?:^|\s)(Outcome|Next|Delivered|Done):\s*/g,m,marks=[];
+  while((m=rx.exec(text)))marks.push({label:m[1],start:m.index,end:rx.lastIndex});
+  var intro=marks.length?text.slice(0,marks[0].start).trim():text;
+  var sentence=intro;
+  if(typeof Intl.Segmenter==='function'){var segments=Array.from(new Intl.Segmenter('en',{granularity:'sentence'}).segment(intro));if(segments.length)sentence=segments[0].segment.trim();}
+  if(sentence.length>220)sentence=sentence.slice(0,220).replace(/\s+\S*$/,'')+'…';
+  var h=sentence?'<p class="record-excerpt">'+escNote(sentence)+'</p>':'';
+  marks.forEach(function(mark,i){var value=text.slice(mark.end,i+1<marks.length?marks[i+1].start:text.length).trim();h+='<p class="record-field'+(mark.label==='Next'?' next':'')+'"><strong>'+mark.label+':</strong> '+escNote(value)+'</p>';});
+  return h;
+}
+function flagHeading(note){
+  var plain=String(note).replace(/\*\*/g,'').trim(),first=plain;
+  if(typeof Intl.Segmenter==='function'){var parts=Array.from(new Intl.Segmenter('en',{granularity:'sentence'}).segment(plain));if(parts.length)first=parts[0].segment.trim();}
+  return first.length>140?first.slice(0,140).replace(/\s+\S*$/,'')+'…':first;
+}
 function schoolDetailHtml(s){
   var m=memOf(s.name),lv=lastVisit(s),rs=schoolReasons(s),rnd=currentRound(),got=roundGot(rnd);
   var lvRow=null;
@@ -1890,6 +2081,9 @@ function schoolDetailHtml(s){
       ?'<span class="st">Results outstanding</span> — '+(other?linkifyContact(other):'no 25-26 holdover on file')
       :(brv?linkifyContact(brv):'<span class="st">Not listed</span>');
   h+='<div class="d-br"><span class="lbl">Building Rep</span><div class="v">'+brTxt+'</div></div>';
+  // Per-school capture entry point removed 2026-09-20. The capture site's hostname is identifying and
+  // this file publishes to a PUBLIC repo, so the URL cannot be a literal here. If the button returns,
+  // inject the address from the data file at build time and render only when that key is present.
   h+='<div class="facts">';
   h+='<div class="fact"><span class="lbl">Members</span><div class="v">'+(m
     ?(Math.round((1-(m.nonRate||0))*100)+'% · '+m.members+'/'+m.total+'<small>'+m.potential+' potential'+(MEMBERSHIP_DATE?' · WTU snapshot '+esc(prettyNoYr(MEMBERSHIP_DATE)):'')+'</small>')
@@ -1899,35 +2093,24 @@ function schoolDetailHtml(s){
     :'<small>none logged this year</small>')+'</div></div>';
   if(rnd)h+='<div class="fact"><span class="lbl">'+esc([rnd.label,rnd.period].filter(Boolean).join(' '))+'</span><div class="v'+(got[s.name]?'':' st')+'">'+
     (got[s.name]?('<span class="ok">✓ delivered</span>'+(roundDate(rnd,s.name)?'<small>'+esc(prettyNoYr(roundDate(rnd,s.name)))+'</small>':'')):'still owed')+'</div></div>';
-  h+='<div class="fact"><span class="lbl">Next step</span><div class="v">'+(rs.length
+  h+='<div class="fact"><span class="lbl">Suggested next step</span><div class="v">'+(rs.length
     ?(esc(rs[0].act)+'<small>'+esc(rs[0].why)+(rs.length>1?' · +'+(rs.length-1)+' more':'')+'</small>')
-    :'<small>nothing outstanding</small>')+'</div></div>';
+    :'<small>No recommendation from current flags</small>')+'</div></div>';
   h+='</div>';
-  h+=visitPrep(s.name);
-  h+='<div class="sub-h">Committees and contacts</div>';
+  var latest=s.visits.slice().sort(function(a,b){return b[0].localeCompare(a[0]);})[0];
+  if(latest){
+    var preview=recordPreview(latest[1]);
+    h+='<section class="latest-activity"><h3>Latest '+(visitType(latest)==='visit'?'visit':'conversation')+' <span>'+esc(prettyMed(latest[0]))+'</span></h3>'+preview+'<button type="button" class="text-action" data-open-history="1">Read full record and history</button><button type="button" class="text-action contact-jump" data-open-contacts="1">Go to contacts</button></section>';
+  }
+  var flagged=flaggedNotes(s);
+  if(flagged.length)h+='<section class="detail-flags"><h3>Read before your visit · '+flagged.length+'</h3><ul class="flag-index">'+flagged.map(function(n,i){return '<li><button type="button" class="text-action" data-open-flag="'+i+'">'+esc(flagHeading(n))+'</button></li>';}).join('')+'</ul></section>';
+  h+='<h3 class="sub-h" data-contact-heading tabindex="-1">Committees and contacts</h3>';
   h+=s.contacts.some(function(c){return c[1];})
-    ?s.contacts.filter(function(c){return c[0]!=='Building Rep';}).map(function(c){
+    ?s.contacts.filter(function(c){return c[0]!=='Building Rep';}).sort(function(a,b){var rank=function(c){return /SCAC|LSAT|Personnel/i.test(c[0])?0:c[0]==='Principal'?2:1;};return rank(a)-rank(b);}).map(function(c){
         return '<div class="ct-line"><div class="r">'+esc(c[0])+'</div><div class="v'+(c[1]?'':' empty-v')+'">'+(c[1]?linkifyContact(c[1]):'— not yet recorded')+'</div></div>';
       }).join('')
     :'<div class="empty">No contacts recorded yet — they fill in from the school page on the next refresh.</div>';
-  /* NOTES DENSITY — the condition Mike attached to approving the composition, and it was a real
-     problem: the heaviest school on file carries ~7,800 characters of notes, which pushed its log
-     3.19 screens down the panel. D2 exists because a visit log was invisible, so a log permanently
-     at the foot of a long scroll is that same defect relocated rather than fixed.
-     The split is by KIND, not by length, because that is the distinction that already means
-     something here: a FLAG is Mike's own bolded ask and always renders; context and plain notes are
-     history and go behind a disclosure once there are more than three of them. Nothing is dropped —
-     criterion 11 — and the count is on the summary so the drawer never hides an unknown quantity. */
-  h+='<div class="sub-h">School Notes</div>';
-  if(!s.notes.length)h+='<div class="empty">No notes recorded.</div>';
-  else{
-    var li=function(n){return '<li'+noteClass(n)+'>'+escNote(n)+'</li>';};
-    var flags=s.notes.filter(function(n){return noteKind(n)==='flag';});
-    var rest=s.notes.filter(function(n){return noteKind(n)!=='flag';});
-    if(flags.length)h+='<ul class="notes-list">'+flags.map(li).join('')+'</ul>';
-    if(rest.length<=3)h+='<ul class="notes-list">'+rest.map(li).join('')+'</ul>';
-    else h+='<details class="notes-more"><summary>'+rest.length+' more note'+(rest.length===1?'':'s')+' — context and history</summary><ul class="notes-list">'+rest.map(li).join('')+'</ul></details>';
-  }
+  if(flagged.length)h+='<section class="flag-records"><div class="sub-h">Flagged notes · full records</div>'+flagged.map(function(n,i){return '<details class="detail-flag" data-flag="'+i+'"><summary>'+esc(flagHeading(n))+'</summary><p>'+escNote(n)+'</p></details>';}).join('')+'</section>';
   h+='<div class="sub-h">Open Issues</div>';
   // "No open issues" must not read as "nothing to know here" when the page carries a flagged note —
   // that is how a school with a live budget or coach problem read as a clean record.
@@ -1937,7 +2120,7 @@ function schoolDetailHtml(s){
         return '<tr><td data-label="Issue">'+esc(r[0]||'')+'</td><td data-label="Status">'+esc(r[1]||'')+'</td><td data-label="Article">'+esc(r[2]||'')+'</td><td data-label="Opened">'+esc(r[3]||'')+'</td></tr>';
       }).join('')+'</table>')
     :('<div class="empty">No open issues logged'+(nFlag?' — but '+nFlag+' flagged note'+(nFlag===1?'':'s')+' above needs a look.':'.')+'</div>');
-  h+='<div class="sub-h">Visit &amp; Conversation Log</div>';
+  h+='<details class="detail-history" data-detail-section="history"><summary>Visit &amp; Conversation Log <span class="mu">('+s.visits.length+')</span></summary>';
   // Both kinds show here — the log is a visit AND conversation log — but the Type column makes plain
   // which rows move the Visited count, so the page can never again imply a visit that never happened.
   // Dates read as "Sep 2, 2026", like every other date on the page — the raw ISO string was the one
@@ -1954,50 +2137,93 @@ function schoolDetailHtml(s){
           '<td data-label="What happened">'+escNote(v[1]||'')+'</td></tr>';
       }).join('')+'</table>')
     :'<div class="empty">Nothing logged yet — use Jot &amp; Share, or add a row to the school page’s Visit &amp; Conversation Log.</div>';
+  h+='</details>';
+  /* NOTES DENSITY — the condition Mike attached to approving the composition, and it was a real
+     problem: the heaviest school on file carries ~7,800 characters of notes, which pushed its log
+     3.19 screens down the panel. D2 exists because a visit log was invisible, so a log permanently
+     at the foot of a long scroll is that same defect relocated rather than fixed.
+     The split is by KIND, not by length, because that is the distinction that already means
+     something here: a FLAG is Mike's own bolded ask and always renders; context and plain notes are
+     history and go behind a disclosure once there are more than three of them. Nothing is dropped —
+     criterion 11 — and the count is on the summary so the drawer never hides an unknown quantity. */
+  h+='<div class="sub-h">School Notes</div>';
+  if(!s.notes.length)h+='<div class="empty">No notes recorded.</div>';
+  else{
+    var li=function(n){return '<li'+noteClass(n)+'>'+escNote(n)+'</li>';};
+    var flags=s.notes.filter(function(n){return noteKind(n)==='flag';});
+    var rest=s.notes.filter(function(n){return noteKind(n)!=='flag';});
+    // Flag headings precede contacts; full flagged records follow contacts.
+    if(rest.length<=3)h+='<ul class="notes-list">'+rest.map(li).join('')+'</ul>';
+    else h+='<details class="notes-more"><summary>'+rest.length+' more note'+(rest.length===1?'':'s')+' — context and history</summary><ul class="notes-list">'+rest.map(li).join('')+'</ul></details>';
+  }
+
+  var resources=visitPrep(s.name);
+  if(resources)h+='<details class="detail-resources" data-detail-section="resources"><summary>Related resources</summary>'+resources+'</details>';
   return h+'</div>';
 }
-var MODAL_RETURN=null;
-/* Panel at ≥1100, modal below — Mike's D3 ruling. The width test is live, not a media query, so a
-   window resized below 1100 with the panel open re-opens it as a modal rather than leaving a 460px
-   panel over a list that no longer fits beside it. */
+var MODAL_RETURN=null,SCHOOL_RETURN_SCROLL=null,SCHOOL_RETURN_CONTEXT=null,SCHOOL_LIST_REVISION=0,OPEN_SCHOOL=null;
 function detailUsesPanel(){return window.innerWidth>=1100&&!!document.getElementById('schPanel');}
-function openSchool(name){
-  var s=null;for(var i=0;i<SCHOOLS.length;i++){if(SCHOOLS[i].name===name){s=SCHOOLS[i];break;}}
-  if(!s)return;
-  var keep=MODAL_RETURN;
-  closeSchool(true);
-  MODAL_RETURN=keep||document.activeElement;
-  var html=schoolDetailHtml(s);
+function detailScroller(){return document.querySelector('#schPanel.open')||document.getElementById('schModal');}
+function syncSchoolSelection(){Array.prototype.forEach.call(document.querySelectorAll('.schrow'),function(row){var selected=row.dataset.school===OPEN_SCHOOL;row.classList.toggle('selected',selected);row.querySelector('.school-open').setAttribute('aria-expanded',String(selected));});}
+function readingPosition(view){
+  var nodes=Array.prototype.slice.call(view.querySelectorAll('.d-body .d-br,.d-body .fact,.d-body p,.d-body .ct-line,.d-body summary,.d-body tr,.d-body li'));
+  var top=view.getBoundingClientRect().top+90,best=null;
+  nodes.forEach(function(n,i){var r=n.getBoundingClientRect();if(n.getClientRects().length&&r.top<=top&&(!best||r.top>=best.y))best={index:i,y:r.top};});
+  return {scroll:view.scrollTop,anchor:best,details:Array.prototype.map.call(view.querySelectorAll('details'),function(d){return d.open;})};
+}
+function restoreReading(view,state){
+  Array.prototype.forEach.call(view.querySelectorAll('details'),function(d,i){d.open=!!state.details[i];});
+  view.scrollTop=state.scroll;
+  var nodes=view.querySelectorAll('.d-body .d-br,.d-body .fact,.d-body p,.d-body .ct-line,.d-body summary,.d-body tr,.d-body li'),a=state.anchor;
+  if(a&&nodes[a.index])view.scrollTop+=nodes[a.index].getBoundingClientRect().top-a.y;
+}
+function openSchool(name,keepContext,returnTo){
+  var s=SCHOOLS.find(function(sc){return sc.name===name;});if(!s)return;
+  var state=keepContext?readingPosition(detailScroller()):null;
+  var origin=returnTo||(keepContext?MODAL_RETURN:document.activeElement);
+  if(!keepContext){
+    if(origin&&origin.closest('#gResults'))origin=document.getElementById('gSearch');
+    if(origin&&origin.closest('#schPanel,#schModal'))origin=MODAL_RETURN;
+    SCHOOL_RETURN_SCROLL={x:window.scrollX,y:window.scrollY};
+    SCHOOL_RETURN_CONTEXT={school:origin&&origin.closest('.schrow')?name:null,section:ACTIVE_SECT,revision:SCHOOL_LIST_REVISION,fallback:'schoolFilter'};
+  }
+  closeSchool(true);MODAL_RETURN=origin;
+  var html=schoolDetailHtml(s),focus;
   if(detailUsesPanel()){
-    var p=document.getElementById('schPanel');
-    p.innerHTML=html;p.hidden=false;p.classList.add('open');
-    document.body.classList.add('with-panel');
-    var x=p.querySelector('[data-dclose]');if(x)x.focus();
+    var p=document.getElementById('schPanel');p.innerHTML=html;p.hidden=false;p.classList.add('open');document.body.classList.add('with-panel');focus=p.querySelector('[data-dclose]');
   }else{
     document.getElementById('schModalTitle').textContent=s.name+' — Cluster '+s.cluster+(s.ward?' · Ward '+s.ward:'');
-    // The modal keeps its own head, so the detail's head would be a second title bar inside it.
     document.getElementById('schModalBody').innerHTML=html.replace(/^[\s\S]*?<div class="d-body">/,'<div class="d-body">');
-    document.getElementById('schModal').style.display='flex';
-    var mx=document.getElementById('schModalX');if(mx)mx.focus();
+    document.getElementById('schModal').style.display='flex';focus=document.getElementById('schModalX');
   }
-  OPEN_SCHOOL=name;
+  OPEN_SCHOOL=name;syncSchoolSelection();syncDialogInert();
+  if(focus)focus.focus({preventScroll:true});
+  var view=detailScroller();if(state)restoreReading(view,state);else view.scrollTop=0;
+  if(detailUsesPanel()&&!keepContext){var selected=document.querySelector('.schrow.selected');if(selected&&selected.getClientRects().length)selected.scrollIntoView({block:'nearest',behavior:'auto'});}
 }
-var OPEN_SCHOOL=null;
 function closeSchool(silent){
+  if(!OPEN_SCHOOL&&!silent)return;
   var m=document.getElementById('schModal');if(m)m.style.display='none';
-  var p=document.getElementById('schPanel');
-  if(p){p.classList.remove('open');p.hidden=true;p.innerHTML='';}
-  document.body.classList.remove('with-panel');
-  OPEN_SCHOOL=null;
-  if(!silent&&MODAL_RETURN&&MODAL_RETURN.focus){try{MODAL_RETURN.focus();}catch(e){}}
-  if(!silent)MODAL_RETURN=null;
+  var p=document.getElementById('schPanel');if(p){p.classList.remove('open');p.hidden=true;p.innerHTML='';}
+  document.body.classList.remove('with-panel');OPEN_SCHOOL=null;syncSchoolSelection();syncDialogInert();
+  if(silent===true)return;
+  var target=MODAL_RETURN,context=SCHOOL_RETURN_CONTEXT;
+  function visible(el){return el&&el.isConnected&&el.getClientRects().length&&!el.closest('[inert]');}
+  if(!visible(target)&&context&&context.school){var rows=Array.prototype.slice.call(document.querySelectorAll('.schrow'));var row=rows.find(function(r){return r.dataset.school===context.school;});target=row&&row.querySelector('.school-open');}
+  if(!visible(target)&&context)target=document.getElementById(context.fallback);
+  if(!visible(target))target=document.querySelector('#sidebar .sb-btn.active')||document.getElementById('gSearch');
+  if(visible(target))target.focus({preventScroll:true});
+  if(context&&context.section===ACTIVE_SECT&&context.revision===SCHOOL_LIST_REVISION&&SCHOOL_RETURN_SCROLL)window.scrollTo(SCHOOL_RETURN_SCROLL.x,SCHOOL_RETURN_SCROLL.y);
+  else if(visible(target))target.scrollIntoView({block:'nearest',behavior:'auto'});
+  MODAL_RETURN=null;SCHOOL_RETURN_SCROLL=null;SCHOOL_RETURN_CONTEXT=null;
 }
+
 /* Re-home an open record when the window crosses 1100 — otherwise the panel stays put at 900px wide
    and covers half the list, or the modal stays modal on a screen that now has room beside it. */
 window.addEventListener('resize',function(){
   if(!OPEN_SCHOOL)return;
   var inPanel=!!document.querySelector('#schPanel.open');
-  if(inPanel!==detailUsesPanel())openSchool(OPEN_SCHOOL);
+  if(inPanel!==detailUsesPanel())openSchool(OPEN_SCHOOL,true);
 });
 document.addEventListener('click',function(e){
   var c=e.target.closest&&e.target.closest('[data-dclose]');
@@ -2009,13 +2235,33 @@ document.addEventListener('click',function(e){
    straight out the back into the page behind, which for a keyboard or screen-reader user means the
    dialog is "open" while they are reading the dashboard underneath it. aria-modal promises the
    background is inert; this makes it true. One handler serves both, because only one can be topmost. */
-var DIALOG_FOCUSABLE='a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+var DIALOG_FOCUSABLE='summary,a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 function topDialog(){
   var sh=document.getElementById('moreSheet');if(sh)return sh; // More sits above the modal
   var m=document.getElementById('schModal');
   if(m&&m.style.display!=='none'&&m.style.display!=='')return m;
   return null;
 }
+var INERT_NODES=[];
+function syncDialogInert(){
+  INERT_NODES.forEach(function(n){n.inert=false;});INERT_NODES=[];
+  var dialog=topDialog();if(!dialog)return;
+  function walk(parent){Array.prototype.forEach.call(parent.children,function(el){
+    if(el===dialog||el.tagName==='SCRIPT'||el.tagName==='STYLE')return;
+    if(el.contains(dialog)){walk(el);return;}
+    if(!el.inert){el.inert=true;INERT_NODES.push(el);}
+  });}
+  walk(document.body);
+}
+document.addEventListener('click',function(e){
+  var contact=e.target.closest&&e.target.closest('[data-open-contacts]');
+  if(contact){var heading=contact.closest('.d-body').querySelector('[data-contact-heading]');heading.focus({preventScroll:true});heading.scrollIntoView({block:'start',behavior:motionOK()?'smooth':'auto'});return;}
+  var flag=e.target.closest&&e.target.closest('[data-open-flag]');
+  if(flag){var record=flag.closest('.d-body').querySelector('[data-flag="'+flag.dataset.openFlag+'"]');record.open=true;var summary=record.querySelector('summary');summary.focus({preventScroll:true});summary.scrollIntoView({block:'start',behavior:motionOK()?'smooth':'auto'});return;}
+  var b=e.target.closest&&e.target.closest('[data-open-history]');if(!b)return;
+  var view=b.closest('.d-body'),history=view.querySelector('.detail-history');
+  history.open=true;var heading=history.querySelector('summary');heading.focus();heading.scrollIntoView({block:'nearest',behavior:motionOK()?'smooth':'auto'});
+});
 function trapDialogTab(e){
   if(e.key!=='Tab')return;
   var d=topDialog();if(!d)return;
@@ -2134,7 +2380,7 @@ function renderGrievances(){
   const bySch={},byArt={};
   filed.forEach(function(g){var c=schoolCluster(g.school);if(byCl[c]===undefined)byCl[c]=0;byCl[c]++;bySch[g.school]=(bySch[g.school]||0)+1;var a=g.article||'(unspecified)';byArt[a]=(byArt[a]||0)+1;});
   function gkpi(n,l){return '<div class="kpi"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>';}
-  var ov='<div class="gr-overview"><div class="kpis">'+gkpi(filed.length,'Grievances filed')+gkpi(openN,'Open')+gkpi(resolvedN,'Resolved')+gkpi(favorableN,'Favorable')+'</div>';
+  var ov='<div class="gr-overview"><div class="kpis">'+gkpi(filed.length,'Grievances filed')+gkpi(openN,'Open with filing date')+gkpi(resolvedN,'Resolved')+gkpi(favorableN,'Favorable')+'</div>';
   ov+='<div class="ov-schools"><span class="ov-lbl">By cluster</span>'+CL.map(function(c){return 'Cluster '+c+' ('+(byCl[c]||0)+')';}).join(' &nbsp;·&nbsp; ')+'</div>';
   var artKeys=Object.keys(byArt).sort();
   ov+='<div class="ov-schools"><span class="ov-lbl">By article</span>'+(artKeys.length?artKeys.map(function(a){return esc(a)+' ('+byArt[a]+')';}).join(' &nbsp;·&nbsp; '):'<span class="empty-v">none filed yet</span>')+'</div>';
@@ -2150,7 +2396,7 @@ function renderGrievances(){
   // The 140-word explanation of how the engine counts is reference, not briefing: it answers a
   // question asked once, and it was printing under every case list every time. Behind a labelled
   // disclosure it is one line until it is wanted. Nothing is removed. (build 2026-09-18.4)
-  box.innerHTML=pipe+ov+gh+
+  box.innerHTML=pipe+gh+'<details class="filed-totals"><summary>Filed-case totals and breakdown</summary><p class="sectnote">These totals include only records with a filing date. Cases with missing dates still appear above.</p>'+ov+'</details>'+
     '<details class="sectnote gr-note" style="margin-top:14px"><summary>How these stages and dates are computed</summary>'+
     '<div style="margin-top:6px;max-width:92ch">Overview counts grievances that have a filing date (Not Yet Filed cases are excluded). Grouped by stage (Not Yet Filed → Step 1 Stage 1 → Stage 2 → Stage 3); a section appears only when it has a case. Within each, cases are ordered by soonest deadline. Dates in <span style="color:var(--maroon);font-weight:700">bold maroon</span> are auto-computed from the dates you enter (filing = 14 school days incl. the notice day; Stage 1 meeting = 5 and Stage 2 = 10 school days, counted from the day after filing). The tag shows the next active deadline with days-left recalculated live; "past due" means it has passed. A <b>future</b> date on a "scheduled / held" or "filed" line counts as scheduled/planned — it does not advance the stage or stop the countdown until the day arrives. If a filing\'s 14-day date is missed, the countdown escalates in red to the 30-school-day hard outer limit (6.5.3) while filing is still possible. Cases past Step 1, Stage 2 belong to a Grievance Specialist — they show no countdown here, and Top 3 flags any not yet routed.</div></details>';
   const soon=GRIEVANCES.map(g=>({g:g,act:activeDeadline(g)})).filter(x=>{if(!x.act)return false;return x.act.escalated||workingDaysLeft(x.act.date)<=5;}).sort((a,b)=>a.act.date<b.act.date?-1:a.act.date>b.act.date?1:0);
@@ -2214,21 +2460,25 @@ function renderSchoolKpis(){
    chip has aria-pressed, and the clicked chip is re-found by its data key after the rebuild. */
 function refocusChip(hostSel,attr,val){var el=document.querySelector(hostSel+' .chip['+attr+'="'+val+'"]');if(el&&el.focus)el.focus();}
 function renderChips(){
-  const clusters=['All'].concat(orderedClusters());
-  document.getElementById('clusterChips').innerHTML=clusters.map(c=>
-    '<button type="button" class="chip'+(c===activeCluster?' active':'')+'" data-c="'+c+'" aria-pressed="'+(c===activeCluster)+'">'+(c==='All'?'All clusters':'Cluster '+c)+'</button>').join('');
-  Array.prototype.forEach.call(document.querySelectorAll('#clusterChips .chip'),ch=>ch.onclick=function(){activeCluster=ch.dataset.c;renderChips();renderSchools();refocusChip('#clusterChips','data-c',activeCluster);});
-  // Ward filter (build .2): a second chip row, hidden entirely when the data predates the ward field.
-  const wb=document.getElementById('wardChips');
-  if(wb){
-    const wards=orderedWards();
-    if(!wards.length){wb.innerHTML='';}
-    else{
-      wb.innerHTML=['All'].concat(wards).map(w=>
-        '<button type="button" class="chip'+(w===activeWard?' active':'')+'" data-w="'+w+'" aria-pressed="'+(w===activeWard)+'">'+(w==='All'?'All wards':'Ward '+w)+'</button>').join('');
-      Array.prototype.forEach.call(wb.querySelectorAll('.chip'),ch=>ch.onclick=function(){activeWard=ch.dataset.w;renderChips();renderSchools();refocusChip('#wardChips','data-w',activeWard);});
-    }
+  var cl=document.getElementById('clusterFilter'),ward=document.getElementById('wardFilter'),sort=document.getElementById('schoolSort');
+  cl.innerHTML=['All'].concat(orderedClusters()).map(function(v){return '<option value="'+esc(v)+'">'+(v==='All'?'All clusters':'Cluster '+esc(v))+'</option>';}).join('');
+  cl.value=activeCluster;
+  cl.onchange=function(){activeCluster=cl.value;renderSchools(cl);};
+  var wards=orderedWards();document.getElementById('wardFilterLabel').hidden=!wards.length;
+  ward.innerHTML=['All'].concat(wards).map(function(v){return '<option value="'+esc(v)+'">'+(v==='All'?'All wards':'Ward '+esc(v))+'</option>';}).join('');
+  ward.value=activeWard;ward.onchange=function(){activeWard=ward.value;renderSchools(ward);};
+  sort.value=schoolSort;sort.onchange=function(){schoolSort=sort.value;renderSchools(sort);};
+}
+var schoolSort='default';
+function schoolCompare(a,b){
+  if(schoolSort==='name')return a.name.localeCompare(b.name);
+  if(schoolSort==='density'){
+    var am=memOf(a.name),bm=memOf(b.name);
+    if(!am||!bm)return am?-1:bm?1:a.name.localeCompare(b.name);
+    return (bm.nonRate||0)-(am.nonRate||0)||a.name.localeCompare(b.name);
   }
+  if(schoolSort==='visit')return (lastVisit(a)||'').localeCompare(lastVisit(b)||'')||a.name.localeCompare(b.name);
+  return activeView==='all'?a.name.localeCompare(b.name):schoolRank(a,b);
 }
 
 // ---- Membership overlay (optional; from the data's membership.bySchool key) ----
@@ -2280,13 +2530,13 @@ function renderMembership(){
   function bar(r){return '<span class="mem-bar"><span class="mem-bar-fill '+memPctCls(r)+'" style="width:'+Math.min(100,Math.round((r||0)/0.30*100))+'%"></span></span>';}
   var all=agg(view);
   var selLbl=sel.length?(sel.length>1?'Clusters ':'Cluster ')+sel.join(', '):'';
-  var h='<div class="kpis">'+kc(all.members,'members')+kc(all.potential,'potential (non-members)')+kc(memPct1(all.memRate),'member rate')+kc(memPct1(all.nonRate),'non-member rate')+kc(all.total,'staff')+'</div>';
+  var h='<div class="kpis">'+kc(memPct1(all.memRate),'member rate')+kc(all.members,'members')+kc(all.potential,'potential members')+'</div><p class="mem-note">'+all.total+' staff · '+memPct1(all.nonRate)+' non-member rate</p>';
   if(sel.length)h+='<div class="mem-note">Showing '+selLbl+' · <a href="#" class="attn-link" data-mem-reset="1">show all clusters</a></div>';
   // Recruits-to-90%: the density benchmark, recomputed for the current selection.
   var need=Math.max(0,Math.ceil(all.total*0.90-all.members));
   h+= need>0
     ? '<div class="mem-target">To reach 90% membership'+(sel.length?' in '+selLbl:'')+': <b>'+need+'</b> more member'+(need===1?'':'s')+'</div>'
-    : '<div class="mem-target ok">'+(sel.length?selLbl+' is':'Org-wide density is')+' at or above the 90% benchmark</div>';
+    : '<div class="mem-target ok">'+(sel.length?selLbl+' is':'Your turf density is')+' at or above the 90% benchmark</div>';
   h+='<div class="cluster-h" style="margin-top:16px">By cluster<span class="ch-meta">tap a cluster to filter this section (tap again to clear) · bar scale 0–30%</span></div>';
   h+='<div class="mem-scroll"><table class="mem-tbl"><tr><th>Cluster</th><th>Members</th><th>Potential Members</th><th>Total Staff</th><th>Member %</th><th>Non-member %</th><th></th></tr>';
   orderedClusters().forEach(function(c){var a=agg(recs.filter(function(r){return r.cluster===c;}));
@@ -2315,7 +2565,7 @@ function renderMembership(){
   if(!ranked.length)h+='<tr><td colspan="8"><span class="empty">No schools in this tier'+(sel.length?' within '+selLbl:'')+'.</span></td></tr>';
   h+='</table></div>';
   var hist=(MEMBERSHIP_HISTORY||[]).slice().sort(function(a,b){return (a.date||'')<(b.date||'')?-1:1;});
-  h+='<div class="cluster-h" style="margin-top:18px">Trend<span class="ch-meta">membership over time'+(sel.length?' · always org-wide (snapshots don\'t store per-cluster history)':'')+'</span></div>';
+  h+='<div class="cluster-h" style="margin-top:18px">Trend<span class="ch-meta">membership over time'+(sel.length?' · all your schools (snapshots don\'t store per-cluster history)':'')+'</span></div>';
   if(hist.length<2){
     h+='<div class="sectnote">Baseline snapshot'+(MEMBERSHIP_DATE?' ('+esc(MEMBERSHIP_DATE)+')':'')+'. Movement appears here after the next database import (~Aug 2026): members gained/lost and rate change vs. the prior snapshot.</div>';
   }else{
@@ -2457,92 +2707,60 @@ function brShortName(v){
   return out.length?out.join(' · '):String(v);
 }
 function schoolRow(s){
-  var m=memOf(s.name),lv=lastVisit(s),rnd=currentRound(),got=roundGot(rnd),st=brStatusOf(s);
-  // Each cell carries a phone-only label (.cl) rather than a second summary element repeating the
-  // whole row. On the desk the label is display:none and the column header names the value.
-  var memCell=m
-    ?'<span class="c-mem'+((m.nonRate||0)>=0.15?' hi':'')+'"><i class="cl">members </i>'+Math.round((1-(m.nonRate||0))*100)+'% · '+m.members+'/'+m.total+'</span>'
-    :'<span class="c-mem mu"><i class="cl">members </i>—</span>';
-  var visCell='<span class="c-vis'+(lv?'':' mu')+'"><i class="cl">last visit </i>'+(lv?esc(prettyNoYr(lv)):'never')+'</span>';
-  var rd=roundDate(rnd,s.name);
-  var swtCell=rnd
-    ?(got[s.name]?'<span class="c-swt ok"><i class="cl">gear </i>✓ '+(rd?esc(prettyNoYr(rd)):'delivered')+'</span>':'<span class="c-swt mu"><i class="cl">gear </i>owed</span>')
-    :'<span class="c-swt mu"><i class="cl">gear </i>—</span>';
-  // A vacancy and an un-returned result are DIFFERENT things and the column says which — writing
-  // both as a blank is how three schools that simply owe their results read as three empty seats.
+  var m=memOf(s.name),lv=lastVisit(s),rnd=currentRound(),got=roundGot(rnd),st=brStatusOf(s),rd=roundDate(rnd,s.name);
+  var member=m?Math.round((1-(m.nonRate||0))*100)+'% <span class="cell-secondary">'+m.members+' / '+m.total+'</span>':'Not recorded';
+  var delivery=!rnd?'No current round':got[s.name]?'Delivered'+(rd?'<span class="cell-secondary">'+esc(prettyNoYr(rd))+'</span>':''):'Owed';
   var brv=contactVal(s,'Building Rep');
-  var brCell=st==='vacant'?'<span class="c-br st">vacant</span>'
-    :st==='pending'?'<span class="c-br st">results outstanding</span>'
-    :brv?'<span class="c-br">'+esc(brShortName(brv))+'</span>'
-    :'<span class="c-br mu">not listed</span>';
-  var x=[],fl=flaggedNotes(s);
+  var br=st==='vacant'?'Vacant':st==='pending'?'Results outstanding':brv?esc(brShortName(brv)):'Not listed';
+  var x=[],fl=flaggedNotes(s),miss=st==='pending'?[]:missingRoles(s).filter(function(r){return r!=='BR';});
   if(fl.some(function(n){return /\bACUTE\b/.test(n);}))x.push('<span class="sbadge">ACUTE</span>');
   else if(fl.length)x.push('<span class="sbadge">'+fl.length+' flag'+(fl.length===1?'':'s')+'</span>');
   if(s.issues.length)x.push('<span class="sbadge red">'+s.issues.length+' issue'+(s.issues.length===1?'':'s')+'</span>');
-  // Committee gaps are unknowns, not gaps, while a school still owes its election results.
-  // missingRoles() returns SHORT names ('BR', 'SCAC', 'LSAT'), so the Building Rep is excluded by
-  // its short form — filtering on 'Building Rep' silently matched nothing and River Terrace showed
-  // "vacant" in the BR column AND a "no BR" badge for the same fact, two feet apart.
-  var miss=st==='pending'?[]:missingRoles(s).filter(function(r){return r!=='BR';});
-  if(miss.length)x.push('<span class="sbadge grey">no '+esc(miss.join(', '))+'</span>');
-  if(m&&(m.nonRate||0)>=0.25)x.push('<span class="sbadge">recruit</span>');
-  // SIX children for six columns. There used to be a seventh — a .c-meta summary that re-printed
-  // members, last visit and gear for the phone — and nothing hid it on the desktop, so it occupied
-  // the badge column and pushed the badges onto a second grid row. On the phone it printed every
-  // value a second time. The cells carry their own phone labels now, so it has no job left.
-  return '<button type="button" class="schrow" data-school="'+esc(s.name)+'">'+
-    '<span class="nm">'+esc(s.name)+(s.ward?'<span class="wd">Ward '+esc(s.ward)+'</span>':'')+'</span>'+
-    memCell+visCell+swtCell+brCell+
-    '<span class="c-x">'+x.join('')+'</span></button>';
+  if(miss.length)x.push('<span class="sbadge grey">No '+esc(miss.join(', '))+'</span>');
+  if(m&&(m.nonRate||0)>=0.25)x.push('<span class="sbadge">Recruit</span>');
+  var name='<button type="button" class="school-open" aria-expanded="false" aria-label="Open school record: '+esc(s.name)+'">'+esc(s.name)+'</button>'+(s.ward?'<span class="wd">Ward '+esc(s.ward)+'</span>':'');
+  function cell(cls,label,value){return '<td role="cell" class="'+cls+'"><span class="cl" aria-hidden="true">'+label+'</span>'+value+'</td>';}
+  return '<tr role="row" class="schrow" data-school="'+esc(s.name)+'"><th role="rowheader" scope="row" class="nm">'+name+'</th>'+
+    cell('c-mem'+(m&&(m.nonRate||0)>=.15?' hi':''),'Members',member)+
+    cell('c-vis','Last visit',lv?esc(prettyNoYr(lv)):'None logged')+
+    cell('c-swt'+(rnd&&got[s.name]?' ok':''),'Delivery',delivery)+
+    cell('c-br'+(st==='vacant'||st==='pending'?' st':''),'Building Rep',br)+
+    cell('c-x'+(x.length?'':' no-exceptions'),'Exceptions',x.length?x.join(''):'<span class="sr-only">None flagged</span>')+'</tr>';
+}
+document.getElementById('schoolOptionsToggle').addEventListener('click',function(){
+  var open=this.getAttribute('aria-expanded')!=='true';this.setAttribute('aria-expanded',String(open));document.getElementById('schoolToolbar').classList.toggle('filters-open',open);
+});
+function schoolInScope(sc){return (activeCluster==='All'||sc.cluster===activeCluster)&&(activeWard==='All'||String(sc.ward)===activeWard)&&(!schoolFilterText||sc.name.toLowerCase().indexOf(schoolFilterText)!==-1);}
+function renderSchools(control){
+  SCHOOL_LIST_REVISION++;
+  if(SCHOOL_RETURN_CONTEXT&&control&&control.id)SCHOOL_RETURN_CONTEXT.fallback=control.id;
+  if(!control&&SCHOOL_RETURN_CONTEXT&&document.activeElement&&document.activeElement.closest('#schoolToolbar'))SCHOOL_RETURN_CONTEXT.fallback=document.activeElement.id;
+  Array.prototype.forEach.call(document.querySelectorAll('#schoolViews .chip'),function(ch){var v=SCHOOL_VIEWS.find(function(v){return v.k===ch.dataset.v;});ch.querySelector('.chip-n').textContent=SCHOOLS.filter(function(sc){return schoolInScope(sc)&&v.test(sc);}).length;});
+  var wrap=document.getElementById('schoolSections'),vt=viewTest(),rnd=currentRound(),shown=0,html='';
+  var passes=function(sc){return vt(sc)&&(activeWard==='All'||String(sc.ward)===activeWard)&&(!schoolFilterText||sc.name.toLowerCase().indexOf(schoolFilterText)!==-1);};
+  orderedClusters().forEach(function(c){
+    if(activeCluster!=='All'&&activeCluster!==c)return;
+    var list=SCHOOLS.filter(function(sc){return sc.cluster===c&&passes(sc);}).sort(schoolCompare);
+    if(!list.length)return;shown+=list.length;
+    html+='<tbody role="rowgroup" class="cluster-block" data-cluster="'+esc(c)+'"><tr role="row" class="school-group"><th role="rowheader" scope="rowgroup" colspan="6"><span class="cl-h">Cluster '+esc(c)+'</span><span class="m">'+list.length+' school'+(list.length===1?'':'s')+' · '+list.filter(function(sc){return visitRows(sc).length;}).length+' visited</span></th></tr>'+list.map(schoolRow).join('')+'</tbody>';
+  });
+  var labels=['School','Members','Last visit',rnd?esc(rnd.label)+(rnd.period?'<span class="cell-secondary">'+esc(rnd.period)+'</span>':''):'Materials','Building Rep','Exceptions'];
+  wrap.innerHTML=html?'<table class="school-table" role="table" aria-label="Schools comparison"><caption class="sr-only">Schools grouped in duty-cluster order. Open a school for its full record.</caption><colgroup><col style="width:25%"><col style="width:13%"><col style="width:12%"><col style="width:16%"><col style="width:24%"><col style="width:10%"></colgroup><thead role="rowgroup"><tr class="gh" role="row">'+labels.map(function(v,i){return '<th role="columnheader" scope="col"'+(i===1?' class="r"':'')+'>'+v+'</th>';}).join('')+'</tr></thead>'+html+'</table>':'<div class="empty">No schools match these filters.</div>';
+  var sortLabel=document.getElementById('schoolSort').selectedOptions[0].textContent;
+  var summary=shown+' of '+SCHOOLS.filter(schoolInScope).length+' matching schools · '+(schoolSort==='default'?(activeView==='all'?'A–Z within each cluster':'strongest reason first within each cluster'):sortLabel.toLowerCase());
+  var count=(activeCluster!=='All'?1:0)+(activeWard!=='All'?1:0)+(schoolSort!=='default'?1:0);
+  document.getElementById('schoolOptionsToggle').textContent='Filters'+(count?' · '+count:'');
+  document.getElementById('schoolOptionsToggle').setAttribute('aria-label','Filters and sort'+(count?', '+count+' active':''));
+  syncSchoolSelection();
+  var filtered=activeCluster!=='All'||activeWard!=='All'||!!schoolFilterText||schoolSort!=='default';
+  document.getElementById('schoolResultsStatus').innerHTML='<span>'+esc(summary)+'</span>'+(filtered?'<button class="btn" type="button" id="clearSchoolFilters">Reset filters and sort</button>':'');
+  var clear=document.getElementById('clearSchoolFilters');if(clear)clear.onclick=function(){activeCluster='All';activeWard='All';schoolFilterText='';schoolSort='default';document.getElementById('schoolFilter').value='';renderChips();renderSchools();document.getElementById('schoolFilter').focus();};
 }
 
-function renderSchools(){
-  const wrap=document.getElementById('schoolSections');
-  const clusters=orderedClusters();
-  const vt=viewTest();
-  const rnd=currentRound();
-  // Cluster / ward / text filters stack ON TOP of the view — the view narrows what matters, the
-  // filters narrow where. Cluster order stays VII, VIII, IX via orderedClusters().
-  const passes=s=>vt(s)&&(activeWard==='All'||String(s.ward)===activeWard)&&(!schoolFilterText||s.name.toLowerCase().indexOf(schoolFilterText)!==-1);
-  let html='',shown=0;
-  clusters.forEach(c=>{
-    if(activeCluster!=='All'&&activeCluster!==c)return;
-    // Ranked in a filtered view (the ordering IS the point); alphabetical in "All schools", where
-    // Mike is looking a specific school up by name.
-    const list=SCHOOLS.filter(s=>s.cluster===c&&passes(s)).sort(
-      activeView==='all'?((a,b)=>a.name.localeCompare(b.name)):schoolRank);
-    if(!list.length)return;
-    shown+=list.length;
-    const visited=list.filter(s=>visitRows(s).length).length;
-    // Cluster headings stay (they are how the turf is organised) but the collapse toggles are gone
-    // with the accordions: a row is a button that opens the record, so there is nothing to expand.
-    html+='<div class="cluster-block" data-cluster="'+c+'">'+
-      '<h3 class="cl-h">Cluster '+c+'<span class="m">'+list.length+' school'+(list.length===1?'':'s')+' · '+visited+' visited</span></h3>'+
-      list.map(schoolRow).join('')+'</div>';
-  });
-  const hidden=SCHOOLS.length-SCHOOLS.filter(vt).length;
-  let lead='';
-  if(activeView!=='all'&&hidden>0){
-    // One short line, then the button — not a paragraph with a control embedded in the middle of a
-    // sentence, which is what it was: with the detail panel open it broke into "Showing 4" / a
-    // 40-word clause / "Flagged note )." / the button, four ragged fragments. (build 2026-09-18.4)
-    lead='<div class="view-note"><span><b>'+shown+'</b> of '+SCHOOLS.length+' schools · strongest reason first · '+
-         (activeView==='attention'
-           ?hidden+' quieter schools are under the other views'
-           :hidden+' do not match this view')+
-         '</span><button class="btn" id="viewAllSchools">Show all '+SCHOOLS.length+'</button></div>';
-  }
-  const head='<div class="gh"><span>School</span><span class="r">Members</span><span>Last visit</span><span>'+
-    (rnd?esc(rnd.label):'Materials')+'</span><span>Building Rep</span><span></span></div>';
-  wrap.innerHTML=lead+(html?head+html:'<div class="empty">No schools match the current filters'+(schoolFilterText?' ("'+esc(schoolFilterText)+'")':'')+'. '+
-    (activeView!=='all'?'<button class="btn" id="viewAllSchools">Show all '+SCHOOLS.length+'</button>':'')+'</div>');
-  var va=document.getElementById('viewAllSchools');
-  if(va)va.onclick=function(){activeView='all';renderSchoolViews();renderSchools();};
-}
 function renderSchoolViews(){
   var host=document.getElementById('schoolViews');if(!host)return;
   host.innerHTML=SCHOOL_VIEWS.map(function(v){
-    var n=SCHOOLS.filter(v.test).length;
+    var n=SCHOOLS.filter(function(sc){return schoolInScope(sc)&&v.test(sc);}).length;
     return '<button type="button" class="chip'+(v.k===activeView?' active':'')+'" data-v="'+v.k+'" aria-pressed="'+(v.k===activeView)+'">'+esc(v.label)+
            '<span class="chip-n">'+n+'</span></button>';
   }).join('');
@@ -2744,9 +2962,10 @@ function renderVisits(){
   k.innerHTML=kpis.map(x=>'<div class="kpi"><div class="n">'+x[1]+'</div><div class="l">'+x[0]+'</div></div>').join('');
   if(!all.length){log.innerHTML='<div class="sectnote">Nothing logged yet. Each dated entry in a school’s "Visit &amp; Conversation Log" appears here, newest first — tagged <b>(Visit)</b> or <b>(Conversation)</b> on the school page. Only Visit rows count toward the totals above.</div>';return;}
   all.sort((a,b)=>b.date.localeCompare(a.date));
-  log.innerHTML='<table><tr><th>Date</th><th>School</th><th>Type</th><th>Notes</th></tr>'+
-    all.slice(0,25).map(v=>'<tr><td data-label="Date">'+pretty(v.date)+'</td><td data-label="School">'+schoolLink(v.school)+'</td><td data-label="Type"><span class="'+(v.type==='visit'?'cov-yes':'cov-muted')+'">'+(v.type==='visit'?'Visit':'Conversation')+'</span></td><td data-label="Notes">'+esc(v.note)+'</td></tr>').join('')+'</table>'+
-    (all.length>25?'<div class="sectnote">Showing the latest 25 of '+all.length+' entries — the full log lives on the school pages.</div>':'');
+  function table(rows){return '<table><tr><th>Date</th><th>School</th><th>Type</th><th>Notes</th></tr>'+rows.map(function(v){return '<tr><td data-label="Date">'+pretty(v.date)+'</td><td data-label="School">'+schoolLink(v.school)+'</td><td data-label="Type"><span class="'+(v.type==='visit'?'cov-yes':'cov-muted')+'">'+(v.type==='visit'?'Visit':'Conversation')+'</span></td><td data-label="Notes">'+esc(v.note)+'</td></tr>';}).join('')+'</table>';}
+  log.innerHTML=table(all.slice(0,5))+(all.length>5?'<details class="recent-more"><summary>Show '+(Math.min(all.length,25)-5)+' earlier entries</summary>'+table(all.slice(5,25))+'</details>':'')+
+    (all.length>25?'<div class="sectnote">Latest 25 of '+all.length+' entries available here — full records are on each school.</div>':'');
+
 }
 
 /* ---- Needs Attention (rebuilt 2026-08-14).
@@ -3290,7 +3509,13 @@ function wireButtons(){
     var t=e.target;
     if(t&&t.getAttribute&&t.getAttribute('role')==='button'&&t.hasAttribute('data-target')){e.preventDefault();t.click();}
   });
-  window.addEventListener('beforeprint',function(){setAllSchools(true);setAllCoverage(false);setAllVisitClusters(false);});
+  var printDisclosures=[];
+  window.addEventListener('beforeprint',function(){
+    setAllSchools(true);setAllCoverage(false);setAllVisitClusters(false);
+    printDisclosures=Array.prototype.filter.call(document.querySelectorAll('.round-history,.filed-totals,.source-status,.dist-provenance,.recent-more,.detail-flag'),function(d){return !d.open;});
+    printDisclosures.forEach(function(d){d.open=true;});
+  });
+  window.addEventListener('afterprint',function(){printDisclosures.forEach(function(d){d.open=false;});printDisclosures=[];});
   var ss=document.getElementById('schoolSections');
   if(ss)ss.addEventListener('click',function(e){
     var t=e.target.closest&&e.target.closest('.cluster-toggle');
@@ -3318,9 +3543,9 @@ function wireButtons(){
     // `.schrow` joined `.schlink` in build 2026-09-18.3: a school row IS a link to the one detail
     // view now, so both routes go through the same delegated handler and survive every re-render.
     var a=e.target.closest&&e.target.closest('.schlink,.schrow');
-    if(a){e.preventDefault();e.stopPropagation();openSchool(a.getAttribute('data-school'));}
+    if(a){e.preventDefault();e.stopPropagation();var opener=a.querySelector('.school-open');if(opener)opener.focus({preventScroll:true});openSchool(a.getAttribute('data-school'));}
   });
-  var mx=document.getElementById('schModalX');if(mx)mx.onclick=closeSchool;
+  var mx=document.getElementById('schModalX');if(mx)mx.onclick=function(){closeSchool();};
   var modal=document.getElementById('schModal');
   if(modal)modal.addEventListener('click',function(e){if(e.target===modal)closeSchool();});
   // Escape closes the topmost thing: the More sheet if it is open, otherwise the school modal.
@@ -3333,7 +3558,7 @@ function wireButtons(){
   window.addEventListener('hashchange',openSchoolFromUrl);
   // Laptop mode: number keys switch sections (1 = Brief …) — never while typing in a field.
   document.addEventListener('keydown',function(e){
-    if(!isLaptop()||e.altKey||e.ctrlKey||e.metaKey)return;
+    if(topDialog()||!isLaptop()||e.altKey||e.ctrlKey||e.metaKey)return;
     if(e.key<'1'||e.key>'9')return;
     var tg=e.target,tag=(tg&&tg.tagName)||'';
     if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(tg&&tg.isContentEditable))return;
@@ -3369,7 +3594,8 @@ function linkifyContact(v){
    logged — a capture buffer with a one-level undo, on this device only, wiped with the device data. */
 var JOT_KEYS=['jotSchool','jotType','jotDate','jotText','jotOutcome','jotNext','jotOwner','jotBy','jotDelivWhat','jotDone'];
 var JOT_MARKERS=['Outcome','Next','Delivered','Done'];
-var JOT_UNDO=null;
+var JOT_UNDO=null,JOT_CAPTURE='',JOT_PEND_ERROR=false;
+function jotCaptureId(){return 'capture-'+(typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+'-'+Math.random().toString(36).slice(2));}
 function jotIsRow(t){return t==='Visit'||t==='Conversation';}
 function jotV(id){var el=document.getElementById(id);return el?String(el.value==null?'':el.value).trim():'';}
 function jotChecked(id){var el=document.getElementById(id);return !!(el&&el.checked);}
@@ -3401,8 +3627,8 @@ function jotRowText(){
   }
   if(jotChecked('jotDeliv'))row+=' Delivered: '+jotStop(jotV('jotDelivWhat')||'WTU sweatshirts');
   // A `Done:` that is not EARLIER than this row closes nothing — the parser flags it and the record
-  // carries a field that means nothing. The first real capture through this panel (River Terrace,
-  // 2026-09-17) set it to the row's own date meaning "this is finished", with the warning showing,
+  // carries a field that means nothing. An earlier capture used the row's own date
+  // to mean "this is finished", despite the advisory warning,
   // so an advisory line is not enough: an impossible value is not emitted at all (build 2026-09-17.4).
   // A date that is merely unmatched in the imported data still goes in — the page may hold a row this
   // device has not imported yet. Impossible is refused; unverifiable is warned about.
@@ -3421,12 +3647,9 @@ function jotCompose(){
   var stamp=n.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' '+n.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
   return typ+' — '+(sch||'(no school)')+' — '+stamp+': '+txt;
 }
-// school|date|type is the parser's own duplicate key. A plain note has no key, so it is keyed by its
-// text — copying the same note twice updates one entry instead of stacking two.
-function jotKey(){
-  var typ=jotV('jotType');
-  return jotIsRow(typ)?(jotV('jotSchool')+'|'+jotDate()+'|'+typ):('note|'+document.getElementById('jotText').value.trim());
-}
+// A capture has its own identity. New compositions never replace another same-day note.
+// The school-page duplicate warning remains: capture identity does not change logging rules.
+function jotKey(){if(!JOT_CAPTURE)JOT_CAPTURE=jotCaptureId();return JOT_CAPTURE;}
 function jotWarnings(){
   var w=[],typ=jotV('jotType'),sch=jotV('jotSchool'),date=jotDate(),s=sch?jotSchoolRec(sch):null;
   if(!jotIsRow(typ))return w;
@@ -3460,50 +3683,62 @@ function jotWarnings(){
 }
 function jotSaveDraft(){
   try{
-    var d={v:2,deliv:jotChecked('jotDeliv')};
+    var d={v:3,id:jotKey(),deliv:jotChecked('jotDeliv')};
     JOT_KEYS.forEach(function(id){var el=document.getElementById(id);if(el)d[id]=el.value;});
     localStorage.setItem(JOT_DRAFT,JSON.stringify(d));
-  }catch(e){}
+    jotStatus('Draft saved on this device only. Copy or Share when you are ready to log it.');return true;
+  }catch(e){jotStatus('Draft could not be saved on this device. Your text is still here — copy it before leaving.');return false;}
 }
 function jotLoadDraft(){
-  var d=null;try{d=JSON.parse(localStorage.getItem(JOT_DRAFT)||'null');}catch(e){}
+  var d=null;try{d=JSON.parse(localStorage.getItem(JOT_DRAFT)||'null');}catch(e){jotStatus('The saved draft could not be read. Stored text has not been removed.');return;}
   if(!d||typeof d!=='object')return;
-  // A draft written before this build: {s,t,x}, and its type "Visit note" no longer exists as an option.
-  if(d.v!==2)d={jotSchool:d.s||'',jotType:(d.t==='Visit note'?'Visit':(d.t||'Visit')),jotText:d.x||''};
+  if(d.v!==2&&d.v!==3)d={jotSchool:d.s||'',jotType:(d.t==='Visit note'?'Visit':(d.t||'Visit')),jotText:d.x||''};
+  JOT_CAPTURE=typeof d.id==='string'?d.id:jotCaptureId();
   JOT_KEYS.forEach(function(id){var el=document.getElementById(id);if(el&&typeof d[id]==='string')el.value=d[id];});
   var chk=document.getElementById('jotDeliv');if(chk)chk.checked=!!d.deliv;
 }
 function jotClearDraft(){
+  try{localStorage.removeItem(JOT_DRAFT);}catch(e){jotStatus('Could not clear the saved draft. Your text is still here.');return false;}
   JOT_KEYS.forEach(function(id){var el=document.getElementById(id);if(el&&id!=='jotType'&&id!=='jotSchool')el.value='';});
   var chk=document.getElementById('jotDeliv');if(chk)chk.checked=false;
   var dt=document.getElementById('jotDate');if(dt)dt.value=todayIso();
-  try{localStorage.removeItem(JOT_DRAFT);}catch(e){}
-  jotRefresh();
+  JOT_CAPTURE='';jotRefresh();return true;
 }
 function jotStatus(msg){var el=document.getElementById('jotStatus');if(el)el.textContent=msg;}
-function jotPendRead(){try{var a=JSON.parse(localStorage.getItem(JOT_PEND)||'[]');return Array.isArray(a)?a:[];}catch(e){return [];}}
-function jotPendWrite(a){try{localStorage.setItem(JOT_PEND,JSON.stringify(a));return true;}catch(e){jotStatus('This device would not store the pending copy — keep the text you just copied.');return false;}}
+function jotPendRead(){
+  try{
+    var a=JSON.parse(localStorage.getItem(JOT_PEND)||'[]');
+    if(!Array.isArray(a)||a.some(function(e){return !e||typeof e.k!=='string'||typeof e.text!=='string';}))throw Error('Invalid pending list');
+    JOT_PEND_ERROR=false;return a;
+  }catch(e){JOT_PEND_ERROR=true;return [];}
+}
+function jotPendWrite(a){
+  if(JOT_PEND_ERROR){jotStatus('Pending notes could not be read. They have not been overwritten. Keep a separate copy of your new text.');return false;}
+  try{localStorage.setItem(JOT_PEND,JSON.stringify(a));return true;}
+  catch(e){jotStatus('Could not save the pending copy on this device. Your text is still here — keep a separate copy.');return false;}
+}
 function jotPendAdd(){
   var text=jotCompose();if(!text)return '';
   var k=jotKey(),a=jotPendRead(),typ=jotV('jotType');
   var e={k:k,school:jotV('jotSchool'),type:typ,date:jotIsRow(typ)?jotDate():todayIso(),text:text,at:new Date().toISOString()};
   var at=-1;for(var i=0;i<a.length;i++){if(a[i].k===k){at=i;break;}}
   if(at>=0)a[at]=e;else a.unshift(e);
-  jotPendWrite(a);renderJotPending();
-  return at>=0?'updated':'added';
+  if(!jotPendWrite(a))return '';
+  renderJotPending();return at>=0?'updated':'added';
 }
 function jotPendRemove(k,logged){
   var a=jotPendRead(),keep=[],gone=null;
   a.forEach(function(e){if(e.k===k&&!gone)gone=e;else keep.push(e);});
-  if(!gone)return;
-  JOT_UNDO=gone;jotPendWrite(keep);renderJotPending();
-  jotStatus(logged?'Marked logged and removed — it lives on the school page now. Undo is on the pending list.'
-                 :'Deleted. Undo is on the pending list.');
+  if(!gone||!jotPendWrite(keep))return;
+  JOT_UNDO=gone;renderJotPending();
+  jotStatus(logged?'Removed based on your confirmation that you logged it. This app cannot verify the school page. Undo is below.'
+                 :'Pending copy deleted. Undo is below.');
   var u=document.getElementById('jotPendUndo');if(u)u.focus();
 }
 function renderJotPending(){
   var box=document.getElementById('jotPending');if(!box)return;
   var a=jotPendRead();
+  if(JOT_PEND_ERROR){box.innerHTML='<p role="alert">Pending notes could not be read. Stored notes have not been overwritten.</p>';return;}
   if(!a.length&&!JOT_UNDO){box.innerHTML='';return;}
   var h='<div class="jot-pend"><div class="jot-pend-h"><span>Pending until logged — '+a.length+'</span>';
   if(a.length)h+='<button class="btn" id="jotPendAll" data-act="all">Copy all</button>';
@@ -3516,7 +3751,7 @@ function renderJotPending(){
        '<div class="jot-p-t">'+esc(e.text)+'</div>'+
        '<div class="toolbar" style="margin-top:0">'+
        '<button class="btn" data-act="copy" data-k="'+esc(e.k)+'">Copy</button>'+
-       '<button class="btn" data-act="logged" data-k="'+esc(e.k)+'">Logged ✓</button>'+
+       '<button class="btn" data-act="logged" data-k="'+esc(e.k)+'">I have logged this</button>'+
        '<button class="btn" data-act="del" data-k="'+esc(e.k)+'">Delete</button>'+
        '</div></div>';
   });
@@ -3573,11 +3808,11 @@ function wireJot(){
     el.addEventListener('input',function(){jotSaveDraft();jotRefresh();});
     el.addEventListener('change',function(){jotSaveDraft();jotRefresh();});
   });
-  document.getElementById('jotClear').onclick=function(){jotClearDraft();jotStatus('Draft cleared. Anything pending below is untouched.');};
+  document.getElementById('jotClear').onclick=function(){if(jotClearDraft())jotStatus('Draft cleared. Anything pending below is untouched.');};
   document.getElementById('jotCopy').onclick=function(){
     var note=jotCompose();
     if(!note){jotStatus('Nothing to copy yet — write the occasion first.');return;}
-    var kept=jotPendAdd(),tail=kept==='updated'?' The pending copy is updated.':' A copy is pending below until you log it.';
+    var kept=jotPendAdd(),tail=!kept?' No pending copy was saved on this device. Keep the copied text.':(kept==='updated'?' The pending copy is updated.':' A copy is pending below until you log it.');
     jotClip(note,
       function(){jotStatus('Copied ✓ — paste it to Claude at the desk.'+tail);},
       function(){jotFallback(note);jotStatus('Copy blocked by the browser — the text is selected in the box above; copy it by hand.'+tail);});
@@ -3586,9 +3821,12 @@ function wireJot(){
     var note=jotCompose();
     if(!note){jotStatus('Nothing to share yet — write the occasion first.');return;}
     if(navigator.share){
+      var kept=jotPendAdd(),capture=JOT_CAPTURE;
       navigator.share({text:note}).then(function(){
-        jotPendAdd();jotClearDraft();jotStatus('Shared ✓ — a copy is pending below until you log it.');
-      })['catch'](function(e){if(!e||e.name!=='AbortError'){jotStatus('Share failed — use Copy instead.');}});
+        if(!kept){jotStatus('Shared, but no pending copy was saved on this device. Your draft is still here — keep a separate copy.');return;}
+        if(JOT_CAPTURE!==capture||jotCompose()!==note){jotStatus('Shared. That version is pending below; your newer edits remain in the draft.');return;}
+        if(jotClearDraft())jotStatus('Shared ✓ — a copy is pending below until you log it.');
+      })['catch'](function(e){jotStatus((e&&e.name==='AbortError'?'Share cancelled.':'Share failed.')+(kept?' A copy is pending below; your draft is still here.':' No pending copy was saved; your text is still here.'));});
     }else{document.getElementById('jotCopy').onclick();}
   };
   var box=document.getElementById('jotPending');
@@ -3597,7 +3835,10 @@ function wireJot(){
     var act=b.getAttribute('data-act'),k=b.getAttribute('data-k');
     if(act==='undo'){
       if(!JOT_UNDO)return;
-      var a=jotPendRead();a.unshift(JOT_UNDO);JOT_UNDO=null;jotPendWrite(a);renderJotPending();
+      var a=jotPendRead();
+      if(!a.some(function(e){return e.k===JOT_UNDO.k;}))a.unshift(JOT_UNDO);
+      if(!jotPendWrite(a))return;
+      JOT_UNDO=null;renderJotPending();
       jotStatus('Put back — still pending until logged.');
       var first=box.querySelector('button[data-act]');if(first)first.focus();
       return;
@@ -3706,8 +3947,9 @@ function renderDistribution(){
   var body=document.getElementById('distBody'),badge=document.getElementById('distBadge');
   if(!body)return;
   if(!DISTRIBUTION){var p=document.getElementById('panel-dist');if(p)p.style.display='none';return;}
-  var items=DISTRIBUTION.items||[],html='',firstBadge='',owed=0;
-  items.forEach(function(it){
+  var items=DISTRIBUTION.items||[],html='',firstBadge='',owed=0,roundBlocks=[];
+  items.forEach(function(it,roundIndex){
+    var historic=roundIndex<items.length-1;
     var rec=Array.isArray(it.received)?it.received:[];
     var units=Array.isArray(it.units)?it.units:[];
     var known={};SCHOOLS.forEach(function(s){known[s.name]=1;});
@@ -3725,20 +3967,20 @@ function renderDistribution(){
     // surfaces printing different numbers for the same thing is the defect this review exists for.
     firstBadge=n+' OF '+tot;
     html+='<div class="cluster-h" style="margin-top:20px">'+esc(it.label||'Materials')+
-      '<span class="ch-meta">'+(it.period?esc(it.period)+' · ':'')+n+' of '+tot+' delivered</span></div>';
-    if(it.note)html+='<div class="dist-note">'+esc(it.note)+'</div>';
+      '<span class="ch-meta">'+(it.period?esc(it.period)+' · ':'')+n+' of '+tot+' delivered'+(units.length?' ('+delivered.length+' schools + '+unitsGot.length+' unit'+(unitsGot.length===1?'':'s')+')':'')+'</span></div>';
+    // Provenance follows the working records in a disclosure.
     html+='<div class="kpis" style="margin-bottom:6px">'+
       '<div class="kpi"><div class="n">'+n+'</div><div class="l">delivered</div></div>'+
-      '<div class="kpi"><div class="n">'+pending.length+'</div><div class="l">still owed</div></div>'+
+      '<div class="kpi"><div class="n">'+pending.length+'</div><div class="l">'+(historic?'schools without recorded delivery':'schools still owed')+'</div></div>'+
       '<div class="kpi"><div class="n">'+(tot?Math.round(n/tot*100):0)+'%</div><div class="l">of your turf</div></div>'+
       '</div>';
-    html+='<div class="sub-h">Still owed — '+pending.length+'</div>';
+    html+='<div class="sub-h">'+(historic?'No delivery recorded':'Still owed')+' — '+pending.length+' schools</div>';
     html+=pending.length?distGroupHtml(pending):'<div class="empty">Every school on your turf has these.</div>';
-    html+='<div class="sub-h">Delivered — '+delivered.length+'</div>';
+    html+='<div class="sub-h">Delivered — '+delivered.length+' schools</div>';
     html+=delivered.length?distGroupHtml(delivered):'<div class="empty">Nothing delivered yet.</div>';
     if(units.length){
       html+='<div class="dist-unit">'+units.map(function(u){
-        return (u.received?'<span class="cov-yes">✓</span> ':'<span class="cov-warn">still owed</span> ')+
+        return (u.received?'<span class="cov-yes">✓</span> ':'<span class="cov-warn">'+(historic?'no delivery recorded':'still owed')+'</span> ')+
           '<b>'+esc(u.name)+'</b>'+(u.note?' — '+esc(u.note):'');
       }).join('<br>')+'</div>';
     }
@@ -3748,9 +3990,12 @@ function renderDistribution(){
         ' no school page — '+orphans.map(esc).join(', ')+
         '. Fix the name in dashboard-data.json or the school would show as still owed.</div>';
     }
+    if(it.note)html+='<details class="dist-provenance"><summary>About these counts</summary><div class="dist-note">'+esc(it.note)+'</div></details>';
+    roundBlocks.push({label:[it.label,it.period].filter(Boolean).join(' '),received:n,pending:pending.length+(units.length-unitsGot.length),html:html});html='';
   });
+  html=roundBlocks.slice().reverse().map(function(b,i){return i===0?'<section class="current-round">'+b.html+'</section>':'<details class="round-history"><summary>'+esc(b.label)+' · '+b.received+' delivered · '+b.pending+' without recorded delivery</summary>'+b.html+'</details>';}).join('');
   body.innerHTML=html;
-  if(badge)badge.textContent=firstBadge||'MATERIALS';
+  if(badge)badge.textContent=(items.length&&items[items.length-1].period?items[items.length-1].period+' · ':'')+(firstBadge||'MATERIALS');
   DASH_COUNTS.distOwed=owed;
   updateSidebarBadges();
 }
@@ -4159,7 +4404,7 @@ function wireSearch(){
   });
   box.addEventListener('click',function(e){
     var b=e.target.closest&&e.target.closest('[data-gs-school]');
-    if(b){openSchool(b.getAttribute('data-gs-school'));gsClose();return;}
+    if(b){gsClose();openSchool(b.getAttribute('data-gs-school'),false,inp);return;}
     var rb=e.target.closest&&e.target.closest('[data-gs-rb]');
     if(rb){openRunbook(rb.getAttribute('data-gs-rb'));gsClose();return;}
     if(e.target.closest&&e.target.closest('a.gres'))gsClose(); // link/resource: browser handles the href, just close the panel
@@ -4169,7 +4414,7 @@ function wireSearch(){
   });
   // '/' focuses the search from anywhere (pairs with the 1–9 section keys) — never while typing.
   document.addEventListener('keydown',function(e){
-    if(e.key!=='/'||e.altKey||e.ctrlKey||e.metaKey)return;
+    if(topDialog()||e.key!=='/'||e.altKey||e.ctrlKey||e.metaKey)return;
     var tg=e.target,tag=(tg&&tg.tagName)||'';
     if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(tg&&tg.isContentEditable))return;
     e.preventDefault();inp.focus();
@@ -4226,7 +4471,7 @@ var SECTIONS=[
 ];
 var ACTIVE_SECT='panel-brief'; // default on every open: the morning driver
 var DASH_COUNTS={urgent:0,needsData:0,route:0,issues:0,covGaps:0,covOpen:0,staleVisits:0,recruit:0,brNeed:0,brVac:0,brPend:0,huDraft:0,distOwed:0}; // stashed by renderStatusStrip / renderCoverage / renderVisitClusters / renderMembership / renderBrElection / renderHustle
-var mqLaptop=window.matchMedia?window.matchMedia('(min-width:1100px)'):null;
+var mqLaptop=window.matchMedia?window.matchMedia('(min-width:701px)'):null;
 function isLaptop(){return !!(mqLaptop&&mqLaptop.matches&&DATA_MODE!=='none');}
 /* Phone view switching (2026-08-14). The phone used to render EVERY section into one document —
    24,725px at 390px wide — and the tab bar called scrollIntoView() on it. Mike's phone use is
@@ -4259,7 +4504,7 @@ function showSection(id,opts){
   if(!target||!target.classList||!target.classList.contains('full'))return;
   ACTIVE_SECT=id;
   Array.prototype.forEach.call(document.querySelectorAll('.card.full'),function(c){c.classList.toggle('sect-active',c.id===id);});
-  Array.prototype.forEach.call(document.querySelectorAll('#sidebar .sb-btn[data-sect]'),function(b){b.classList.toggle('active',b.getAttribute('data-sect')===id);});
+  Array.prototype.forEach.call(document.querySelectorAll('#sidebar .sb-btn[data-sect]'),function(b){var on=b.getAttribute('data-sect')===id;b.classList.toggle('active',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
   var onTab=false;
   Array.prototype.forEach.call(document.querySelectorAll('.tabbar button[data-jump]'),function(b){
     var on=b.getAttribute('data-jump')===id;
@@ -4333,7 +4578,7 @@ function renderTabbar(){
 }
 var TAB_MORE=[];
 function closeMoreSheet(){
-  var sh=document.getElementById('moreSheet');if(sh)sh.remove();
+  var sh=document.getElementById('moreSheet');if(sh)sh.remove();syncDialogInert();
   var mb=document.getElementById('tabMore');
   if(mb){mb.setAttribute('aria-expanded','false');mb.focus();}
 }
@@ -4346,7 +4591,7 @@ function toggleMoreSheet(){
   sh.innerHTML='<div class="more-panel"><div class="more-h">More<button class="modal-x" id="moreX" aria-label="Close">×</button></div>'+
     TAB_MORE.map(function(s){return '<button class="more-item" data-jump="'+s.id+'"><span class="more-ic">'+icon(s.ic)+'</span>'+esc(s.label.replace(/&amp;/g,'&'))+'</button>';}).join('')+
     '<button class="more-item" id="moreTheme"><span class="more-ic">◐</span>Switch theme</button></div>';
-  document.body.appendChild(sh);
+  document.body.appendChild(sh);syncDialogInert();
   Array.prototype.forEach.call(sh.querySelectorAll('.more-item[data-jump]'),function(b){
     b.onclick=function(){var id=b.getAttribute('data-jump');closeMoreSheet();navTo(id);};
   });
@@ -4451,12 +4696,23 @@ window.addEventListener('resize',applyLaptopMode);
 // change (build 2026-09-18.3). Guarded: before boot() there is no data and renderHeader exits early.
 window.addEventListener('resize',function(){try{renderHeader();}catch(e){}});
 
+
+function renderSharedActivity(){
+ var panel=document.getElementById('panel-visits');if(!panel)return;
+ var box=document.getElementById('sharedActivityCard');if(!box){box=document.createElement('div');box.id='sharedActivityCard';box.className='shared-activity';panel.querySelector('.sect-title').insertAdjacentElement('afterend',box);}
+ var a=SHARED_ACTIVITY,actions=a&&a.actions||[];if(!a){box.remove();return;} // nothing connected: no dead-end card, and no capture link to offer
+ var h='<div class="shared-entry"><p>Approved activity included through '+esc(a.fetchedAt?builtStamp(a.fetchedAt):'the last connected build')+'.</p></div>';
+ if(a&&a.warnings&&a.warnings.length)h+='<p class="warn">'+esc(a.warnings.join(' '))+'</p>';
+ if(actions.length)h+='<details><summary>Shared follow-ups · '+actions.filter(function(x){return !x.done;}).length+' open</summary><ul>'+actions.map(function(x){return '<li><strong>'+esc(x.school)+'</strong> — '+esc(x.next)+' · '+esc(x.owner)+' · '+(x.done?'completed '+esc(x.done):'due '+esc(x.by))+'</li>';}).join('')+'</ul></details>';
+ box.innerHTML=h;
+}
+
 function boot(){
   resolveData();
   paintTabIcons(); // phone tab-bar SVG icons (harmless when the tab bar is hidden)
   var fns=DATA_MODE==='none'
     ?[renderHeader,renderImport,wireImport,wireTheme]
-    :[renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderNewsletter,renderAugustPush,renderIssues,renderSchoolKpis,renderChips,renderSchoolViews,renderSchools,renderBrElection,renderMembership,renderCoverage,renderVisitPlan,renderVisitClusters,renderVisits,renderDistribution,renderAttention,renderBriefStats,renderLinks,renderHustle,wireHustle,renderActionbar,renderTabbar,wireCalc,wireButtons,wireSearch,renderImport,wireImport,renderJot,wireJot,wireLinks,wireRunbook,renderSidebar,wireTheme,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
+    :[renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderNewsletter,renderAugustPush,renderIssues,renderSchoolKpis,renderChips,renderSchoolViews,renderSchools,renderBrElection,renderMembership,renderCoverage,renderVisitPlan,renderVisitClusters,renderVisits,renderSharedActivity,renderDistribution,renderAttention,renderBriefStats,renderLinks,renderHustle,wireHustle,renderActionbar,renderTabbar,wireCalc,wireButtons,wireSearch,renderImport,wireImport,renderJot,wireJot,wireLinks,wireRunbook,renderSidebar,wireTheme,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
   fns.forEach(function(fn){
     // Log the failure point but never the exception content — an error message must not echo member data (hardening).
     try{fn();}catch(e){console.error('dash:'+fn.name+' failed ('+((e&&e.name)||'error')+')');}
