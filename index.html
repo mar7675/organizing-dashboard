@@ -173,6 +173,13 @@ header.hero{background:var(--card);border:1px solid var(--line);border-top:4px s
    reads past on his way to the day's work, so they get one line and no boxes. */
 .bstats{display:flex;flex-wrap:wrap;gap:6px 26px;margin:16px 0 2px;font-size:12px;color:var(--muted);font-weight:600}
 .bstats b{font-size:26px;font-weight:700;color:var(--ink);line-height:1;margin-right:6px;vertical-align:-3px;font-variant-numeric:tabular-nums}
+/* To-dos door (build 2026-09-22.1): one link to the synced claude.ai list, under the stats. */
+#todosBox:empty{display:none}
+#todosBox{margin:12px 0 4px;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+#todosBox .todos-sub{font-size:12px}
+.todos-link{min-height:40px;font-size:13px;gap:10px;text-decoration:none;flex-wrap:wrap}
+.todos-sub{font-weight:500;color:var(--muted)}
+@media print{#todosBox{display:none}}
 /* School actions (review B2): verb-led title · school · owner · when · one sentence of why, with
    the narrative behind a disclosure. The old queue printed a ~120-word reminder detail inline,
    which filled most of a phone screen with text that is context, not an instruction. */
@@ -1108,6 +1115,7 @@ th,.mem-tbl th{font-size:12px;text-transform:none;letter-spacing:0}
          re-printed counts the strip and the rail were already showing; these are the three
          standing measures that are NOT exceptions, so they belong here and not on the strip. -->
     <div class="bstats" id="briefStats"><!-- built by renderBriefStats() from engine counts --></div>
+    <div id="todosBox"><!-- built by renderTodos() from the optional `todos` key: a door to the synced to-do page, never the list itself --></div>
     <!-- Runway + the 5-day deadline list are KEPT and sit directly under the stats when a clock
          exists (checklist row "Deadline runway | kept, not rendered"). Both self-hide when no case
          carries a computable deadline, which is why they are invisible on today's data. -->
@@ -1378,7 +1386,7 @@ th,.mem-tbl th{font-size:12px;text-transform:none;letter-spacing:0}
   <footer>
     Snapshot data: WTU workspace (school pages + Filed Grievances) + calendar entered from Outlook screenshots, captured <span id="snapFoot">—</span>. Ask to "refresh" or "update" anytime.<br>
     This is a working-aid, not the official record. The CBA controls all grievance timelines — verify any deadline day-by-day before filing.<br>
-    <span class="build-note" id="buildPill">build 2026-09-20.2</span>
+    <span class="build-note" id="buildPill">build 2026-09-23.1</span>
   </footer>
 </div>
 
@@ -1434,6 +1442,12 @@ var NEWSLETTER=null;
    calendar days ahead, turns urgent on its day, and drops itself a week after. Carry-over key like
    links/resources — the refresh never regenerates it. */
 var REMINDERS=[];
+/* To-dos door (build 2026-09-22.1). Mike's own to-do list lives on a private claude.ai page with
+   synced storage, NOT in this file or the data file: a tick made on the phone could never travel
+   back through the one-way OneDrive import, so phone and desktop would disagree about what is done.
+   The Brief carries only the link, from the optional `todos` key. No items and no counts — the
+   dashboard cannot see the list, so it must not claim to. */
+var TODOS=null;
 var DATA_MODE='none'; // 'embedded' | 'imported' | 'none'
 var SHARED_ACTIVITY=null;
 var DATA_META=null;   // {importedAt, source} for imported mode
@@ -1474,6 +1488,7 @@ function adoptData(d){
   DISTRIBUTION=(d.distribution&&Array.isArray(d.distribution.items)&&d.distribution.items.length)?d.distribution:null; // optional (materials distribution) — absent = section hides
   NEWSLETTER=(d.newsletter&&typeof d.newsletter==='object')?d.newsletter:null; // optional (Union Update, 'update newsletter') — absent = Brief block hides
   REMINDERS=Array.isArray(d.reminders)?d.reminders:[]; // optional (dated reminders) — absent = no tier-3 rows in Needs Attention
+  TODOS=(d.todos&&typeof d.todos==='object')?d.todos:null; // optional (to-dos door) — absent = no button on the Brief
   DATA_BUILT=(typeof d.generatedAt==='string')?d.generatedAt:''; // build stamp (builder writes it; older files have none)
   PHONE_SYNC=(d.phoneSync&&typeof d.phoneSync==='object')?d.phoneSync:null; // desktop copy only
 }
@@ -3250,6 +3265,18 @@ function renderBriefStats(){
    SELF-RETIRING: a dated item disappears the day after its date; when the headline and every item
    are past, the whole block hides. A stale newsletter can never sit on the Brief pretending to be
    this week's. */
+// To-dos door (build 2026-09-22.1) — see the TODOS note by the data globals. The href comes from
+// data, so only a claude.ai https URL is accepted; anything else renders nothing.
+function renderTodos(){
+  var host=document.getElementById('todosBox');if(!host)return;
+  var u=(TODOS&&typeof TODOS.url==='string')?TODOS.url:'';
+  if(!/^https:\/\/claude\.ai\/[A-Za-z0-9\/_-]+$/.test(u)){host.innerHTML='';return;}
+  // Build 2026-09-23.1: the page carries Field notes too, so two doors, one per tab (#notes / #todos).
+  host.innerHTML='<a class="btn todos-link" href="'+esc(u)+'#notes" target="_blank" rel="noopener">Field notes</a>'
+    +'<a class="btn todos-link" href="'+esc(u)+'#todos" target="_blank" rel="noopener">To-dos</a>'
+    +'<span class="todos-sub">synced on claude.ai ↗</span>';
+}
+
 function renderNewsletter(){
   var host=document.getElementById('nwsBox');if(!host)return;
   var n=NEWSLETTER;
@@ -4712,7 +4739,7 @@ function boot(){
   paintTabIcons(); // phone tab-bar SVG icons (harmless when the tab bar is hidden)
   var fns=DATA_MODE==='none'
     ?[renderHeader,renderImport,wireImport,wireTheme]
-    :[renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderNewsletter,renderAugustPush,renderIssues,renderSchoolKpis,renderChips,renderSchoolViews,renderSchools,renderBrElection,renderMembership,renderCoverage,renderVisitPlan,renderVisitClusters,renderVisits,renderSharedActivity,renderDistribution,renderAttention,renderBriefStats,renderLinks,renderHustle,wireHustle,renderActionbar,renderTabbar,wireCalc,wireButtons,wireSearch,renderImport,wireImport,renderJot,wireJot,wireLinks,wireRunbook,renderSidebar,wireTheme,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
+    :[renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderNewsletter,renderAugustPush,renderIssues,renderSchoolKpis,renderChips,renderSchoolViews,renderSchools,renderBrElection,renderMembership,renderCoverage,renderVisitPlan,renderVisitClusters,renderVisits,renderSharedActivity,renderDistribution,renderAttention,renderBriefStats,renderTodos,renderLinks,renderHustle,wireHustle,renderActionbar,renderTabbar,wireCalc,wireButtons,wireSearch,renderImport,wireImport,renderJot,wireJot,wireLinks,wireRunbook,renderSidebar,wireTheme,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
   fns.forEach(function(fn){
     // Log the failure point but never the exception content — an error message must not echo member data (hardening).
     try{fn();}catch(e){console.error('dash:'+fn.name+' failed ('+((e&&e.name)||'error')+')');}
