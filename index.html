@@ -492,6 +492,10 @@ details.sch[open] .caret{transform:rotate(90deg)}
 /* The school detail's log: date and kind in one cell, the account in the other. */
 .lg-d{white-space:nowrap;font-variant-numeric:tabular-nums}
 .lg-t{display:block;font-size:11px;font-weight:700;margin-top:1px}
+/* Visit log fields (build 2026-09-23.2): occasion, then labelled Outcome/Next/…, then provenance */
+.lg-f{margin-top:4px}
+.lg-k{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-right:4px}
+.lg-src{margin-top:4px;font-size:12px;color:var(--muted)}
 /* The health sentence under a case title — a full line of its own, not a twelve-word capsule. */
 .gr-health{flex-basis:100%;color:var(--amber);font-size:12px;font-weight:600;margin-top:3px;white-space:normal}
 .notes-list{margin:4px 0 0 16px;padding:0}
@@ -508,6 +512,16 @@ details.sch[open] .caret{transform:rotate(90deg)}
 .wk-btn{padding:1px 9px;font-size:12px;min-height:24px;line-height:1.4;text-transform:none;letter-spacing:0}
 @media(max-width:700px){.wk-btn{min-height:32px;padding:2px 12px}}
 .wk-day.past{opacity:1}
+/* Earlier-this-week fold (build 2026-09-23.2) */
+.wk-earlier{border-bottom:1px dotted var(--line)}
+.wk-earlier>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;min-height:36px;padding:6px 0;font-size:12px;font-weight:700;color:var(--muted)}
+.wk-earlier>summary::-webkit-details-marker{display:none}
+.wk-earlier>summary::before{content:"\25B8";font-size:11px;transition:transform .12s}
+.wk-earlier[open]>summary::before{transform:rotate(90deg)}
+.wk-earlier-n{font-weight:500}
+.wk-earlier .wk-day:last-child{border-bottom:none}
+@media(prefers-reduced-motion:reduce){.wk-earlier>summary::before{transition:none}}
+@media(max-width:700px){.wk-earlier>summary{min-height:44px;font-size:13px}}
 /* Committee-line legend "(* = not yet a WTU member …)" rendered as its own muted line, not inside the value run. */
 .ct-legend{display:block;font-size:11px;color:var(--muted);font-style:italic;margin-top:2px}
 .ct-line .v{min-width:0;overflow-wrap:anywhere}
@@ -546,6 +560,9 @@ details.sch[open] .caret{transform:rotate(90deg)}
 @media(max-width:700px){.dist-row{flex-direction:column;gap:2px}.dist-cl{flex:none}}
 .cov-amber{color:var(--amber);font-weight:700;font-size:11px}
 .cov-muted{color:var(--muted);font-weight:600;font-size:11px}
+/* BR meeting rows and the last-BR-meeting line under the Building Rep (build 2026-09-24.2) */
+.vt-br{color:var(--maroon);font-weight:700}
+.d-brm{font-size:12px;color:var(--muted);margin-top:3px}
 /* .status-strip and .pill.diag retired in build 2026-09-18.3 — the strip became .xstrip (exceptions
    only, defined with the Brief CSS above) and the data dates moved into the header's metadata line. */
 .schfilter{padding:7px 10px;border:1px solid var(--edge);border-radius:10px;font-size:13px;font-family:inherit;background:var(--card);color:var(--ink);min-width:230px}
@@ -610,6 +627,9 @@ body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sideb
 .lnk-e{flex:none;width:24px;text-align:center;font-size:17px}
 .lnk-t{line-height:1.3;overflow-wrap:anywhere}
 .lnk-copy{flex:none}
+/* Link groups + short link under the title (build 2026-09-24.1) */
+#linksBox>.cluster-h:first-child{margin-top:4px}
+.lnk-u{display:block;font-weight:500;font-size:12px;color:var(--muted);margin-top:1px}
 /* .res-prep/.reslnk are the "Visit prep" chips in the school modal — NOT the removed Resource
    Hub panel. The panel's own .res-cats/.res-cat category filters went with it on 2026-08-24. */
 .res-prep{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 2px}
@@ -680,6 +700,18 @@ a.brx-chip.nocontact{background:var(--warn-tint);color:var(--warn-ink);box-shado
 .gsearch{position:relative;margin-top:0;flex:1 1 280px;max-width:440px}
 @media(max-width:860px){.gsearch{flex-basis:100%;max-width:none;margin-top:10px}}
 .gsearch .schfilter{width:100%;box-sizing:border-box}
+/* Phone header, one row (build 2026-09-23.2): title + date on the left, a search icon on the right;
+   the field opens under them on tap. Desktop is untouched — the toggle never shows there. */
+.gs-toggle{display:none}
+@media(max-width:700px){
+  .hero .top{flex-wrap:wrap;align-items:flex-start}
+  .hero .top>div:first-child{flex:1 1 0;min-width:0}
+  .gs-toggle{display:inline-flex;align-items:center;justify-content:center;flex:none;width:44px;height:44px;margin:-6px -6px 0 0;border:0;border-radius:10px;background:none;color:var(--muted);cursor:pointer}
+  .gs-toggle .ic{width:22px;height:22px}
+  .gs-toggle[aria-expanded="true"]{color:var(--maroon);background:var(--tint)}
+  .hero .gsearch{display:none}
+  .hero.search-open .gsearch{display:block;flex-basis:100%}
+}
 .gresults{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow-1);max-height:min(60vh,420px);overflow:auto;z-index:80;padding:6px}
 .gres-grp{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--maroon);font-weight:700;padding:6px 8px 2px}
 .gres{display:block;width:100%;text-align:left;background:none;border:none;font-family:inherit;cursor:pointer;padding:7px 8px;border-radius:10px;color:var(--ink);text-decoration:none;font-size:13px}
@@ -741,9 +773,10 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
   #panel-jot .schfilter{min-height:44px}
   .actionbar .grp-label,.actionbar button[data-jump],.actionbar .sep{display:none}
   .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;background:var(--card);border-top:2px solid var(--maroon);box-shadow:var(--shadow-up);padding:4px 2px calc(env(safe-area-inset-bottom,0px) + 4px)}
-  .tabbar button{flex:1;background:none;border:none;font:inherit;font-size:11px;font-weight:700;color:var(--muted);padding:5px 2px;min-height:44px;cursor:pointer}
-  .tabbar button .ti{display:block;line-height:1;color:var(--muted)}
-  .tabbar button .ti .ic{width:21px;height:21px;margin:0 auto}
+  .tabbar button,.tabbar a.tab-ext{flex:1;background:none;border:none;font:inherit;font-size:11px;font-weight:700;color:var(--muted);padding:5px 2px;min-height:44px;cursor:pointer}
+  .tabbar a.tab-ext{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;text-align:center}
+  .tabbar button .ti,.tabbar a.tab-ext .ti{display:block;line-height:1;color:var(--muted)}
+  .tabbar button .ti .ic,.tabbar a.tab-ext .ti .ic{width:21px;height:21px;margin:0 auto}
   /* Tinted, matching the rail (build 2026-09-18.3). The tab bar is the phone's rail, so leaving it
      a filled maroon block while the desk rail went tinted would have been the same control drawn
      two different ways on two surfaces. 2px indicator above the icon instead of the fill. */
@@ -932,7 +965,15 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
 .school-toolbar select,.school-toolbar input{font:inherit;font-size:14px;font-weight:400;line-height:1.4;color:var(--ink);background:var(--card);border:1px solid var(--edge);padding:7px 9px;border-radius:6px;min-height:36px;max-width:100%;min-width:0}
 .school-toolbar #schoolSort{max-width:230px}
 .view-note{font-size:13px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0}
-#schoolViews{margin-top:6px;gap:7px}
+#schoolViews{margin-top:6px;gap:7px;align-items:center}
+/* "More views" menu beside the two view chips (build 2026-09-23.2); tinted when one of its views is on */
+.sv-more{display:inline-flex}
+.sv-more select{width:auto;min-width:0;border-radius:999px;font-weight:600;padding-right:28px}
+.sv-more.active select{border-color:var(--maroon);color:var(--maroon);background:var(--tint)}
+/* Three controls now, so the phone row WRAPS instead of scrolling sideways (the menu keeps its 16px
+   text so iOS does not zoom on focus, which makes it too wide to share a 390px line). The id pair
+   outranks the older single-id scroll rules further down, whatever their order. */
+@media(max-width:700px){#panel-schools #schoolViews{flex-wrap:wrap;overflow-x:visible;padding-bottom:0}}
 .chip-n{font-size:12px;opacity:1;font-weight:400}
 .d-body{font-size:14px;padding:6px 20px 24px}
 .d-head h2{font-size:20px;font-weight:600}
@@ -1013,7 +1054,8 @@ th,.mem-tbl th{font-size:12px;text-transform:none;letter-spacing:0}
   .school-options{display:none;grid-column:1/-1}
   .school-toolbar.filters-open .school-options{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
   .school-options label:last-child{grid-column:1/-1}
-  .cluster-toggle{width:44px;height:44px}
+  /* 44px tap target kept; the border and the tiny caret made it read as an empty box (audit item 25). */
+  .cluster-toggle{width:44px;height:44px;border-color:transparent;background:none;font-size:18px;margin-left:-12px}
   .modal-body{padding:4px 0 16px}
   .ct-line .r{text-transform:none;letter-spacing:0}
   .school-toolbar input,.school-toolbar select{font-size:16px;min-height:44px;width:100%}
@@ -1075,6 +1117,56 @@ th,.mem-tbl th{font-size:12px;text-transform:none;letter-spacing:0}
 
 
 .shared-activity{margin:0 0 20px;padding-bottom:12px;border-bottom:1px solid var(--line)}.shared-entry{display:flex;align-items:center;justify-content:space-between;gap:16px}.shared-entry p{margin:0;font-size:14px}.shared-entry .btn{min-height:44px;display:inline-flex;align-items:center;white-space:nowrap}.shared-activity li{overflow-wrap:anywhere;margin:10px 0}.shared-activity summary{min-height:44px;cursor:pointer;padding:10px 0}@media(max-width:600px){.shared-entry{align-items:flex-start;flex-direction:column;gap:10px}}
+/* ===== Build 2026-09-23.5: full design audit, items 14, 15, 17, 20, 24, 25 ===== */
+/* 15: Membership at phone width keeps name, members out of total and the ranking rate */
+.mc-tot{display:none}
+.mem-none{font-size:12px;color:var(--muted);align-self:center}
+@media(max-width:700px){.mem-tbl .mc-ph{display:none}.mc-tot{display:inline;color:var(--muted)}}
+/* 17: the not-visited line under Next up, and last visit beside each school still owed */
+.unvisited{margin:12px 0 4px;font-size:13px;line-height:1.7}
+.unvisited-owed{font-size:12px;color:var(--muted);margin-top:2px}
+.dist-lv{font-size:12px;color:var(--muted)}
+/* 20: one set of column widths per table type, shared by every cluster's table */
+@container workspace (min-width:621px){
+  .cov-tbl,.vis-tbl{table-layout:fixed;width:100%}
+  .cov-tbl .cv-s{width:26%}.cov-tbl .cv-w{width:10%}
+  .vis-tbl .vc-s{width:34%}.vis-tbl .vc-d{width:18%}.vis-tbl .vc-n{width:10%}
+}
+/* 24: Coverage Gaps' own content at reading size (it was 11px), one cell for "results not in" */
+#coverageBody td,#coverageBody .cov-muted,#coverageBody .cov-warn{font-size:13px}
+/* 14: at phone width a row is a row, not a stack of labelled boxes. Visits was ~14 screens tall.
+   Placed after the generic card rules (≤700px media and ≤620px container) so it wins by order. */
+@container workspace (max-width:620px){
+  #visitPlan tr,#visitLog tr{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;row-gap:3px;padding:9px 12px}
+  #visitPlan td,#visitLog td,#visitClusters td,#coverageBody td{padding:0;width:auto}
+  #visitPlan td::before,#visitLog td::before,#visitClusters td::before{content:none}
+  #visitPlan td:nth-child(1){grid-column:1;grid-row:1;font-weight:600}
+  #visitPlan td:nth-child(5){grid-column:2;grid-row:1;text-align:right;font-size:12px;color:var(--muted);white-space:nowrap}
+  #visitPlan td:nth-child(2){grid-column:1;grid-row:2;font-size:12px;color:var(--muted)}
+  #visitPlan td:nth-child(4){grid-column:2;grid-row:2;text-align:right}
+  #visitPlan td:nth-child(3){grid-column:1/-1;grid-row:3;font-size:13px}
+  #visitLog td:nth-child(2){grid-column:1;grid-row:1;font-weight:600}
+  #visitLog td:nth-child(1){grid-column:2;grid-row:1;font-size:12px;color:var(--muted);white-space:nowrap}
+  #visitLog td:nth-child(3){grid-column:1/-1;grid-row:2;font-size:11px}
+  #visitLog td:nth-child(4){grid-column:1/-1;grid-row:3}
+  #visitClusters tr{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0;padding:9px 4px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:none}
+  #visitClusters td:nth-child(1){flex:1 1 auto;min-width:0}
+  #visitClusters td:nth-child(2),#visitClusters td:nth-child(3){display:none}
+  #visitClusters td:nth-child(4){flex:none;text-align:right;white-space:nowrap}
+  #coverageBody tr{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;padding:9px 12px}
+  #coverageBody td:first-child{flex-basis:100%;font-weight:600}
+  #coverageBody td[data-label="Ward"]{display:none}
+  #coverageBody td::before{content:attr(data-short) " ";display:inline;font-size:12px;color:var(--muted);font-weight:600;text-transform:none;letter-spacing:0}
+  #coverageBody td:first-child::before,#coverageBody td.cov-pend::before{content:none}
+  #visitPlan tr:first-child,#visitLog tr:first-child,#visitClusters tr:first-child,#coverageBody tr:first-child{display:none}
+}
+/* 25: Schools toolbar on the phone. The menu keeps 16px so iOS does not zoom on focus; the chips come
+   up to meet it, and the "Find school" caption goes (the placeholder says the same thing). */
+@media(max-width:700px){
+  #schoolViews .chip{font-size:14px}
+  .sv-more select{font-size:16px;font-weight:600;min-height:44px}
+  .school-search .ss-cap{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+}
 </style>
 </head>
 <body>
@@ -1091,6 +1183,8 @@ th,.mem-tbl th{font-size:12px;text-transform:none;letter-spacing:0}
         <div class="app-name">Organizing Dashboard</div>
         <div class="when" id="whenLine">—</div>
       </div>
+      <!-- Phone only (build 2026-09-23.2): search sits behind this icon so the header is one row. -->
+      <button type="button" class="gs-toggle" id="gsToggle" aria-label="Search the dashboard" aria-expanded="false" aria-controls="gSearch"></button>
       <div class="gsearch"><input type="search" id="gSearch" class="schfilter" placeholder="Search schools, contacts, links, resources, runbook…" aria-label="Search the dashboard" autocomplete="off" title="Press / to jump here"><div class="gresults" id="gResults" style="display:none"></div><div id="gStatus" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div></div>
     </div>
   </header>
@@ -1181,7 +1275,7 @@ th,.mem-tbl th{font-size:12px;text-transform:none;letter-spacing:0}
     <h1 class="sect-title">Schools <span class="daystamp" id="schMeta"></span></h1>
     <div class="toolbar" id="schoolViews" role="group" aria-label="School views within current search and geography filters"><!-- built by renderSchoolViews(); defaults to Needs attention --></div>
     <div class="school-toolbar" id="schoolToolbar">
-      <label class="school-search">Find school<input type="search" id="schoolFilter" class="schfilter" placeholder="School name…"></label>
+      <label class="school-search"><span class="ss-cap">Find school</span><input type="search" id="schoolFilter" class="schfilter" placeholder="School name…"></label>
       <button type="button" class="btn school-options-toggle" id="schoolOptionsToggle" aria-controls="schoolOptions" aria-expanded="false">Filters and sort</button>
       <div class="school-options" id="schoolOptions">
       <label>Cluster<select id="clusterFilter" aria-label="Filter by cluster"></select></label>
@@ -1198,14 +1292,16 @@ th,.mem-tbl th{font-size:12px;text-transform:none;letter-spacing:0}
   <div class="card full" id="panel-membership" style="margin-top:16px">
     <h1 class="sect-title">Membership <span class="badge snap" id="memSnap">MEMBERSHIP</span></h1>
     <div id="memBody"></div>
-    <div class="sectnote">Cluster-wide density and each school's non-member rate from the WTU database snapshot. Priorities are ranked by non-member rate (priority ≥25%, watch 15–25%). Sourced from <b>Organizing/Membership Database (Restricted)</b> — ask me to "update membership" after importing a new snapshot.</div>
+    <details class="sectnote gr-note" style="margin-top:14px"><summary>How this works</summary><div style="margin-top:6px;max-width:92ch">Cluster-wide density and each school's non-member rate from the WTU database snapshot. Priorities are ranked by non-member rate (priority ≥25%, watch 15–25%). Sourced from <b>Organizing/Membership Database (Restricted)</b> — ask me to "update membership" after importing a new snapshot.</div></details>
   </div>
 
   <div class="card full" id="panel-coverage" style="margin-top:16px">
     <h1 class="sect-title">Coverage Gaps</h1>
     <div class="kpis" id="coverageKpis"></div>
     <div id="coverageBody"></div>
-    <div class="sectnote">Seat states per school: <b>✓ seated</b> · <b>vacant</b> (election held, BR seat empty) · <b>results outstanding</b> (no 26-27 results received — unknown, not empty) · <b>none listed</b> (results in, committee line blank). The Building Rep <em>is</em> the SCAC Chair (one person), but every school still needs a SCAC committee, tracked separately. A school drops off once all three are filled in on its page. Fills in as you log contacts; ask me to "refresh" after updating school pages.</div>
+    <!-- Build 2026-09-23.5 (audit item 21): the legend is reference, not briefing, so it sits behind a
+         disclosure like the Grievances panel's "How these stages and dates are computed". -->
+    <details class="sectnote gr-note" style="margin-top:14px"><summary>How this works</summary><div style="margin-top:6px;max-width:92ch">Seat states per school: <b>✓ seated</b> · <b>vacant</b> (election held, BR seat empty) · <b>26-27 results not in</b> (no results received, so every seat is unknown, not empty) · <b>none listed</b> (results in, committee line blank). The Building Rep <em>is</em> the SCAC Chair (one person), but every school still needs a SCAC committee, tracked separately. A school drops off once all four seats are filled in on its page. Fills in as you log contacts; ask me to "refresh" after updating school pages.</div></details>
   </div>
 
   <div class="card full" id="panel-visits" style="margin-top:16px">
@@ -1220,7 +1316,7 @@ th,.mem-tbl th{font-size:12px;text-transform:none;letter-spacing:0}
   <div class="card full" id="panel-dist" style="margin-top:16px">
     <h1 class="sect-title">Materials Distribution <span class="badge snap" id="distBadge">MATERIALS</span></h1>
     <div id="distBody"><!-- built by renderDistribution(): who has it, who is still owed --></div>
-    <div class="sectnote">Who has received a piece of WTU gear or material and who has not. Only the <b>received</b> side is recorded. For the current round, <b>still owed is worked out from your school list every time this page opens</b>. Earlier rounds show delivery history, so it can never go stale against a rename or a new school. Tell me "log sweatshirts to &lt;school&gt;" after a delivery and I'll add it — a plain refresh never changes this list.</div>
+    <details class="sectnote gr-note" style="margin-top:14px"><summary>How this works</summary><div style="margin-top:6px;max-width:92ch">Who has received a piece of WTU gear or material and who has not. Only the <b>received</b> side is recorded. <b>Still owed is worked out from your school list every time this page opens</b>, counting every school year of the same gear, so a school served last year is not owed again, and the list can never go stale against a rename or a new school. Each year's own list sits underneath as a record of when. Tell me "log sweatshirts to &lt;school&gt;" after a delivery and I'll add it — a plain refresh never changes this list.</div></details>
   </div>
 
   <div class="card full" id="panel-hustle" style="margin-top:16px">
@@ -1243,7 +1339,7 @@ th,.mem-tbl th{font-size:12px;text-transform:none;letter-spacing:0}
       <input type="search" id="lnkFilter" class="schfilter" placeholder="Type to filter links…" aria-label="Filter links by name">
     </div>
     <div id="linksBox"></div>
-    <div class="sectnote">Every link opens in a new tab; <b>Copy</b> grabs the URL for texting or emailing a member. The list is maintained from <b>00_Resources/WTU Important Links.xlsx</b> — edit the spreadsheet, then ask me to "update links."</div>
+    <div class="sectnote">Every link opens in a new tab; <b>Copy</b> grabs the URL for texting or emailing a member. Grouped by the spreadsheet's <b>Group</b> column, in row order. The list is maintained from <b>00_Resources/WTU Important Links.xlsx</b> — edit the spreadsheet, then ask me to "update links."</div>
   </div>
 
   <!-- The Resource Hub PANEL was removed 2026-08-24. Its 11 web-linked items were 100% duplicates of
@@ -1317,7 +1413,7 @@ th,.mem-tbl th{font-size:12px;text-transform:none;letter-spacing:0}
     <div class="sectnote" style="margin-top:8px">Capture it before you forget. A Visit or a Conversation builds the exact <b>Visit &amp; Conversation Log</b> row its school page takes, so pasting it to Claude at the desk logs it as written. Share or Copy sends it out (Mail, Messages, Notes) and keeps a copy here, <b>pending until logged</b> — nothing on this page writes to the dashboard or the school page.</div>
     <div class="toolbar" style="align-items:flex-end">
       <div><label class="jot-lbl" for="jotSchool">School</label><select id="jotSchool" class="schfilter" style="min-width:200px"></select></div>
-      <div><label class="jot-lbl" for="jotType">Type</label><select id="jotType" class="schfilter" style="min-width:150px"><option>Visit</option><option>Conversation</option><option>Issue</option><option>Contact update</option><option>Reminder</option></select></div>
+      <div><label class="jot-lbl" for="jotType">Type</label><select id="jotType" class="schfilter" style="min-width:150px"><option>Visit</option><option>Conversation</option><option>BR meeting</option><option>Principal/BR meeting</option><option>Issue</option><option>Contact update</option><option>Reminder</option></select></div>
       <div id="jotDateWrap"><label class="jot-lbl" for="jotDate">Date</label><input type="date" id="jotDate" class="schfilter" style="min-width:150px"></div>
     </div>
     <div class="jot-hint" id="jotTypeHint"></div>
@@ -1386,7 +1482,7 @@ th,.mem-tbl th{font-size:12px;text-transform:none;letter-spacing:0}
   <footer>
     Snapshot data: WTU workspace (school pages + Filed Grievances) + calendar entered from Outlook screenshots, captured <span id="snapFoot">—</span>. Ask to "refresh" or "update" anytime.<br>
     This is a working-aid, not the official record. The CBA controls all grievance timelines — verify any deadline day-by-day before filing.<br>
-    <span class="build-note" id="buildPill">build 2026-09-23.1</span>
+    <span class="build-note" id="buildPill">build 2026-09-24.2</span>
   </footer>
 </div>
 
@@ -1405,7 +1501,7 @@ var MEMBERSHIP={},MEMBERSHIP_DATE='',MEMBERSHIP_HISTORY=[]; // optional overlay 
 /* Membership VIEW state (build 2026-07-17.2): cluster filter, tier filter, and sort are
    session-only — they reset on reload and must never leak into DASH_COUNTS (the sidebar
    badge and Brief tile always stay org-wide). */
-var MEM_SEL={},MEM_TIER='',MEM_SORT={key:'nonRate',dir:-1};
+var MEM_SEL={},MEM_TIER='focus',MEM_SORT={key:'nonRate',dir:-1}; // 'focus' = every school at 15%+ non-member (audit item 16)
 var RESOURCES=null; // optional Resource Hub data ({base, items:[{title,cat,tags,path,url,use,emoji}]}); absent = section hides
 var HUSTLE=null; // optional Hustle Texts data ({capChars, segmentChars, templates:[…], sends:[…]}); absent = section hides
 /* Backup freshness ({checked, warnDays, local:{lastRun}, external:{lastRun}, warn}) — written by
@@ -1436,12 +1532,8 @@ var DISTRIBUTION=null;
    No newsletter text is ever authored in this file; it rides dashboard-data.json exactly like
    links/resources, refreshed when Mike drops a newsletter ("update newsletter"). */
 var NEWSLETTER=null;
-/* Dated reminders (build 2026-08-14.2): the ONE authored input to Needs Attention — everything else
-   in that queue is derived from cases, schools and backup age. Kept deliberately narrow so it cannot
-   become a second to-do list: each entry is {date, title, detail?, lead?, target?}, it appears `lead`
-   calendar days ahead, turns urgent on its day, and drops itself a week after. Carry-over key like
-   links/resources — the refresh never regenerates it. */
-var REMINDERS=[];
+/* The `reminders` key (dated reminders, builds 2026-08-14.2 → 2026-09-23.1) is retired: its entries
+   moved to the To-dos page on 2026-09-23 and the shell no longer reads it. See attnSignals() tier 3. */
 /* To-dos door (build 2026-09-22.1). Mike's own to-do list lives on a private claude.ai page with
    synced storage, NOT in this file or the data file: a tick made on the phone could never travel
    back through the one-way OneDrive import, so phone and desktop would disagree about what is done.
@@ -1478,7 +1570,7 @@ function validateData(d){
 function adoptData(d){
   SHARED_ACTIVITY=d.sharedActivity||null;
   if(d.calendar&&Array.isArray(d.calendar.duty)&&Array.isArray(d.calendar.nonWorking)){NON_WORKING=new Set(d.calendar.nonWorking);DUTY=d.calendar.duty;}
-  SNAPSHOT_DATE=d.snapshotDate;EVENTS=d.events||[];SCHOOLS=d.schools||[];GRIEVANCES=d.grievances||[];
+  SNAPSHOT_DATE=d.snapshotDate;EVENTS=d.events||[];SCHOOLS=d.schools||[];GRIEVANCES=(d.grievances||[]).map(splitMeetingStatus);
   LINKS=Array.isArray(d.links)?d.links:[]; // optional key (added build .4) — older data files simply hide the Links section
   if(d.membership&&d.membership.bySchool){MEMBERSHIP=d.membership.bySchool;MEMBERSHIP_DATE=d.membership.snapshotDate||'';MEMBERSHIP_HISTORY=d.membership.history||[];}else{MEMBERSHIP={};MEMBERSHIP_DATE='';MEMBERSHIP_HISTORY=[];} // optional overlay — absent = membership UI simply hides
   RESOURCES=(d.resources&&Array.isArray(d.resources.items)&&d.resources.items.length)?d.resources:null; // optional (Resource Hub, 'update resources') — absent = section hides
@@ -1487,7 +1579,6 @@ function adoptData(d){
   SOURCES=(d.sources&&Array.isArray(d.sources.items)&&d.sources.items.length)?d.sources:null; // optional (source freshness) — absent = status strip stays silent about it
   DISTRIBUTION=(d.distribution&&Array.isArray(d.distribution.items)&&d.distribution.items.length)?d.distribution:null; // optional (materials distribution) — absent = section hides
   NEWSLETTER=(d.newsletter&&typeof d.newsletter==='object')?d.newsletter:null; // optional (Union Update, 'update newsletter') — absent = Brief block hides
-  REMINDERS=Array.isArray(d.reminders)?d.reminders:[]; // optional (dated reminders) — absent = no tier-3 rows in Needs Attention
   TODOS=(d.todos&&typeof d.todos==='object')?d.todos:null; // optional (to-dos door) — absent = no button on the Brief
   DATA_BUILT=(typeof d.generatedAt==='string')?d.generatedAt:''; // build stamp (builder writes it; older files have none)
   PHONE_SYNC=(d.phoneSync&&typeof d.phoneSync==='object')?d.phoneSync:null; // desktop copy only
@@ -1533,6 +1624,28 @@ function motionOK(){try{return !window.matchMedia||!window.matchMedia('(prefers-
    ESCAPE FIRST, then promote the marker — the input to the regex is already inert, so no markup can
    survive from the source text. Bold is the ONLY marker handled; everything else stays literal. */
 function escNote(s){return esc(s).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');}
+/* Visit log cell as fields (build 2026-09-23.2). A row's text is "occasion. Outcome: … Next: …
+   Delivered: … Done: …" (the same markers dashboard/parse-school-pages.ps1 reads, bold label
+   allowed). Printed as one paragraph, the outcome and the next step were buried in it, next to
+   record-keeping about how the row was logged. Now each field is its own labelled line, and any
+   sentence of the occasion that begins "Logged …" (its provenance) moves to a muted line under the
+   row. Every word still prints; only the order and weight change. Text with no markers and no
+   provenance renders exactly as before. */
+function visitCellHtml(txt){
+  var t=String(txt||''),re=/(?:\*\*)?\b(Outcome|Next|Delivered|Done):(?:\*\*)?\s*/g,m,last=0,key='',segs=[];
+  var bal=function(s){s=s.trim();if(((s.match(/\*\*/g)||[]).length)%2)s=s.replace(/\*\*(?!.*\*\*)/,'');return s;};
+  while((m=re.exec(t))){segs.push([key,t.slice(last,m.index)]);key=m[1];last=re.lastIndex;}
+  segs.push([key,t.slice(last)]);
+  var occ=bal(segs[0][1]),fields=segs.slice(1).map(function(x){return [x[0],bal(x[1])];}).filter(function(x){return x[1];});
+  var sents=occ.replace(/(\.(?:\*\*)?)\s+/g,'$1\u0001').split('\u0001'); // sentences end at a period only — a ";" clause stays with its sentence
+  var prov=sents.filter(function(x){return /^(?:\*\*)?Logged\b/i.test(x);});
+  var keep=sents.filter(function(x){return !/^(?:\*\*)?Logged\b/i.test(x);});
+  if(!fields.length&&!prov.length)return escNote(t);
+  var h=keep.length?'<div class="lg-occ">'+escNote(bal(keep.join(' ')))+'</div>':'';
+  fields.forEach(function(f){h+='<div class="lg-f"><span class="lg-k">'+f[0]+'</span> '+escNote(f[1])+'</div>';});
+  if(prov.length)h+='<div class="lg-src">'+escNote(bal(prov.join(' ')))+'</div>';
+  return h;
+}
 /* A note whose FIRST characters are a bold marker is one Mike deliberately flagged — it is his own
    authoring convention — a note he wants flagged opens with a bolded lead — not a keyword guess, and it
    splits his notes cleanly: flags are bolded, records are not. Multi-note entries are split on the same
@@ -1591,6 +1704,49 @@ function todayIso(){return localIso(new Date());}
 // "filed" line means scheduled/planned — it must not advance the stage or stop the countdown.
 function held(d){return !!d&&d<=todayIso();}
 function futureDate(d){return (d&&d>todayIso())?d:null;}
+/* A MEETING IS HELD ONLY WHEN THE LOG SAYS SO (build 2026-09-23.4). The two meeting lines are
+   "scheduled / held", one date for both, and held() above read any PAST date as held. So a meeting
+   whose outcome was never recorded printed as "held", stopped being something to chase, and dropped
+   the "meeting by" deadline it should have kept. The log now writes the status after the date,
+   "YYYY-MM-DD (held)", and the refresh copies it into stageNMeetingStatus. Only "held" confirms. A
+   past date with any other status, or with none (every record written before this build), is
+   UNCONFIRMED: shown as set for that date with the outcome missing, deadline still live, and flagged.
+   Time passing never promotes a meeting to held. Filing lines are unchanged; held() still governs them. */
+function meetingStatus(g,n){return String(g['stage'+n+'MeetingStatus']||'').trim().toLowerCase();}
+// Guard for a refresh that copies the log line whole ("YYYY-MM-DD (held)") into the date field: split
+// the word back out rather than let an unparseable date through. Only fills an EMPTY status; runs once
+// per case at import, on a copy, so the data object itself is never altered.
+function splitMeetingStatus(g){
+  if(!g||typeof g!=='object')return g;
+  var c=null;
+  [1,2].forEach(function(n){
+    var m=String(g['stage'+n+'MeetingHeld']||'').match(/^\s*(\d{4}-\d{2}-\d{2})\s*\(\s*([A-Za-z]+)\s*\)\s*$/);
+    if(!m)return;
+    c=c||Object.assign({},g);
+    c['stage'+n+'MeetingHeld']=m[1];
+    if(!String(g['stage'+n+'MeetingStatus']||'').trim())c['stage'+n+'MeetingStatus']=m[2];
+  });
+  return c||g;
+}
+function meetingHeld(g,n){return held(g['stage'+n+'MeetingHeld'])&&meetingStatus(g,n)==='held';}
+function meetingUnconfirmed(g,n){return held(g['stage'+n+'MeetingHeld'])&&meetingStatus(g,n)!=='held';}
+// The one sentence for a past meeting that is not confirmed held. Postponed and cancelled are
+// recorded facts, so they are said as such; a blank status is only ever "not recorded".
+function meetingNote(g,n){
+  var d=prettyNoYr(g['stage'+n+'MeetingHeld']),s=meetingStatus(g,n);
+  if(s==='postponed')return 'Stage '+n+' meeting postponed (it was set for '+d+'); record the new date in the log';
+  if(s==='cancelled')return 'Stage '+n+' meeting cancelled (it was set for '+d+'); record what happens next in the log';
+  return 'Stage '+n+' meeting was set for '+d+' and the log does not say whether it was held; record held, postponed or cancelled';
+}
+// Card date for a meeting line: says which of scheduled / held / not recorded it is.
+function mWhen(g,n){
+  var d=g['stage'+n+'MeetingHeld'];if(!d)return '';
+  var s=meetingStatus(g,n);
+  if(futureDate(d))return prettyMed(d)+' (scheduled)';
+  if(s==='held')return prettyMed(d)+' (held)';
+  if(s==='postponed'||s==='cancelled')return prettyMed(d)+' ('+s+')';
+  return prettyMed(d)+' (not confirmed)'; // short: .gr-line .v is nowrap; the health line says the rest
+}
 // School working days remaining from `fromStr` up to (not counting) the deadline day. -1 = past due, 0 = due today.
 // Pure so the self-test can pin it to fixed dates; workingDaysLeft() is the live wrapper.
 function workingDaysLeftFrom(fromStr,deadlineStr){
@@ -1604,6 +1760,15 @@ function workingDaysLeftFrom(fromStr,deadlineStr){
 function workingDaysLeft(deadlineStr){return workingDaysLeftFrom(todayIso(),deadlineStr);}
 function pretty(s){return parseD(s).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});}
 function prettyNoYr(s){return parseD(s).toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+/* ONE DATE STYLE for the Schools, Membership, Visits, Coverage and Materials panels (build 2026-09-23.5,
+   audit item 18): "Sep 15" for this year, "Sep 15, 2025" once it is another year. Before, the same
+   panels printed "Sep 15", "2026-09-15" and "Aug 31, 2026" side by side. Legal dates in Grievances
+   keep their full form on purpose. */
+function dShort(s){return !s?'':String(s).slice(0,4)===todayIso().slice(0,4)?prettyNoYr(s):prettyMed(s);}
+function dDay(s){return !s?'':parseD(s).toLocaleDateString('en-US',{weekday:'short'})+', '+dShort(s);}
+var NO_VISIT='No visit yet'; // the one phrase for "no visit logged this school year" (audit item 18)
+// The same 700px line the phone CSS uses. Read at render time, so a rotated phone gets the right answer.
+function isPhoneWidth(){try{return !!(window.matchMedia&&window.matchMedia('(max-width:700px)').matches);}catch(e){return false;}}
 /* A school page's log is a "Visit & CONVERSATION Log" — it legitimately holds both, and until
    2026-09-15 every row in it was counted as a visit. That put Kramer on the board as "visited
    2026-08-19" when 8/19 was a master schedule arriving by EMAIL, and it is the same shape of bug as
@@ -1613,9 +1778,25 @@ function prettyNoYr(s){return parseD(s).toLocaleDateString('en-US',{month:'short
    defaults to CONVERSATION on purpose: the failure mode worth preventing is a desk contact silently
    promoting itself to a visit, not the reverse. The Visit Log panel and the school modal still show
    both kinds, labelled — nothing is hidden, it is only counted correctly. */
-function visitRows(s){return s.visits.filter(function(v){return (v[2]||'conversation')==='visit';});}
-function visitType(v){return (v[2]||'conversation')==='visit'?'visit':'conversation';}
+/* Two more row types (build 2026-09-24.2), both from Mike 2026-09-24:
+     "br"           *(BR meeting)*           a meeting with the Building Rep AT THE SCHOOL. Not a visit —
+                                             his 9/16 ruling stands — but no longer lost among emails:
+                                             it has its own label and feeds lastBrMeeting().
+     "principal-br" *(Principal/BR meeting)* a joint meeting with the principal and the BR that is NOT a
+                                             grievance meeting (those live in the grievance log). It
+                                             COUNTS as a visit, on his 9/16 ruling that a principal
+                                             meeting does, and it also feeds lastBrMeeting().
+   Any type this file does not know still reads as a conversation, so an older shell (which knew only
+   visit/conversation) shows both new kinds as conversations rather than breaking. */
+var VTYPE_LABEL={visit:'Visit',conversation:'Conversation',br:'BR meeting','principal-br':'Principal/BR meeting'};
+function visitType(v){var t=String(v[2]||'conversation');return VTYPE_LABEL.hasOwnProperty(t)?t:'conversation';}
+function countsAsVisit(t){return t==='visit'||t==='principal-br';}
+function isBrType(t){return t==='br'||t==='principal-br';}
+function vtLabel(t){return VTYPE_LABEL[t]||'Conversation';}
+function vtClass(t){return countsAsVisit(t)?'cov-yes':t==='br'?'vt-br':'cov-muted';}
+function visitRows(s){return s.visits.filter(function(v){return countsAsVisit(visitType(v));});}
 function lastVisit(s){var vr=visitRows(s);return vr.length?vr.map(v=>v[0]).sort().slice(-1)[0]:null;}
+function lastBrMeeting(s){var d=s.visits.filter(function(v){return isBrType(visitType(v));}).map(function(v){return v[0];}).sort();return d.length?d[d.length-1]:null;}
 // Key by member + school + violation date so one member with two grievances never collides.
 function grId(g){return 'gr-'+String(g.member+'-'+(g.school||'')+'-'+(g.violationDate||'')).replace(/[^A-Za-z0-9]+/g,'-');}
 // Counted-day list for the calculator's "show the day-by-day count" (mirrors nthWorkingInclusive / addWorkingDays).
@@ -1738,7 +1919,13 @@ function dataBits(){
   if(bkq&&!bkq.stale&&!bkq.never)add('backup '+(bkq.age===0?'today':bkq.age+'d'),true);
   // Build 2026-09-18.1: returns the pieces, not markup. These print in the header's metadata line
   // (where dates belong) instead of on the strip, which is now exceptions only.
-  return {bits:bits,stale:stale,warnAt:warnAt};
+  // Plain words for a stale source (build 2026-09-23.2): "Reconciliation source stale" named the
+  // mechanism, not the file. Now it says which list is old and by how much.
+  var staleText=s?s.items.filter(function(x){return x.stale;}).map(function(x){
+    var nm=/LMER/i.test(x.label)?'DCPS staff list':/database snapshot/i.test(x.label)?'membership snapshot':x.short;
+    return nm+' is '+x.age+' days old';
+  }).join(' · '):'';
+  return {bits:bits,stale:stale,warnAt:warnAt,staleText:staleText};
 }
 /* Backup freshness segment. The T7 lives unplugged, so a stale external copy is invisible by
    design — the hourly job just skips. This is where it stops being invisible. Amber (not red):
@@ -1834,8 +2021,11 @@ function orderedWards(){
 function renderHeader(){
   var line=document.getElementById('whenLine');if(!line)return;
   // Cluster labels come from the data, not the markup — the hosted shell carries no identity (hardening item 8).
-  var left=[new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})];
-  if(SCHOOLS.length)left.push('Clusters '+orderedClusters().join(' · '));
+  // Phone (build 2026-09-23.2): a short date and no cluster list, so the line fits beside the search
+  // icon. Re-runs on resize (see the listener by the Jot constants), so a rotate picks the right form.
+  var narrowHdr=!!(window.matchMedia&&window.matchMedia('(max-width:700px)').matches);
+  var left=[new Date().toLocaleDateString('en-US',narrowHdr?{weekday:'short',month:'short',day:'numeric'}:{weekday:'long',month:'long',day:'numeric',year:'numeric'})];
+  if(SCHOOLS.length&&!narrowHdr)left.push('Clusters '+orderedClusters().join(' · '));
   // No data on this device yet (the phone before its first import): there is no snapshot to date and
   // no sources to age, so print the day and the one thing that still matters — whether the engine
   // passed its self-test. Previously this path only painted a pill, so it needs its own exit now.
@@ -1871,9 +2061,9 @@ function renderHeader(){
   var st=selfTestPasses();
   if(!st)right.push('<span class="bad">DEADLINE MATH CHECK FAILED — do not trust deadlines</span>');
   var html=left.join(' · ');
-  if(right.length)html+='<span class="sep">|</span>'+right.join(' · ')+(d.stale?' <span class="warn">— reconciliation source stale (warns at '+d.warnAt+'d)</span>':'');
+  if(right.length)html+='<span class="sep">|</span>'+right.join(' · ')+(d.stale?' <span class="warn">— '+esc(d.staleText||'a source list is old')+' (warns at '+d.warnAt+' days)</span>':'');
   var previous=line.querySelector('details'),wasOpen=previous&&previous.open;
-  var status=left.join(' · ')+(d.stale?' · <span class="warn">Reconciliation source stale</span>':'');
+  var status=left.join(' · ')+(d.stale?' · <span class="warn">'+esc(d.staleText||'A source list is old')+'</span>':'');
   if(DATA_MODE==='imported')status+=' · '+d.bits.filter(function(x){return !x.desk;}).map(function(x){return esc(x.text);}).join(' · ');
   if(!st)status+=' · <span class="bad">DEADLINE MATH CHECK FAILED — do not trust deadlines</span>';
   line.innerHTML='<details class="source-status"'+(wasOpen?' open':'')+'><summary>'+status+'</summary><div>'+html+'</div></details>';
@@ -1937,6 +2127,7 @@ function renderCalendar(){
    Mike reviews — and showed Sat/Sun as dashes with the same weight as workdays. Weekends render only
    when they carry an event. A day past the calendar on file says so rather than reading as free. */
 var WEEK_OFFSET=0; // 0 = the week containing today; -1 previous; +1 next
+var WEEK_EARLIER_OPEN=false; // "Earlier this week" fold — remembered for the page's life, not across opens
 function weekStart(offset){
   var d=parseD(todayIso());var dow=(d.getDay()+6)%7; // Monday = 0
   d.setDate(d.getDate()-dow+7*(offset||0));return d;
@@ -1954,13 +2145,14 @@ function renderWeek(){
     '<span class="wk-nav"><button type="button" class="btn wk-btn" data-wk="-1" aria-label="Previous week" title="Previous week">&lsaquo;</button>'+
     '<button type="button" class="btn wk-btn" data-wk="+1" aria-label="Next week" title="Next week">&rsaquo;</button>'+
     '<button type="button" class="btn wk-btn" data-wk="0">This week</button>'+'</span>';
-  let html='';
+  let html='',past='',pastN=0,pastFirst='',pastLast='';
   for(let i=0;i<7;i++){
     const d=new Date(start);d.setDate(d.getDate()+i);
     const ds=localIso(d);
     const evs=EVENTS.filter(function(e){return e.date===ds;});
     if(i>=5&&!evs.length)continue; // weekends only when they carry something
     const isT=ds===t;
+    const foldPast=WEEK_OFFSET===0&&ds<t; // build 2026-09-23.2 — see the note at the fold below
     const lbl=d.toLocaleDateString('en-US',{weekday:'short',day:'numeric'})+(isT?'<br>today':'');
     let cell;
     // TODAY'S ROW ABSORBS TODAY'S CALENDAR: it is the only row that prints a location, and CSS
@@ -1970,9 +2162,21 @@ function renderWeek(){
     }).join('');
     else if(through&&ds>through)cell='<div class="wk-none">&mdash; beyond the calendar on file (ends '+prettyNoYr(through)+')</div>';
     else cell='<div class="wk-none">&mdash;</div>';
-    html+='<div class="wk-day'+(isT?' today':ds<t?' past':'')+'"><div class="wk-date'+(isT?' today':'')+'">'+lbl+'</div><div style="flex:1;min-width:0">'+cell+'</div></div>';
+    const row='<div class="wk-day'+(isT?' today':ds<t?' past':'')+'"><div class="wk-date'+(isT?' today':'')+'">'+lbl+'</div><div style="flex:1;min-width:0">'+cell+'</div></div>';
+    if(foldPast){past+=row;pastN+=evs.length;if(!pastFirst)pastFirst=d;pastLast=d;}
+    else html+=row;
+  }
+  /* EARLIER THIS WEEK (build 2026-09-23.2). On the phone the whole first screen was days already
+     over — Mon and Tue filled it on a Wednesday. But those days are not dropped (17.2 put them back
+     because Mike reviews them): in the CURRENT week they fold into one row above today that opens
+     with a tap and stays open while the page is up. Other weeks render every day as before. */
+  if(past){
+    const wd=function(x){return x.toLocaleDateString('en-US',{weekday:'short'});};
+    const span=pastFirst===pastLast?wd(pastFirst):wd(pastFirst)+'–'+wd(pastLast);
+    html='<details class="wk-earlier"'+(WEEK_EARLIER_OPEN?' open':'')+'><summary>Earlier this week <span class="wk-earlier-n">'+span+' · '+pastN+' event'+(pastN===1?'':'s')+'</span></summary>'+past+'</details>'+html;
   }
   box.innerHTML=html;
+  var ew=box.querySelector('details.wk-earlier');if(ew)ew.addEventListener('toggle',function(){WEEK_EARLIER_OPEN=ew.open;});
   Array.prototype.forEach.call((h3||box).querySelectorAll('.wk-btn'),function(b){
     b.onclick=function(){
       var v=b.getAttribute('data-wk');
@@ -2001,7 +2205,10 @@ function grievStage(g){
   if(g.outcome)return 'Resolved';
   if(held(g.stage3FiledDate)||held(g.handedOff))return 'Stage 3';
   if(held(g.stage2FiledDate))return 'Stage 2';
-  if(held(g.stage1FiledDate)||held(g.dateFiled)||held(g.stage1MeetingHeld))return 'Stage 1';
+  // A Stage 1 meeting on record, whatever its status, places the case at Stage 1: DCPS sets one only
+  // after receiving the grievance (6.4.1.1.2). The SCHEDULING is the evidence, not the date passing,
+  // so this no longer flips from "Not Yet Filed" to "Stage 1" overnight (build 2026-09-23.4).
+  if(held(g.stage1FiledDate)||held(g.dateFiled)||!!g.stage1MeetingHeld)return 'Stage 1';
   return 'Pre-filing';
 }
 function withSpecialist(g){return !g.outcome&&(held(g.stage3FiledDate)||held(g.handedOff));}
@@ -2017,8 +2224,9 @@ function activeDeadline(g){
     var lim=nthWorkingInclusive(g.violationDate,30);
     return {label:'Outer filing limit (6.5.3)',date:lim||due,escalated:true};
   }
-  if(held(g.stage2FiledDate)&&!held(g.stage2MeetingHeld)&&gStage2Due(g))return {label:'Stage 2 meeting by',date:gStage2Due(g),scheduled:futureDate(g.stage2MeetingHeld)};
-  if(!held(g.stage2FiledDate)&&!held(g.stage1MeetingHeld)&&gStage1Due(g))return {label:'Stage 1 meeting by',date:gStage1Due(g),scheduled:futureDate(g.stage1MeetingHeld)};
+  // `unconfirmed` = the meeting's date has passed with no "held" in the log: the deadline stays live.
+  if(held(g.stage2FiledDate)&&!meetingHeld(g,2)&&gStage2Due(g))return {label:'Stage 2 meeting by',date:gStage2Due(g),scheduled:futureDate(g.stage2MeetingHeld),unconfirmed:meetingUnconfirmed(g,2)?2:0};
+  if(!held(g.stage2FiledDate)&&!meetingHeld(g,1)&&gStage1Due(g))return {label:'Stage 1 meeting by',date:gStage1Due(g),scheduled:futureDate(g.stage1MeetingHeld),unconfirmed:meetingUnconfirmed(g,1)?1:0};
   return null;
 }
 // Loud error states: an open case whose clock can't be computed must NEVER read as "no open deadline".
@@ -2026,13 +2234,14 @@ function deadlineHealth(g){
   if(g.outcome||held(g.stage3FiledDate)||held(g.handedOff))return null;
   if(!held(g.dateFiled)){
     // Meeting already held but the dates were never recorded: the filing clock is moot, the record is incomplete.
-    if(held(g.stage1MeetingHeld))return 'Stage 1 meeting held '+prettyNoYr(g.stage1MeetingHeld)+' but no violation or filed date is on file — add both to the log';
+    if(meetingHeld(g,1))return 'Stage 1 meeting held '+prettyNoYr(g.stage1MeetingHeld)+' but no violation or filed date is on file — add both to the log';
+    if(meetingUnconfirmed(g,1))return meetingNote(g,1)+'. No violation or filed date is on file either — add both';
     if(!g.violationDate)return 'no violation date — the filing clock is unknown; add it to the log';
     if(!gFilingDue(g))return 'filing deadline uncomputable — check the violation date / calendar coverage';
     return null;
   }
-  if(!held(g.stage2FiledDate)&&!held(g.stage1MeetingHeld)&&!gStage1Due(g))return 'Stage 1 meeting deadline uncomputable — check the filed date';
-  if(held(g.stage2FiledDate)&&!held(g.stage2MeetingHeld)&&!gStage2Due(g))return 'Stage 2 meeting deadline uncomputable — check the Stage 2 filed date';
+  if(!held(g.stage2FiledDate)&&!meetingHeld(g,1)&&!gStage1Due(g))return 'Stage 1 meeting deadline uncomputable — check the filed date';
+  if(held(g.stage2FiledDate)&&!meetingHeld(g,2)&&!gStage2Due(g))return 'Stage 2 meeting deadline uncomputable — check the Stage 2 filed date';
   return null;
 }
 function schoolHref(name){
@@ -2050,11 +2259,41 @@ function contactVal(s,role){for(var i=0;i<s.contacts.length;i++){if(s.contacts[i
    (the Brief stat, the school row, the school detail) and they must not each pick their own, which
    is how the Materials badge ended up pinned to SY 25-26 all year — review finding D5. */
 function currentRound(){var it=(DISTRIBUTION&&DISTRIBUTION.items)||[];return it.length?it[it.length-1]:null;}
-function roundGot(r){var g={};if(r)(r.received||[]).forEach(function(n){g[n]=1;});return g;}
-/* Optional per-school delivery date (D5's "show dates per school"). The data has no `dates` key
-   today, so this returns '' and the row prints a bare tick — add `dates:{"<school>":"YYYY-MM-DD"}`
-   to a distribution item and both the row and the detail start showing it with no code change. */
-function roundDate(r,name){var d=(r&&r.dates)||{};var v=d[name];return v?String(v).slice(0,10):'';}
+/* SAME GEAR ACROSS YEARS (build 2026-09-23.3, Mike 2026-09-23: "these are the same sweatshirts so some
+   schools got them earlier"). Items that share a `label` are ONE distribution handed out over several
+   school years, not separate rounds. A school on ANY earlier same-label list already has them and is
+   NOT owed, and the same holds for the non-school `units`. The items stay separate in the data because
+   they record WHEN; every delivered/owed answer below reads them together. Before this, the SY 26-27
+   list alone decided "owed", so the 13 schools served only in SY 25-26 read as owed (24 instead of 11). */
+function roundItems(r){
+  var it=(DISTRIBUTION&&DISTRIBUTION.items)||[],i=it.indexOf(r);
+  if(!r)return [];if(i<0)return [r];
+  return it.filter(function(x,j){return j<=i&&(x.label||'')===(r.label||'');});
+}
+function roundGot(r){var g={};roundItems(r).forEach(function(x){(x.received||[]).forEach(function(n){g[n]=1;});});return g;}
+// Units (groups that are not dashboard schools) merged the same way: received in any year = received.
+function roundUnits(r){
+  var seen={},out=[];
+  roundItems(r).forEach(function(x){(x.units||[]).forEach(function(u){
+    if(!seen[u.name]){seen[u.name]={name:u.name,note:u.note,received:false};out.push(seen[u.name]);}
+    if(u.received){seen[u.name].received=true;if(u.note)seen[u.name].note=u.note;}
+  });});
+  return out;
+}
+/* Per-school delivery date: the LATEST year's `dates` entry for that school, or '' when that year kept
+   no date (SY 25-26 kept none). roundWhen() is the display form: "Sep 11", or the school year. */
+function roundDate(r,name){
+  var its=roundItems(r);
+  for(var i=its.length-1;i>=0;i--){if((its[i].received||[]).indexOf(name)>-1){var v=(its[i].dates||{})[name];return v?String(v).slice(0,10):'';}}
+  return '';
+}
+function roundWhen(r,name){
+  var d=roundDate(r,name);if(/^\d{4}-\d{2}-\d{2}$/.test(d))return prettyNoYr(d);
+  var its=roundItems(r);
+  for(var i=its.length-1;i>=0;i--){if((its[i].received||[]).indexOf(name)>-1)return its[i].period||'';}
+  return '';
+}
+function roundSpan(r){var ps=roundItems(r).map(function(x){return x.period;}).filter(Boolean);return ps.length>1?ps[0]+' – '+ps[ps.length-1]:(ps[0]||'');}
 
 /* ================= ONE school detail view (build 2026-09-18.3, review D2) =================
    Before this there were TWO renderers: openSchool() for a search hit and schoolCard() for a list
@@ -2095,7 +2334,9 @@ function schoolDetailHtml(s){
     :st==='pending'
       ?'<span class="st">Results outstanding</span> — '+(other?linkifyContact(other):'no 25-26 holdover on file')
       :(brv?linkifyContact(brv):'<span class="st">Not listed</span>');
-  h+='<div class="d-br"><span class="lbl">Building Rep</span><div class="v">'+brTxt+'</div></div>';
+  var lbm=lastBrMeeting(s);
+  h+='<div class="d-br"><span class="lbl">Building Rep</span><div class="v">'+brTxt+'</div>'+
+    '<div class="d-brm">'+(lbm?'Last BR meeting at the school: '+esc(dShort(lbm)):'No BR meeting at the school logged yet')+'</div></div>';
   // Per-school capture entry point removed 2026-09-20. The capture site's hostname is identifying and
   // this file publishes to a PUBLIC repo, so the URL cannot be a literal here. If the button returns,
   // inject the address from the data file at build time and render only when that key is present.
@@ -2104,10 +2345,10 @@ function schoolDetailHtml(s){
     ?(Math.round((1-(m.nonRate||0))*100)+'% · '+m.members+'/'+m.total+'<small>'+m.potential+' potential'+(MEMBERSHIP_DATE?' · WTU snapshot '+esc(prettyNoYr(MEMBERSHIP_DATE)):'')+'</small>')
     :'<small>no membership overlay for this school</small>')+'</div></div>';
   h+='<div class="fact"><span class="lbl">Last visit</span><div class="v">'+(lv
-    ?(esc(prettyNoYr(lv))+'<small>'+esc(String((lvRow&&lvRow[1])||'').split('.')[0]||'no note')+'</small>')
-    :'<small>none logged this year</small>')+'</div></div>';
-  if(rnd)h+='<div class="fact"><span class="lbl">'+esc([rnd.label,rnd.period].filter(Boolean).join(' '))+'</span><div class="v'+(got[s.name]?'':' st')+'">'+
-    (got[s.name]?('<span class="ok">✓ delivered</span>'+(roundDate(rnd,s.name)?'<small>'+esc(prettyNoYr(roundDate(rnd,s.name)))+'</small>':'')):'still owed')+'</div></div>';
+    ?(esc(dShort(lv))+'<small>'+esc(String((lvRow&&lvRow[1])||'').split('.')[0]||'no note')+'</small>')
+    :'<small>'+NO_VISIT+'</small>')+'</div></div>';
+  if(rnd)h+='<div class="fact"><span class="lbl">'+esc(rnd.label||'Materials')+'</span><div class="v'+(got[s.name]?'':' st')+'">'+
+    (got[s.name]?('<span class="ok">✓ delivered</span>'+(roundWhen(rnd,s.name)?'<small>'+esc(roundWhen(rnd,s.name))+'</small>':'')):'still owed')+'</div></div>';
   h+='<div class="fact"><span class="lbl">Suggested next step</span><div class="v">'+(rs.length
     ?(esc(rs[0].act)+'<small>'+esc(rs[0].why)+(rs.length>1?' · +'+(rs.length-1)+' more':'')+'</small>')
     :'<small>No recommendation from current flags</small>')+'</div></div>';
@@ -2115,14 +2356,18 @@ function schoolDetailHtml(s){
   var latest=s.visits.slice().sort(function(a,b){return b[0].localeCompare(a[0]);})[0];
   if(latest){
     var preview=recordPreview(latest[1]);
-    h+='<section class="latest-activity"><h3>Latest '+(visitType(latest)==='visit'?'visit':'conversation')+' <span>'+esc(prettyMed(latest[0]))+'</span></h3>'+preview+'<button type="button" class="text-action" data-open-history="1">Read full record and history</button><button type="button" class="text-action contact-jump" data-open-contacts="1">Go to contacts</button></section>';
+    h+='<section class="latest-activity"><h3>Latest '+esc(vtLabel(visitType(latest)).replace(/^(?!BR)(\w)/,function(c){return c.toLowerCase();}))+' <span>'+esc(prettyMed(latest[0]))+'</span></h3>'+preview+'<button type="button" class="text-action" data-open-history="1">Read full record and history</button><button type="button" class="text-action contact-jump" data-open-contacts="1">Go to contacts</button></section>';
   }
   var flagged=flaggedNotes(s);
   if(flagged.length)h+='<section class="detail-flags"><h3>Read before your visit · '+flagged.length+'</h3><ul class="flag-index">'+flagged.map(function(n,i){return '<li><button type="button" class="text-action" data-open-flag="'+i+'">'+esc(flagHeading(n))+'</button></li>';}).join('')+'</ul></section>';
   h+='<h3 class="sub-h" data-contact-heading tabindex="-1">Committees and contacts</h3>';
   h+=s.contacts.some(function(c){return c[1];})
     ?s.contacts.filter(function(c){return c[0]!=='Building Rep';}).sort(function(a,b){var rank=function(c){return /SCAC|LSAT|Personnel/i.test(c[0])?0:c[0]==='Principal'?2:1;};return rank(a)-rank(b);}).map(function(c){
-        return '<div class="ct-line"><div class="r">'+esc(c[0])+'</div><div class="v'+(c[1]?'':' empty-v')+'">'+(c[1]?linkifyContact(c[1]):'— not yet recorded')+'</div></div>';
+        // Build 2026-09-23.5 (audit item 23): with the BR seat vacant or its results outstanding, the
+        // Building Rep block above already prints this line in full as the contact to call, so it is
+        // not printed a second time here.
+        var shownAbove=c[0]==='Other key members'&&c[1]&&(st==='vacant'||st==='pending');
+        return '<div class="ct-line"><div class="r">'+esc(c[0])+'</div><div class="v'+(c[1]&&!shownAbove?'':' empty-v')+'">'+(shownAbove?'shown under Building Rep above':c[1]?linkifyContact(c[1]):'— not yet recorded')+'</div></div>';
       }).join('')
     :'<div class="empty">No contacts recorded yet — they fill in from the school page on the next refresh.</div>';
   if(flagged.length)h+='<section class="flag-records"><div class="sub-h">Flagged notes · full records</div>'+flagged.map(function(n,i){return '<details class="detail-flag" data-flag="'+i+'"><summary>'+esc(flagHeading(n))+'</summary><p>'+escNote(n)+'</p></details>';}).join('')+'</section>';
@@ -2148,10 +2393,10 @@ function schoolDetailHtml(s){
     ?('<table><tr><th>Date</th><th>What happened</th></tr>'+s.visits.slice().sort(function(a,b){return b[0].localeCompare(a[0]);}).map(function(v){
         var vt=visitType(v);
         return '<tr><td data-label="Date" class="lg-d">'+esc(prettyMed(v[0]||''))+
-          '<span class="lg-t '+(vt==='visit'?'cov-yes':'cov-muted')+'">'+(vt==='visit'?'Visit':'Conversation')+'</span></td>'+
-          '<td data-label="What happened">'+escNote(v[1]||'')+'</td></tr>';
+          '<span class="lg-t '+vtClass(vt)+'">'+esc(vtLabel(vt))+'</span></td>'+
+          '<td data-label="What happened">'+visitCellHtml(v[1]||'')+'</td></tr>';
       }).join('')+'</table>')
-    :'<div class="empty">Nothing logged yet — use Jot &amp; Share, or add a row to the school page’s Visit &amp; Conversation Log.</div>';
+    :'<div class="empty">Nothing logged yet. Save a Field note and tell Claude “log my notes,” or add a row to the school page’s Visit &amp; Conversation Log.</div>';
   h+='</details>';
   /* NOTES DENSITY — the condition Mike attached to approving the composition, and it was a real
      problem: the heaviest school on file carries ~7,800 characters of notes, which pushed its log
@@ -2325,6 +2570,7 @@ function grievCard(g){
     const dlCls=(act.escalated||l<=3)?'dl-red':(l<=5?'dl-amber':'dl-grey');
     mini+='<span class="tag '+dlCls+'">'+(act.escalated?'14-day date missed — ':'')+act.label+' '+prettyMed(act.date)+' · '+(l<0?'past due':l+' school day'+(l===1?'':'s'))+'</span>';
     if(act.scheduled)mini+='<span class="tag stage">meeting scheduled '+prettyMed(act.scheduled)+'</span>';
+    if(act.unconfirmed)healthHtml='<span class="gr-health">'+esc(meetingNote(g,act.unconfirmed))+'</span>';
   }else if(health){
     // Amber, not red (build 2026-09-17.1): a clock that cannot be computed is a record to complete, not a date that has arrived.
     // BUILD 2026-09-18.4 — the whole health SENTENCE used to be the pill's label, so a capsule ran to
@@ -2351,13 +2597,13 @@ function grievCard(g){
   b+='<div class="sub-h">Step 1, Stage 1</div>';
   b+=grLine('Date Stage 1 grievance filed',dWhen(g.stage1FiledDate,'planned'));
   b+=grLine('Stage 1 meeting due w/ Principal (5 school days)',s1?prettyMed(s1):'',{due:true});
-  b+=grLine('Date Stage 1 meeting scheduled / held',dWhen(g.stage1MeetingHeld,'scheduled'));
+  b+=grLine('Date Stage 1 meeting scheduled / held',mWhen(g,1));
   b+=grLine('Notes / outcome of meeting',g.stage1Notes||'',{text:true});
   if(g.stage1Notes&&futureDate(g.stage1MeetingHeld))b+='<div class="gr-note" style="color:var(--amber)">⚠ Notes recorded but the Stage 1 meeting date is still in the future — check the log.</div>';
   b+='<div class="sub-h">Step 1, Stage 2</div>';
   b+=grLine('Date Stage 2 grievance filed',dWhen(g.stage2FiledDate,'planned'));
   b+=grLine('Stage 2 meeting deadline w/ Inst. Supe (10 school days)',s2?prettyMed(s2):'',{due:true});
-  b+=grLine('Date Stage 2 meeting scheduled / held',dWhen(g.stage2MeetingHeld,'scheduled'));
+  b+=grLine('Date Stage 2 meeting scheduled / held',mWhen(g,2));
   b+=grLine('Stage 2 meeting results',g.stage2Results||'',{text:true});
   if(g.stage2Results&&futureDate(g.stage2MeetingHeld))b+='<div class="gr-note" style="color:var(--amber)">⚠ Results recorded but the Stage 2 meeting date is still in the future — check the log.</div>';
   b+='<div class="sub-h">Step 1, Stage 3</div>';
@@ -2413,7 +2659,7 @@ function renderGrievances(){
   // disclosure it is one line until it is wanted. Nothing is removed. (build 2026-09-18.4)
   box.innerHTML=pipe+gh+'<details class="filed-totals"><summary>Filed-case totals and breakdown</summary><p class="sectnote">These totals include only records with a filing date. Cases with missing dates still appear above.</p>'+ov+'</details>'+
     '<details class="sectnote gr-note" style="margin-top:14px"><summary>How these stages and dates are computed</summary>'+
-    '<div style="margin-top:6px;max-width:92ch">Overview counts grievances that have a filing date (Not Yet Filed cases are excluded). Grouped by stage (Not Yet Filed → Step 1 Stage 1 → Stage 2 → Stage 3); a section appears only when it has a case. Within each, cases are ordered by soonest deadline. Dates in <span style="color:var(--maroon);font-weight:700">bold maroon</span> are auto-computed from the dates you enter (filing = 14 school days incl. the notice day; Stage 1 meeting = 5 and Stage 2 = 10 school days, counted from the day after filing). The tag shows the next active deadline with days-left recalculated live; "past due" means it has passed. A <b>future</b> date on a "scheduled / held" or "filed" line counts as scheduled/planned — it does not advance the stage or stop the countdown until the day arrives. If a filing\'s 14-day date is missed, the countdown escalates in red to the 30-school-day hard outer limit (6.5.3) while filing is still possible. Cases past Step 1, Stage 2 belong to a Grievance Specialist — they show no countdown here, and Top 3 flags any not yet routed.</div></details>';
+    '<div style="margin-top:6px;max-width:92ch">Overview counts grievances that have a filing date (Not Yet Filed cases are excluded). Grouped by stage (Not Yet Filed → Step 1 Stage 1 → Stage 2 → Stage 3); a section appears only when it has a case. Within each, cases are ordered by soonest deadline. Dates in <span style="color:var(--maroon);font-weight:700">bold maroon</span> are auto-computed from the dates you enter (filing = 14 school days incl. the notice day; Stage 1 meeting = 5 and Stage 2 = 10 school days, counted from the day after filing). The tag shows the next active deadline with days-left recalculated live; "past due" means it has passed. A <b>future</b> date on a "filed" line counts as planned; it does not advance the stage or stop the countdown until the day arrives. A meeting counts as <b>held</b> only when the log says <i>(held)</i> after its date; a meeting date that passes with no outcome recorded keeps its deadline running and is flagged for you to record held, postponed or cancelled. A Stage 1 meeting on record places the case at Stage 1, because DCPS sets one only after receiving the grievance. If a filing\'s 14-day date is missed, the countdown escalates in red to the 30-school-day hard outer limit (6.5.3) while filing is still possible. Cases past Step 1, Stage 2 belong to a Grievance Specialist — they show no countdown here, and Top 3 flags any not yet routed.</div></details>';
   const soon=GRIEVANCES.map(g=>({g:g,act:activeDeadline(g)})).filter(x=>{if(!x.act)return false;return x.act.escalated||workingDaysLeft(x.act.date)<=5;}).sort((a,b)=>a.act.date<b.act.date?-1:a.act.date>b.act.date?1:0);
   // Urgency coloring matches the case-card tags (dl-red ≤3 or escalated, dl-amber ≤5) — the Brief
   // was the one place the red ≤3 rule wasn't applied.
@@ -2465,7 +2711,7 @@ function renderSchoolKpis(){
   if(rnd){
     const got=roundGot(rnd);
     const n=SCHOOLS.filter(s=>got[s.name]).length;
-    txt+=' · '+n+' of '+SCHOOLS.length+' have '+[rnd.period,rnd.label].filter(Boolean).join(' ');
+    txt+=' · '+n+' of '+SCHOOLS.length+' have '+(rnd.label||'materials');
   }
   k.textContent=txt;
 }
@@ -2531,7 +2777,7 @@ function memSortFn(){
 }
 function renderMembership(){
   var host=document.getElementById('memBody');if(!host)return;
-  var snap=document.getElementById('memSnap');if(snap)snap.textContent=MEMBERSHIP_DATE?('SNAPSHOT '+esc(MEMBERSHIP_DATE)):'MEMBERSHIP';
+  var snap=document.getElementById('memSnap');if(snap)snap.textContent=MEMBERSHIP_DATE?('Snapshot '+dShort(MEMBERSHIP_DATE)):'MEMBERSHIP';
   var names=Object.keys(MEMBERSHIP||{});
   if(!names.length){DASH_COUNTS.recruit=0;host.innerHTML='<div class="empty">No membership snapshot in this data. Ask me to "update membership."</div>';return;}
   var recs=names.map(function(n){var m=MEMBERSHIP[n]||{};var tot=+m.total||0,mem=+m.members||0;return {name:n,cluster:schoolCluster(n),total:tot,members:mem,potential:+m.potential||0,nonRate:+m.nonRate||0,memRate:tot?mem/tot:0};});
@@ -2553,44 +2799,58 @@ function renderMembership(){
     ? '<div class="mem-target">To reach 90% membership'+(sel.length?' in '+selLbl:'')+': <b>'+need+'</b> more member'+(need===1?'':'s')+'</div>'
     : '<div class="mem-target ok">'+(sel.length?selLbl+' is':'Your turf density is')+' at or above the 90% benchmark</div>';
   h+='<div class="cluster-h" style="margin-top:16px">By cluster<span class="ch-meta">tap a cluster to filter this section (tap again to clear) · bar scale 0–30%</span></div>';
-  h+='<div class="mem-scroll"><table class="mem-tbl"><tr><th>Cluster</th><th>Members</th><th>Potential Members</th><th>Total Staff</th><th>Member %</th><th>Non-member %</th><th></th></tr>';
+  // PHONE COLUMNS (build 2026-09-23.5, audit item 15): cells marked `mc-ph` are hidden at phone width,
+  // leaving the name, members out of total, and the non-member rate the list is ranked by. On a 390px
+  // screen that rate used to be the last of eight columns, off the right edge behind a sideways scroll.
+  var ph=' class="mc-ph"',tot=function(n){return '<span class="mc-tot"> / '+n+'</span>';};
+  h+='<div class="mem-scroll"><table class="mem-tbl"><tr><th>Cluster</th><th>Members</th><th'+ph+'>Potential Members</th><th'+ph+'>Total Staff</th><th'+ph+'>Member %</th><th>Non-member %</th><th'+ph+'></th></tr>';
   orderedClusters().forEach(function(c){var a=agg(recs.filter(function(r){return r.cluster===c;}));
     var on=!!MEM_SEL[c];
     h+='<tr class="mem-cl'+(on?' sel':'')+'" data-mem-cluster="'+esc(c)+'">'+
        '<td><button type="button" class="mem-clbtn" data-mem-cluster="'+esc(c)+'" aria-pressed="'+(on?'true':'false')+'" title="Filter the membership section to Cluster '+esc(c)+'"><span class="cl-dot"></span>Cluster '+esc(c)+'</button></td>'+
-       '<td>'+a.members+'</td><td>'+a.potential+'</td><td>'+a.total+'</td><td>'+memPct1(a.memRate)+'</td>'+
-       '<td><span class="mem-pct '+memPctCls(a.nonRate)+'">'+memPct1(a.nonRate)+'</span></td><td>'+bar(a.nonRate)+'</td></tr>';});
+       '<td>'+a.members+tot(a.total)+'</td><td'+ph+'>'+a.potential+'</td><td'+ph+'>'+a.total+'</td><td'+ph+'>'+memPct1(a.memRate)+'</td>'+
+       '<td><span class="mem-pct '+memPctCls(a.nonRate)+'">'+memPct1(a.nonRate)+'</span></td><td'+ph+'>'+bar(a.nonRate)+'</td></tr>';});
   h+='</table></div>';
   var ranked=view.slice().sort(memSortFn());
   // Tier keys are 'hi'/'mid' to match memPctCls(). They used to be 'red'/'amber' and the labels said so
   // out loud, which survived the 2026-08-14 colour correction and left the copy describing a red tier
   // that no longer renders red. Name the tiers by what they MEAN so a palette change can't strand them.
-  if(MEM_TIER==='hi')ranked=ranked.filter(function(r){return r.nonRate>=0.25;});
+  /* OPEN ON THE SCHOOLS THAT MATTER (build 2026-09-23.5, audit item 16). The default used to be every
+     school, including ones with no non-members, under a heading that says "priorities", and the top tier was a
+     button that led to "No schools in this tier". Now the default ('focus') is every school at 15% or
+     more; a tier button appears only when it has schools, an empty top tier says so in words, and the
+     full list is one tap away. */
+  var nHi=view.filter(function(r){return r.nonRate>=0.25;}).length,nMid=view.filter(function(r){return r.nonRate>=0.15&&r.nonRate<0.25;}).length;
+  if(MEM_TIER==='hi'&&!nHi)MEM_TIER='focus';
+  if(MEM_TIER==='focus')ranked=ranked.filter(function(r){return r.nonRate>=0.15;});
+  else if(MEM_TIER==='hi')ranked=ranked.filter(function(r){return r.nonRate>=0.25;});
   else if(MEM_TIER==='mid')ranked=ranked.filter(function(r){return r.nonRate>=0.15&&r.nonRate<0.25;});
   h+='<div class="cluster-h" style="margin-top:18px">Recruitment priorities<span class="ch-meta">priority ≥25% non-member, watch 15–25% · click a column to sort · school names open the viewer</span></div>';
+  var chip=function(k,l){return '<button type="button" class="chip'+(MEM_TIER===k?' active':'')+'" data-mem-tier="'+k+'">'+l+'</button>';};
   h+='<div class="toolbar" style="margin-top:6px">'+
-     '<button type="button" class="chip'+(MEM_TIER===''?' active':'')+'" data-mem-tier="">All tiers</button>'+
-     '<button type="button" class="chip'+(MEM_TIER==='hi'?' active':'')+'" data-mem-tier="hi">Priority ≥25%</button>'+
-     '<button type="button" class="chip'+(MEM_TIER==='mid'?' active':'')+'" data-mem-tier="mid">Watch 15–25%</button></div>';
-  function th(k,l){if(!k)return '<th>'+l+'</th>';
+     (nHi?chip('focus','Priority and watch · '+(nHi+nMid))+chip('hi','Priority ≥25% · '+nHi)+(nMid?chip('mid','Watch 15–25% · '+nMid):'')
+         :chip('focus','Watch 15–25% · '+nMid))+
+     chip('','All schools · '+view.length)+
+     (nHi?'':'<span class="mem-none">Priority ≥25%: none right now</span>')+'</div>';
+  function th(k,l,cls){var c=cls?' '+cls:'';if(!k)return '<th'+(cls?' class="'+cls+'"':'')+'>'+l+'</th>';
     var cur=MEM_SORT.key===k,arr=cur?(MEM_SORT.dir<0?' ▾':' ▴'):'';
-    return '<th class="mem-th'+(cur?' cur':'')+'" data-mem-sort="'+k+'" tabindex="0" aria-sort="'+(cur?(MEM_SORT.dir<0?'descending':'ascending'):'none')+'" title="Sort by '+l+'">'+l+arr+'</th>';}
-  h+='<div class="mem-scroll"><table class="mem-tbl"><tr>'+th('','#')+th('name','School')+th('cluster','Cl.')+th('members','Members')+th('potential','Potential Members')+th('total','Total Staff')+th('memRate','Member %')+th('nonRate','Non-member %')+'</tr>';
-  ranked.forEach(function(r,i){h+='<tr><td>'+(i+1)+'</td><td>'+schoolLink(r.name)+'</td><td>'+esc(r.cluster)+'</td><td>'+r.members+'</td><td>'+r.potential+'</td><td>'+r.total+'</td><td>'+memPct1(r.memRate)+'</td><td><span class="mem-pct '+memPctCls(r.nonRate)+'">'+memPct1(r.nonRate)+'</span></td></tr>';});
-  if(!ranked.length)h+='<tr><td colspan="8"><span class="empty">No schools in this tier'+(sel.length?' within '+selLbl:'')+'.</span></td></tr>';
+    return '<th class="mem-th'+(cur?' cur':'')+c+'" data-mem-sort="'+k+'" tabindex="0" aria-sort="'+(cur?(MEM_SORT.dir<0?'descending':'ascending'):'none')+'" title="Sort by '+l+'">'+l+arr+'</th>';}
+  h+='<div class="mem-scroll"><table class="mem-tbl"><tr>'+th('','#','mc-ph')+th('name','School')+th('cluster','Cl.','mc-ph')+th('members','Members')+th('potential','Potential Members','mc-ph')+th('total','Total Staff','mc-ph')+th('memRate','Member %','mc-ph')+th('nonRate','Non-member %')+'</tr>';
+  ranked.forEach(function(r,i){h+='<tr><td'+ph+'>'+(i+1)+'</td><td>'+schoolLink(r.name)+'</td><td'+ph+'>'+esc(r.cluster)+'</td><td>'+r.members+tot(r.total)+'</td><td'+ph+'>'+r.potential+'</td><td'+ph+'>'+r.total+'</td><td'+ph+'>'+memPct1(r.memRate)+'</td><td><span class="mem-pct '+memPctCls(r.nonRate)+'">'+memPct1(r.nonRate)+'</span></td></tr>';});
+  if(!ranked.length)h+='<tr><td colspan="8"><span class="empty">'+(MEM_TIER==='focus'?'No school is at 15% or more non-member':'No schools in this tier')+(sel.length?' within '+selLbl:'')+'.</span></td></tr>';
   h+='</table></div>';
   var hist=(MEMBERSHIP_HISTORY||[]).slice().sort(function(a,b){return (a.date||'')<(b.date||'')?-1:1;});
   h+='<div class="cluster-h" style="margin-top:18px">Trend<span class="ch-meta">membership over time'+(sel.length?' · all your schools (snapshots don\'t store per-cluster history)':'')+'</span></div>';
   if(hist.length<2){
-    h+='<div class="sectnote">Baseline snapshot'+(MEMBERSHIP_DATE?' ('+esc(MEMBERSHIP_DATE)+')':'')+'. Movement appears here after the next database import (~Aug 2026): members gained/lost and rate change vs. the prior snapshot.</div>';
+    h+='<div class="sectnote">Baseline snapshot'+(MEMBERSHIP_DATE?' ('+esc(dShort(MEMBERSHIP_DATE))+')':'')+'. Movement appears here after the next database import (~Aug 2026): members gained/lost and rate change vs. the prior snapshot.</div>';
   }else{
     var sgn=function(n){return n>0?('+'+n):(''+n);};
     var L=hist[hist.length-1],P=hist[hist.length-2];
     var dM=(+L.members||0)-(+P.members||0),dR=Math.round(((+L.nonRate||0)-(+P.nonRate||0))*1000)/10;
-    h+='<div class="mem-line"><b>Since '+esc(P.date||'')+':</b> '+sgn(dM)+' members · '+sgn(dR)+' pp non-member rate</div>';
+    h+='<div class="mem-line"><b>Since '+esc(dShort(P.date||''))+':</b> '+sgn(dM)+' members · '+sgn(dR)+' pp non-member rate</div>';
     h+='<div class="mem-scroll"><table class="mem-tbl"><tr><th>Snapshot</th><th>Members</th><th>Potential</th><th>Non-member %</th><th>Members change</th></tr>';
     hist.forEach(function(e,i){var chg=i>0?sgn((+e.members||0)-(+hist[i-1].members||0)):'—';
-      h+='<tr><td>'+esc(e.date||'')+'</td><td>'+(+e.members||0)+'</td><td>'+(+e.potential||0)+'</td><td><span class="mem-pct '+memPctCls(+e.nonRate||0)+'">'+memPct1(+e.nonRate||0)+'</span></td><td>'+chg+'</td></tr>';});
+      h+='<tr><td>'+esc(dShort(e.date||''))+'</td><td>'+(+e.members||0)+'</td><td>'+(+e.potential||0)+'</td><td><span class="mem-pct '+memPctCls(+e.nonRate||0)+'">'+memPct1(+e.nonRate||0)+'</span></td><td>'+chg+'</td></tr>';});
     h+='</table></div>';
   }
   host.innerHTML=h;
@@ -2598,7 +2858,13 @@ function renderMembership(){
 /* Which seats are empty, in the order they matter to an organizer. Returns the count when everything
    is filled (nothing to name) and the ROLE NAMES when it isn't — short forms, because this renders in
    a chip and on a 390px phone. Reads the same contacts array Coverage Gaps reads; no second source. */
-var ROLE_SHORT=[['Building Rep','BR'],['SCAC Committee / Members','SCAC'],['WTU LSAT Reps','LSAT'],['Personnel Committee','Personnel'],['Principal','Principal']];
+/* THE FOUR UNION SEATS, one list for every surface that asks "is this seat filled" (build
+   2026-09-23.5, audit item 19). Coverage Gaps used to check three (no Personnel Committee, a contract
+   body under 16.13) while the Schools "Contact gap" view checked five (adding the Principal), so the
+   two could disagree about the same school. The Principal is a contact, not a seat, and is dropped
+   from the test; a missing one still shows as "not yet recorded" in the school's detail.
+   Columns: [contact label on the school page, short form, Coverage Gaps heading]. */
+var ROLE_SHORT=[['Building Rep','BR','Building Rep'],['SCAC Committee / Members','SCAC','SCAC Committee'],['WTU LSAT Reps','LSAT','LSAT Rep'],['Personnel Committee','Personnel','Personnel Committee']];
 function missingRoles(s){
   var out=[];
   ROLE_SHORT.forEach(function(r){if(!contactVal(s,r[0]))out.push(r[1]);});
@@ -2623,8 +2889,11 @@ function missingRoleTag(s){
 function schoolReasons(s){
   var r=[],t=todayIso();
   var f=flaggedNotes(s);
-  // ACUTE outranks any stack of routine reasons on purpose — it is Mike's own word for "priority
-  // visit", and at w:6 a recruitment-plus-note school (4+3) was sorting above it.
+  // A flag that says ACUTE outranks any stack of routine reasons (at w:6 a recruitment-plus-note school,
+  // 4+3, sorted above it). CORRECTED 2026-09-23: the word was never Mike's. It was the severity label a
+  // July budget analysis put on two FY27 budget notes, and on his instruction those notes became
+  // `Context —` like the rest of the FY27 set, so nothing carries it today. The branch stays for a flag
+  // he writes himself; it is dormant, not load-bearing.
   if(f.some(function(n){return /\bACUTE\b/.test(n);}))r.push({k:'flag',w:8,why:'flagged ACUTE',act:'Priority visit — read the flagged note'});
   else if(f.length)r.push({k:'flag',w:3,why:f.length+' flagged note'+(f.length===1?'':'s'),act:'Read the flagged note before you go'});
   if(s.issues.length)r.push({k:'issue',w:5,why:s.issues.length+' open issue'+(s.issues.length===1?'':'s'),act:'Work the open issue'});
@@ -2722,9 +2991,9 @@ function brShortName(v){
   return out.length?out.join(' · '):String(v);
 }
 function schoolRow(s){
-  var m=memOf(s.name),lv=lastVisit(s),rnd=currentRound(),got=roundGot(rnd),st=brStatusOf(s),rd=roundDate(rnd,s.name);
+  var m=memOf(s.name),lv=lastVisit(s),rnd=currentRound(),got=roundGot(rnd),st=brStatusOf(s),rd=roundWhen(rnd,s.name);
   var member=m?Math.round((1-(m.nonRate||0))*100)+'% <span class="cell-secondary">'+m.members+' / '+m.total+'</span>':'Not recorded';
-  var delivery=!rnd?'No current round':got[s.name]?'Delivered'+(rd?'<span class="cell-secondary">'+esc(prettyNoYr(rd))+'</span>':''):'Owed';
+  var delivery=!rnd?'No current round':got[s.name]?'Delivered'+(rd?'<span class="cell-secondary">'+esc(rd)+'</span>':''):'Owed';
   var brv=contactVal(s,'Building Rep');
   var br=st==='vacant'?'Vacant':st==='pending'?'Results outstanding':brv?esc(brShortName(brv)):'Not listed';
   var x=[],fl=flaggedNotes(s),miss=st==='pending'?[]:missingRoles(s).filter(function(r){return r!=='BR';});
@@ -2737,8 +3006,8 @@ function schoolRow(s){
   function cell(cls,label,value){return '<td role="cell" class="'+cls+'"><span class="cl" aria-hidden="true">'+label+'</span>'+value+'</td>';}
   return '<tr role="row" class="schrow" data-school="'+esc(s.name)+'"><th role="rowheader" scope="row" class="nm">'+name+'</th>'+
     cell('c-mem'+(m&&(m.nonRate||0)>=.15?' hi':''),'Members',member)+
-    cell('c-vis','Last visit',lv?esc(prettyNoYr(lv)):'None logged')+
-    cell('c-swt'+(rnd&&got[s.name]?' ok':''),'Delivery',delivery)+
+    cell('c-vis','Last visit',lv?esc(dShort(lv)):NO_VISIT)+
+    cell('c-swt'+(rnd&&got[s.name]?' ok':''),rnd?esc(rnd.label||'Materials'):'Materials',delivery)+
     cell('c-br'+(st==='vacant'||st==='pending'?' st':''),'Building Rep',br)+
     cell('c-x'+(x.length?'':' no-exceptions'),'Exceptions',x.length?x.join(''):'<span class="sr-only">None flagged</span>')+'</tr>';
 }
@@ -2751,6 +3020,7 @@ function renderSchools(control){
   if(SCHOOL_RETURN_CONTEXT&&control&&control.id)SCHOOL_RETURN_CONTEXT.fallback=control.id;
   if(!control&&SCHOOL_RETURN_CONTEXT&&document.activeElement&&document.activeElement.closest('#schoolToolbar'))SCHOOL_RETURN_CONTEXT.fallback=document.activeElement.id;
   Array.prototype.forEach.call(document.querySelectorAll('#schoolViews .chip'),function(ch){var v=SCHOOL_VIEWS.find(function(v){return v.k===ch.dataset.v;});ch.querySelector('.chip-n').textContent=SCHOOLS.filter(function(sc){return schoolInScope(sc)&&v.test(sc);}).length;});
+  Array.prototype.forEach.call(document.querySelectorAll('#schoolViewMore option[value]'),function(o){var v=SCHOOL_VIEWS.find(function(v){return v.k===o.value;});if(v)o.textContent=v.label+' ('+SCHOOLS.filter(function(sc){return schoolInScope(sc)&&v.test(sc);}).length+')';});
   var wrap=document.getElementById('schoolSections'),vt=viewTest(),rnd=currentRound(),shown=0,html='';
   var passes=function(sc){return vt(sc)&&(activeWard==='All'||String(sc.ward)===activeWard)&&(!schoolFilterText||sc.name.toLowerCase().indexOf(schoolFilterText)!==-1);};
   orderedClusters().forEach(function(c){
@@ -2759,7 +3029,7 @@ function renderSchools(control){
     if(!list.length)return;shown+=list.length;
     html+='<tbody role="rowgroup" class="cluster-block" data-cluster="'+esc(c)+'"><tr role="row" class="school-group"><th role="rowheader" scope="rowgroup" colspan="6"><span class="cl-h">Cluster '+esc(c)+'</span><span class="m">'+list.length+' school'+(list.length===1?'':'s')+' · '+list.filter(function(sc){return visitRows(sc).length;}).length+' visited</span></th></tr>'+list.map(schoolRow).join('')+'</tbody>';
   });
-  var labels=['School','Members','Last visit',rnd?esc(rnd.label)+(rnd.period?'<span class="cell-secondary">'+esc(rnd.period)+'</span>':''):'Materials','Building Rep','Exceptions'];
+  var labels=['School','Members','Last visit',rnd?esc(rnd.label):'Materials','Building Rep','Exceptions'];
   wrap.innerHTML=html?'<table class="school-table" role="table" aria-label="Schools comparison"><caption class="sr-only">Schools grouped in duty-cluster order. Open a school for its full record.</caption><colgroup><col style="width:25%"><col style="width:13%"><col style="width:12%"><col style="width:16%"><col style="width:24%"><col style="width:10%"></colgroup><thead role="rowgroup"><tr class="gh" role="row">'+labels.map(function(v,i){return '<th role="columnheader" scope="col"'+(i===1?' class="r"':'')+'>'+v+'</th>';}).join('')+'</tr></thead>'+html+'</table>':'<div class="empty">No schools match these filters.</div>';
   var sortLabel=document.getElementById('schoolSort').selectedOptions[0].textContent;
   var summary=shown+' of '+SCHOOLS.filter(schoolInScope).length+' matching schools · '+(schoolSort==='default'?(activeView==='all'?'A–Z within each cluster':'strongest reason first within each cluster'):sortLabel.toLowerCase());
@@ -2772,16 +3042,30 @@ function renderSchools(control){
   var clear=document.getElementById('clearSchoolFilters');if(clear)clear.onclick=function(){activeCluster='All';activeWard='All';schoolFilterText='';schoolSort='default';document.getElementById('schoolFilter').value='';renderChips();renderSchools();document.getElementById('schoolFilter').focus();};
 }
 
+/* TWO VIEWS UP FRONT (build 2026-09-23.2). Seven chips at one level mixed purpose (needs attention),
+   staffing, visits and membership thresholds, and on a 390px phone "All schools" sat past the edge
+   of a sideways-scrolling strip. The two everyday views stay chips; the five narrower ones move into
+   one "More views" menu that still shows each count. Same SCHOOL_VIEWS, same tests, same default. */
+var PRIMARY_VIEWS=['attention','all'];
 function renderSchoolViews(){
   var host=document.getElementById('schoolViews');if(!host)return;
-  host.innerHTML=SCHOOL_VIEWS.map(function(v){
-    var n=SCHOOLS.filter(function(sc){return schoolInScope(sc)&&v.test(sc);}).length;
+  var cnt=function(v){return SCHOOLS.filter(function(sc){return schoolInScope(sc)&&v.test(sc);}).length;};
+  var prim=SCHOOL_VIEWS.filter(function(v){return PRIMARY_VIEWS.indexOf(v.k)>-1;});
+  var rest=SCHOOL_VIEWS.filter(function(v){return PRIMARY_VIEWS.indexOf(v.k)===-1;});
+  var restOn=rest.some(function(v){return v.k===activeView;});
+  host.innerHTML=prim.map(function(v){
     return '<button type="button" class="chip'+(v.k===activeView?' active':'')+'" data-v="'+v.k+'" aria-pressed="'+(v.k===activeView)+'">'+esc(v.label)+
-           '<span class="chip-n">'+n+'</span></button>';
-  }).join('');
+           '<span class="chip-n">'+cnt(v)+'</span></button>';
+  }).join('')+
+    '<label class="sv-more'+(restOn?' active':'')+'" for="schoolViewMore"><span class="sr-only">More school views</span>'+
+    '<select id="schoolViewMore" class="schfilter"><option value="" disabled'+(restOn?'':' selected')+'>More views…</option>'+
+    rest.map(function(v){return '<option value="'+v.k+'"'+(v.k===activeView?' selected':'')+'>'+esc(v.label)+' ('+cnt(v)+')</option>';}).join('')+
+    '</select></label>';
   Array.prototype.forEach.call(host.querySelectorAll('.chip'),function(ch){
     ch.onclick=function(){activeView=ch.dataset.v;renderSchoolViews();renderSchools();refocusChip('#schoolViews','data-v',activeView);};
   });
+  var sel=document.getElementById('schoolViewMore');
+  if(sel)sel.onchange=function(){if(!sel.value)return;activeView=sel.value;renderSchoolViews();renderSchools();var s2=document.getElementById('schoolViewMore');if(s2)s2.focus();};
 }
 
 /* "Needs a BR election" strip — the Building Rep is the most important seat, so schools without
@@ -2821,7 +3105,7 @@ function renderBrElection(){
 function renderCoverage(){
   const k=document.getElementById('coverageKpis');
   const body=document.getElementById('coverageBody');
-  const roles=[['Building Rep','Building Rep'],['SCAC Committee / Members','SCAC Committee'],['WTU LSAT Reps','LSAT Rep']];
+  const roles=ROLE_SHORT.map(function(r){return [r[0],r[2],r[1]];}); // same four seats as missingRoles()
   const total=SCHOOLS.length;
   k.innerHTML=roles.map(function(r){var n=SCHOOLS.filter(function(s){return contactVal(s,r[0]);}).length;return '<div class="kpi"><div class="n">'+n+' / '+total+'</div><div class="l">'+r[1]+'</div></div>';}).join('');
   const hasData=function(s){return s.cf>0||s.notes.length>0||s.issues.length>0||s.visits.length>0;};
@@ -2849,18 +3133,29 @@ function renderCoverage(){
     gapsShown+=list.length;
     html+='<div class="cluster-block" data-cluster="'+c+'">';
     html+='<div class="cluster-h"><button class="cluster-toggle" aria-expanded="true" aria-label="Collapse Cluster '+c+'" title="Collapse or expand Cluster '+c+'">▾</button>Cluster '+c+'<span class="ch-meta">'+list.length+' school'+(list.length===1?'':'s')+' to follow up</span></div>';
-    html+='<div class="cluster-schools"><table><tr><th>School</th>'+(hasWards?'<th>Ward</th>':'')+'<th>Building Rep</th><th>SCAC Committee</th><th>LSAT Rep</th></tr>'+list.map(function(s){
-      return '<tr><td data-label="School">'+schoolLink(s.name)+'</td>'+(hasWards?'<td data-label="Ward">'+(s.ward?'Ward '+esc(s.ward):'—')+'</td>':'')+roles.map(function(r){return '<td data-label="'+r[1]+'">'+stateCell[seatState(s,r[0])]+'</td>';}).join('')+'</tr>';
+    // Fixed column widths shared by every cluster's table (audit item 20), so the columns line up
+    // from one cluster to the next instead of each table sizing itself.
+    html+='<div class="cluster-schools"><table class="cov-tbl"><colgroup><col class="cv-s">'+(hasWards?'<col class="cv-w">':'')+roles.map(function(){return '<col class="cv-r">';}).join('')+'</colgroup>'+
+      '<tr><th>School</th>'+(hasWards?'<th>Ward</th>':'')+roles.map(function(r){return '<th>'+r[1]+'</th>';}).join('')+'</tr>'+list.map(function(s){
+      // A school with no 26-27 results has every seat unknown: one cell says so once (audit item 24)
+      // instead of "results outstanding" in each seat's column.
+      var seats=s.brStatus==='pending'
+        ?'<td class="cov-pend" colspan="'+roles.length+'" data-label="Seats"><span class="cov-muted">26-27 results not in</span></td>'
+        :roles.map(function(r){return '<td data-label="'+r[1]+'" data-short="'+r[2]+'">'+stateCell[seatState(s,r[0])]+'</td>';}).join('');
+      return '<tr><td data-label="School">'+schoolLink(s.name)+'</td>'+(hasWards?'<td data-label="Ward">'+(s.ward?'Ward '+esc(s.ward):'—')+'</td>':'')+seats+'</tr>';
     }).join('')+'</table></div>';
     html+='</div>';
   });
   const toggleBtn=(hiddenN||!covHideEmpty)?'<button class="btn" id="covToggleEmpty">'+(covHideEmpty?'Show '+hiddenN+' hidden school'+(hiddenN===1?'':'s')+' (nothing recorded yet)':'Hide schools with nothing recorded yet')+'</button>':'';
+  // No Expand all / Collapse all here (audit item 25): a handful of short groups needs no bulk control.
+  // Each cluster still folds from its own header.
+  const covNote='<div class="view-note">A seat counts as covered when someone is named for it on the school page. Committee size is not checked.</div>';
   if(html){
-    body.innerHTML='<div class="toolbar"><button class="btn" id="covExpandAll">Expand all</button><button class="btn" id="covCollapseAll">Collapse all</button>'+toggleBtn+'</div>'+html;
+    body.innerHTML=covNote+(toggleBtn?'<div class="toolbar">'+toggleBtn+'</div>':'')+html;
   }else if(hiddenN){
-    body.innerHTML='<div class="toolbar">'+toggleBtn+'</div><div class="empty">'+hiddenN+' school'+(hiddenN===1?' is':'s are')+' missing a Building Rep, SCAC committee, or LSAT rep — but nothing is recorded on '+(hiddenN===1?'its page':'their pages')+' yet, so they\'re hidden to keep real gaps visible. They\'ll surface here as school pages fill in.</div>';
+    body.innerHTML='<div class="toolbar">'+toggleBtn+'</div><div class="empty">'+hiddenN+' school'+(hiddenN===1?' is':'s are')+' missing a Building Rep, SCAC committee, LSAT rep or Personnel Committee — but nothing is recorded on '+(hiddenN===1?'its page':'their pages')+' yet, so they\'re hidden to keep real gaps visible. They\'ll surface here as school pages fill in.</div>';
   }else{
-    body.innerHTML='<div class="empty">Every school has a Building Rep, an active SCAC committee, and an LSAT rep.</div>';
+    body.innerHTML='<div class="empty">Every school has a Building Rep, a SCAC committee, an LSAT rep and a Personnel Committee named.</div>';
   }
   // Badge shows what the panel shows (respects the hide-empty toggle), so re-sync on every coverage render.
   DASH_COUNTS.covGaps=gapsShown;
@@ -2909,11 +3204,29 @@ function renderVisitPlan(){
            '<td data-label="Why">'+why+'</td>'+
            '<td data-label="Do">'+esc(x.r[0].act)+'</td>'+
            '<td data-label="Priority">'+pr+'</td>'+
-           '<td data-label="Last visit">'+(lv?prettyMed(lv):'never')+'</td></tr>';
+           '<td data-label="Last visit">'+(lv?dShort(lv):NO_VISIT)+'</td></tr>';
   }).join('');
   host.innerHTML='<div class="cluster-h">'+head+'<span class="ch-meta">'+note+'</span></div>'+
     '<table><tr><th>School</th><th>Why</th><th>Recommended next step</th><th>Priority</th><th>Last visit</th></tr>'+rows+'</table>'+
-    (ranked.length>8?'<div class="sectnote">Showing the top 8 of '+ranked.length+' — the rest are in Schools under “Needs attention”.</div>':'');
+    (ranked.length>8?'<div class="sectnote">Showing the top 8 of '+ranked.length+' — the rest are in Schools under “Needs attention”.</div>':'')+
+    unvisitedLine(duty);
+}
+/* NOT VISITED YET (build 2026-09-23.5, audit item 17). "Next up" is ranked by what is open, and "no
+   visit yet" deliberately weighs almost nothing there (it would flood the list on the first day of the
+   year). So the schools you have not been to sat at the bottom of a 36-row table. They get one line
+   here instead, and the ones still owed the current gear are named, so a first visit can carry it. */
+function unvisitedLine(duty){
+  if(!duty)return '';
+  var list=[];orderedClusters().forEach(function(c){
+    list=list.concat(SCHOOLS.filter(function(s){return s.cluster===c&&!visitRows(s).length;}).sort(function(a,b){return a.name.localeCompare(b.name);}));
+  });
+  if(!list.length)return '';
+  var rnd=currentRound(),got=rnd?roundGot(rnd):null;
+  var owed=got?list.filter(function(s){return !got[s.name];}):[];
+  return '<div class="unvisited"><b>Not visited yet this school year ('+list.length+'):</b> '+
+    list.map(function(s){return schoolLink(s.name);}).join(' · ')+
+    (owed.length?'<div class="unvisited-owed">'+owed.length+' of them '+(owed.length===1?'is':'are')+' also still owed '+esc(rnd.label||'materials')+': '+owed.map(function(s){return esc(s.name);}).join(', ')+'.</div>':'')+
+    '</div>';
 }
 function renderVisitClusters(){
   const box=document.getElementById('visitClusters');
@@ -2928,15 +3241,16 @@ function renderVisitClusters(){
     const visitedN=list.filter(function(s){return visitRows(s).length;}).length;
     html+='<div class="cluster-block" data-cluster="'+c+'">';
     html+='<div class="cluster-h"><button class="cluster-toggle" aria-expanded="true" aria-label="Collapse Cluster '+c+'" title="Collapse or expand Cluster '+c+'">▾</button>Cluster '+c+'<span class="ch-meta">'+list.length+' school'+(list.length===1?'':'s')+' · '+visitedN+' visited</span></div>';
-    html+='<div class="cluster-schools"><table><tr><th>School</th><th>Last visit</th><th>Visits</th><th>Status</th></tr>'+list.map(function(s){
+    html+='<div class="cluster-schools"><table class="vis-tbl"><colgroup><col class="vc-s"><col class="vc-d"><col class="vc-n"><col class="vc-st"></colgroup><tr><th>School</th><th>Last visit</th><th>Visits</th><th>Status</th></tr>'+list.map(function(s){
       var lv=lastVisit(s);
       var status,cls;
       if(!inSession){status='Summer recess';cls='cov-muted';}
       else if(!lv){
         var sd0=sy?(workingDaysBetween(sy,t)||0):0;
-        if(sd0>=60){status='No visit this SY';cls='cov-warn';}
-        else if(sd0>=30){status='No visit this SY';cls='cov-amber';}
-        else{status='No visit yet this SY';cls='cov-muted';}
+        // One phrase for "never visited" across panels (audit item 18); the day count says how long.
+        if(sd0>=60){status=NO_VISIT+' · '+sd0+' school days in';cls='cov-warn';}
+        else if(sd0>=30){status=NO_VISIT+' · '+sd0+' school days in';cls='cov-amber';}
+        else{status=NO_VISIT;cls='cov-muted';}
       }else{
         var sd=workingDaysBetween(lv,t);if(sd===null)sd=0;
         if(sd>=60){status=sd+' school days ago';cls='cov-warn';}
@@ -2946,7 +3260,7 @@ function renderVisitClusters(){
       // Visit staleness is amber at both steps, never red — a school unvisited for 60 school days is
       // overdue, not on a contractual clock. The day count is the signal; colour only ranks it.
       if(cls==='cov-warn'||cls==='cov-amber')staleN++; // sidebar badge counts the same rows the table just classified
-      return '<tr><td data-label="School">'+schoolLink(s.name)+'</td><td data-label="Last visit">'+(lv?prettyMed(lv):'—')+'</td><td data-label="Visits">'+visitRows(s).length+'</td><td data-label="Status"><span class="'+cls+'">'+status+'</span></td></tr>';
+      return '<tr><td data-label="School">'+schoolLink(s.name)+'</td><td data-label="Last visit">'+(lv?dShort(lv):'—')+'</td><td data-label="Visits">'+visitRows(s).length+'</td><td data-label="Status"><span class="'+cls+'">'+status+'</span></td></tr>';
     }).join('')+'</table></div>';
     html+='</div>';
   });
@@ -2955,7 +3269,9 @@ function renderVisitClusters(){
   box.innerHTML='<div class="cluster-h" style="margin-top:14px">Visit Coverage by Cluster<span class="ch-meta">the full backward-looking record · every school · staleness counts school days, so the clock pauses over breaks and summer</span></div><div class="toolbar"><button class="btn" id="visExpandAll">Expand all</button><button class="btn" id="visCollapseAll">Collapse all</button></div>'+html;
   // Out of duty every row reads "Summer recess" and every date is a dash — 36 rows saying nothing.
   // Ship it collapsed then; the plan above is the answer, this is the archive behind it.
-  if(!inSession)setAllVisitClusters(true);
+  // On the phone it also starts folded (build 2026-09-23.5, audit item 14): it is 36 rows of record
+  // under the plan, and the unvisited schools are already named above it.
+  if(!inSession||isPhoneWidth())setAllVisitClusters(true);
 }
 function setAllVisitClusters(collapsed){
   Array.prototype.forEach.call(document.querySelectorAll('#visitClusters .cluster-block'),function(b){
@@ -2972,12 +3288,12 @@ function renderVisits(){
   SCHOOLS.forEach(s=>s.visits.forEach(v=>all.push({school:s.name,cluster:s.cluster,date:v[0],note:v[1],type:visitType(v)})));
   const byCluster={};
   SCHOOLS.forEach(s=>{byCluster[s.cluster]=(byCluster[s.cluster]||0)+visitRows(s).length;});
-  const visitsN=all.filter(v=>v.type==='visit').length;
+  const visitsN=all.filter(v=>countsAsVisit(v.type)).length;
   const kpis=[['Total visits',visitsN]].concat(orderedClusters().filter(c=>byCluster[c]!==undefined).map(c=>['Cluster '+c,byCluster[c]]));
   k.innerHTML=kpis.map(x=>'<div class="kpi"><div class="n">'+x[1]+'</div><div class="l">'+x[0]+'</div></div>').join('');
-  if(!all.length){log.innerHTML='<div class="sectnote">Nothing logged yet. Each dated entry in a school’s "Visit &amp; Conversation Log" appears here, newest first — tagged <b>(Visit)</b> or <b>(Conversation)</b> on the school page. Only Visit rows count toward the totals above.</div>';return;}
+  if(!all.length){log.innerHTML='<div class="sectnote">Nothing logged yet. Each dated entry in a school’s "Visit &amp; Conversation Log" appears here, newest first — tagged <b>(Visit)</b>, <b>(Conversation)</b>, <b>(BR meeting)</b> or <b>(Principal/BR meeting)</b> on the school page. Visit and Principal/BR meeting rows count toward the totals above.</div>';return;}
   all.sort((a,b)=>b.date.localeCompare(a.date));
-  function table(rows){return '<table><tr><th>Date</th><th>School</th><th>Type</th><th>Notes</th></tr>'+rows.map(function(v){return '<tr><td data-label="Date">'+pretty(v.date)+'</td><td data-label="School">'+schoolLink(v.school)+'</td><td data-label="Type"><span class="'+(v.type==='visit'?'cov-yes':'cov-muted')+'">'+(v.type==='visit'?'Visit':'Conversation')+'</span></td><td data-label="Notes">'+esc(v.note)+'</td></tr>';}).join('')+'</table>';}
+  function table(rows){return '<table><tr><th>Date</th><th>School</th><th>Type</th><th>Notes</th></tr>'+rows.map(function(v){return '<tr><td data-label="Date">'+dDay(v.date)+'</td><td data-label="School">'+schoolLink(v.school)+'</td><td data-label="Type"><span class="'+vtClass(v.type)+'">'+esc(vtLabel(v.type))+'</span></td><td data-label="Notes">'+visitCellHtml(v.note)+'</td></tr>';}).join('')+'</table>';} // same field layout as the school detail (build 2026-09-23.2)
   log.innerHTML=table(all.slice(0,5))+(all.length>5?'<details class="recent-more"><summary>Show '+(Math.min(all.length,25)-5)+' earlier entries</summary>'+table(all.slice(5,25))+'</details>':'')+
     (all.length>25?'<div class="sectnote">Latest 25 of '+all.length+' entries available here — full records are on each school.</div>':'');
 
@@ -3043,12 +3359,17 @@ function attnSignals(){
       else if(l<0||l<=3)push(1,'urgent',link(grId(g),esc((l<0?'Grievance PAST DUE: ':'Grievance deadline near: ')+g.member+' — '+act.label+' '+prettyMed(act.date))),act.date,false,
         {title:act.label+' — '+g.member,sub:g.school||'',who:'Mike',when:l<0?'PAST DUE':l===0?'today':l+' school day'+(l===1?'':'s')+' left',whenCls:'red',
          why:prettyMed(act.date)+'.',target:grId(g)});
+      // A meeting date that passed with no outcome in the log (build 2026-09-23.4). The deadline row
+      // above still stands; this asks for the one fact that would settle it.
+      if(act.unconfirmed)push(2,'attention',link(grId(g),esc('Record the meeting outcome: '+g.member+' — '+meetingNote(g,act.unconfirmed))),g.member,false,
+        {title:'Record whether the Stage '+act.unconfirmed+' meeting happened — '+g.member,sub:g.school||'',who:'Mike',
+         why:meetingNote(g,act.unconfirmed)+'.',target:grId(g)});
     }else{
       var h=deadlineHealth(g);
       // The case that cannot be assessed. The strip says HOW MANY; this row says which one and what
       // to do about it, which is the division of labour between the two surfaces.
       if(h)push(2,'attention',link(grId(g),esc('Check case data: '+g.member+' — '+h)),g.member,false,
-        {title:'Add the violation and filing dates — '+g.member,sub:g.school||'',who:'Mike',
+        {title:(meetingUnconfirmed(g,1)?'Record the Stage 1 meeting outcome and the case dates — ':'Add the violation and filing dates — ')+g.member,sub:g.school||'',who:'Mike',
          why:h,detail:g.stage1Notes||'',target:grId(g)});
     }
     if(!g.outcome&&held(g.stage3FiledDate)&&!g.handedOff)push(2,'attention',link(grId(g),esc('Out of lane: '+g.member+' is past Step 1, Stage 2 — route to a Grievance Specialist')),g.member,false,
@@ -3056,31 +3377,10 @@ function attnSignals(){
        why:'Past Step 1, Stage 2 — this is out of your lane.',target:grId(g)});
   });
 
-  // Tier 3 — dated reminders from the `reminders` key (build 2026-08-14.2). This is the only AUTHORED
-  // row in the queue; everything above and below is derived. Still NOT a home for calendar events:
-  // the week renders those immediately to the left, so listing them here printed the same lines
-  // twice, and event times are strings ("10:15 AM" sorts before "9:00 AM"). A reminder is a
-  // thing to DO on a day, not a thing that is happening on it.
-  // Counted in CALENDAR days on purpose — the working-day counters are for deadlines, and a Friday
-  // reminder about a Monday task has to read "in 3 days", not "tomorrow". Urgency still lands where
-  // the colour rule wants it: 'urgent' (red) on the day itself and after, muted before.
-  REMINDERS.forEach(function(r){
-    if(!r||!r.date||!r.title)return;
-    if(r.done)return; // an authored `done` date is the ONLY thing that retires a reminder (build 2026-09-17.1)
-    var lead=(typeof r.lead==='number')?r.lead:3;
-    var d=Math.round((parseD(r.date)-parseD(t))/86400000); // >0 upcoming, 0 today, <0 passed
-    if(d>lead)return; // not yet in its window
-    // A passed date used to drop the row a week later with no record either way — the 9/2 Signal-links
-    // and 9/4 rosters reminders vanished on 9/17 whether or not they were done. Expiry is not completion:
-    // an undone reminder stays — red for its first three days past, then amber — until Mike marks it done.
-    var when=d>1?('in '+d+' days'):d===1?'tomorrow':d===0?'today':d===-1?'due yesterday':('overdue '+(-d)+' days · due '+prettyNoYr(r.date));
-    var body=esc(r.title)+' — '+esc(when)+(r.detail?'<span class="attn-sub">'+esc(r.detail)+'</span>':'');
-    push(3,(d<=0&&d>=-3)?'urgent':'attention',r.target?link(r.target,body):body,r.date,false,
-      {title:r.title,who:'Mike',when:when,whenCls:d<0?(d>=-3?'red':'over'):'',
-       // The one-line "why" for a long-overdue reminder is the instruction, not the backstory —
-       // the backstory is the detail, and it goes behind the disclosure.
-       why:d<-3?'Mark it done or re-date it.':'',detail:r.detail||'',target:r.target||''});
-  });
+  // Tier 3 — RETIRED (build 2026-09-23.2). Dated reminders used to render here from an authored
+  // `reminders` key, but nothing on this page could mark one done: every overdue row ended "Mark it
+  // done or re-date it" and only a Claude session could clear it. Mike's own tasks now live on the
+  // synced To-dos page (ticked on any device), so this queue holds only what the data derives.
 
   var openIssues=SCHOOLS.reduce(function(a,s){return a+s.issues.length;},0);
   if(openIssues)push(4,'attention',link('panel-issues',openIssues+' open member issue'+(openIssues>1?'s':'')+' in the queue'),'',false,
@@ -3134,7 +3434,7 @@ function renderAttention(){
   var sig=attnSignals();
   var live=sig.filter(function(x){return !x.standing;}),standing=sig.filter(function(x){return x.standing;});
   var cnt=document.getElementById('attnCount');
-  if(cnt)cnt.textContent=live.length?(live.length+' now · '+standing.length+' standing'):(standing.length?standing.length+' standing':'');
+  if(cnt)cnt.textContent=live.length?(live.length+' now · '+standing.length+' ongoing'):(standing.length?standing.length+' ongoing':'');
   if(!sig.length){
     // Honest empty state: name the data it was derived from and how old that data is, so "nothing
     // flagged" can never be read as "nothing to do" when the real cause is a stale snapshot.
@@ -3161,7 +3461,7 @@ function renderAttention(){
                 :'<li class="empty">Nothing new today — no live deadlines, case-health flags or open member issues.</li>';
   if(live.length>6)h+='<li class="empty">'+(live.length-6)+' more time-sensitive — see Cases</li>';
   if(standing.length){
-    h+='<li class="divider">Standing — outstanding, unchanged day to day</li>';
+    h+='<li class="divider">Ongoing — not new today</li>';
     h+=standing.slice(0,4).map(row).join('');
     if(standing.length>4)h+='<li class="empty">'+(standing.length-4)+' more — see Schools, Coverage and Runbook</li>';
   }
@@ -3231,7 +3531,8 @@ function renderBriefStats(){
   // same case reads as both tracked and untracked on one screen.
   var withClock=lane.filter(function(g){return !!activeDeadline(g);}).length;
   var s=[];
-  s.push('<span><b>'+withClock+'</b>case'+(withClock===1?'':'s')+' with a live clock'+(spec?' · '+spec+' with a Specialist':'')+'</span>');
+  // Plain words (build 2026-09-23.2): "live clock" → "deadline running"; "Specialist" names the role.
+  s.push('<span><b>'+withClock+'</b>case'+(withClock===1?'':'s')+' with a deadline running'+(spec?' · '+spec+' with a Grievance Specialist':'')+'</span>');
   var ws=localIso(weekStart(0)),wd=new Date(weekStart(0));wd.setDate(wd.getDate()+6);var we=localIso(wd);
   var thisWk=0,total=0,visited=0;
   SCHOOLS.forEach(function(sc){
@@ -3246,11 +3547,11 @@ function renderBriefStats(){
   var items=(DISTRIBUTION&&DISTRIBUTION.items)||[];
   var round=items.length?items[items.length-1]:null;
   if(round){
-    var got={};(round.received||[]).forEach(function(n){got[n]=1;});
-    var units=Array.isArray(round.units)?round.units:[];
+    var got=roundGot(round),units=roundUnits(round); // every year of the same gear, not the latest list alone (23.3)
     var owed=SCHOOLS.filter(function(sc){return !got[sc.name];}).length+units.filter(function(u){return !u.received;}).length;
-    var recv=SCHOOLS.length+units.length-owed;
-    s.push('<span data-target="panel-dist" role="button" tabindex="0"><b>'+owed+'</b>still owed '+esc([round.period,round.label].filter(Boolean).join(' '))+' · '+recv+' delivered</span>');
+    // Schools and units said separately (23.3): "26 delivered" beside Schools' "25 of 36" read as a mismatch.
+    var recvS=SCHOOLS.filter(function(sc){return got[sc.name];}).length,recvU=units.filter(function(u){return u.received;}).length;
+    s.push('<span data-target="panel-dist" role="button" tabindex="0"><b>'+owed+'</b>still owed '+esc(round.label||'materials')+' · '+recvS+' of '+SCHOOLS.length+' schools have them'+(recvU?' + '+recvU+' unit':'')+'</span>');
   }
   host.innerHTML=s.join('');
 }
@@ -3267,14 +3568,20 @@ function renderBriefStats(){
    this week's. */
 // To-dos door (build 2026-09-22.1) — see the TODOS note by the data globals. The href comes from
 // data, so only a claude.ai https URL is accepted; anything else renders nothing.
+function todosUrl(){
+  var u=(TODOS&&typeof TODOS.url==='string')?TODOS.url:'';
+  return /^https:\/\/claude\.ai\/[A-Za-z0-9\/_-]+$/.test(u)?u:'';
+}
 function renderTodos(){
   var host=document.getElementById('todosBox');if(!host)return;
-  var u=(TODOS&&typeof TODOS.url==='string')?TODOS.url:'';
-  if(!/^https:\/\/claude\.ai\/[A-Za-z0-9\/_-]+$/.test(u)){host.innerHTML='';return;}
+  var u=todosUrl();
+  if(!u){host.innerHTML='';return;}
   // Build 2026-09-23.1: the page carries Field notes too, so two doors, one per tab (#notes / #todos).
   host.innerHTML='<a class="btn todos-link" href="'+esc(u)+'#notes" target="_blank" rel="noopener">Field notes</a>'
     +'<a class="btn todos-link" href="'+esc(u)+'#todos" target="_blank" rel="noopener">To-dos</a>'
-    +'<span class="todos-sub">synced on claude.ai ↗</span>';
+    // Build 2026-09-23.2: say where the lag is. A saved note is on claude.ai, not here, until it is
+    // logged — so the visit count beside this reads 0 even in a week with notes waiting.
+    +'<span class="todos-sub">Synced on claude.ai. Saved notes reach this page when you tell Claude “log my notes.”</span>';
 }
 
 function renderNewsletter(){
@@ -3284,12 +3591,36 @@ function renderNewsletter(){
   var t=todayIso();
   var cd=function(d){return Math.round((parseD(d)-parseD(t))/86400000);};
   function live(x){return x&&(!x.due||x.due>=t);}
-  function dueTag(d){
-    if(!d)return '';
-    var k=cd(d);
+  /* WHAT THE DATE MEANS (build 2026-09-23.4). `due` has one job: the day after it, the item leaves the
+     Brief. It also printed as "due Oct 20 · in 27 days", so a retirement date, an event and the day a
+     change takes effect all read as deadlines (one item's date was only its retirement date). `dateKind` says which it is, and only `deadline` prints "due" or turns amber:
+       deadline  → "due Oct 20 · in 27 days"      event → "Oct 20 · in 27 days" (with `start`, a range)
+       effective → "takes effect Oct 27 · …"      retire → nothing: an internal show-until date
+     `due` still drives retirement, so an older shell reading this data behaves as before. An item with
+     no `dateKind` is older data whose `due` could be any of the four, so it prints the plain date. */
+  function rel(k){return k===0?'today':k===1?'tomorrow':'in '+k+' days';}
+  function dueTag(x){
+    var d=x&&x.due;if(!d)return '';
+    var k=cd(d),kind=x.dateKind||'';
+    if(kind==='retire')return '';
     // Build 2026-09-18.2 (review B3): the date and the countdown are one muted phrase, not a
     // multi-line pill. The pill was the loudest thing in the block and it was decorating a date.
-    return '<span class="nws-due'+(k<=7?' hot':'')+'">due '+prettyNoYr(d)+' · '+(k===0?'today':k===1?'tomorrow':'in '+k+' days')+'</span>';
+    if(kind==='deadline')return '<span class="nws-due'+(k<=7?' hot':'')+'">due '+prettyNoYr(d)+' · '+rel(k)+'</span>';
+    if(kind==='effective')return '<span class="nws-due">takes effect '+prettyNoYr(d)+' · '+rel(k)+'</span>';
+    if(kind==='event'&&x.start&&x.start<d){
+      var s=cd(x.start);
+      return '<span class="nws-due">'+prettyNoYr(x.start)+' – '+prettyNoYr(d)+' · '+(s>0?'starts '+rel(s):k===0?'last one today':'running now')+'</span>';
+    }
+    return '<span class="nws-due">'+prettyNoYr(d)+' · '+rel(k)+'</span>';
+  }
+  // The history line says what the date WAS, so a retired item never reads as a policy that ended.
+  function pastWhen(x){
+    var kind=x.dateKind||'',d=prettyNoYr(x.due);
+    if(kind==='deadline')return 'was due '+d;
+    if(kind==='effective')return 'in effect since '+d;
+    if(kind==='retire')return 'on the Brief through '+d;
+    if(kind==='event'&&x.start&&x.start<x.due)return prettyNoYr(x.start)+' – '+d;
+    return d;
   }
   function linkOut(x){
     return x.link?' <a href="'+esc(x.link)+'" target="_blank" rel="noopener">'+esc(x.linkLabel||'Open')+'</a>':'';
@@ -3312,28 +3643,38 @@ function renderNewsletter(){
      with it four days before the event. Dated content still retires exactly on time; what survives
      says outright that the Update is spent, so nothing here can read as this week's. */
   if(!head&&!items.length&&!flags.length){host.innerHTML='';return;}
+  /* SPENT EDITION = ONE LINE (build 2026-09-23.2, Mike's pick). Once every dated item has passed, the
+     old block still printed its full flag list open — on 9/23 that was six flags about Sept 1–16 events
+     filling the lower half of the Brief, 24 days after the edition. Now a spent edition is one line
+     saying how old it is, with its flags one tap away (closed), so nothing from 9/15's lesson is lost
+     and nothing stale reads as this week's. The "already passed" list and the member line are dropped
+     here: a member line from a spent edition is not something to paste. */
+  if(!head&&!items.length){
+    var sh='<div class="nws nws-spent"><div class="nws-src">The Union Update'+(n.updated?' · '+esc(prettyNoYr(n.updated)):'')+
+      ' <span class="nws-warn">'+(age!==null?'is '+age+' day'+(age===1?'':'s')+' old':'has passed')+' — give Claude the latest edition</span></div>';
+    if(flags.length)sh+='<details><summary>'+flags.length+' flag'+(flags.length===1?'':'s')+' from that edition</summary><ul>'+
+      flags.map(function(f){return '<li>'+esc(f)+'</li>';}).join('')+'</ul>'+(n.flagNote?'<p>'+esc(n.flagNote)+'</p>':'')+'</details>';
+    host.innerHTML=sh+'</div>';
+    return;
+  }
   var h='<div class="nws"><div class="nws-src">From The Union Update'+(n.updated?' · '+esc(prettyNoYr(n.updated)):'')+
     (age!==null&&age>10?' <span class="nws-warn">— imported '+age+' days ago; WTU sends Sunday and usually Thursday</span>':'')+'</div>';
   if(head){
-    h+='<div class="nws-lead">'+esc(head.title)+' '+dueTag(head.due)+fromTag(head)+'</div>';
+    h+='<div class="nws-lead">'+esc(head.title)+' '+dueTag(head)+fromTag(head)+'</div>';
     if(head.detail)h+='<div class="nws-detail">'+esc(head.detail)+linkOut(head)+'</div>';
   }
   items.forEach(function(it){
-    h+='<div class="nws-item"><b>'+esc(it.title)+'</b> '+dueTag(it.due)+fromTag(it)+
+    h+='<div class="nws-item"><b>'+esc(it.title)+'</b> '+dueTag(it)+fromTag(it)+
        (it.detail?'<div class="nws-detail">'+esc(it.detail)+linkOut(it)+'</div>':linkOut(it))+'</div>';
   });
-  // EXPIRED ITEMS GO TO HISTORY, not to nothing (B3). One line when everything dated has passed,
-  // and the spent items are still nameable behind the drawer rather than silently gone.
-  if(!head&&!items.length){
-    h+='<div class="nws-detail">Every dated item in this Update has passed'+(age!==null?' — imported '+age+' days ago':'')+
-       '. Kept for the flags below; drop a newer Update to replace it.</div>';
-  }
+  // EXPIRED ITEMS GO TO HISTORY, not to nothing (B3): the spent items stay nameable behind the drawer.
+  // (A fully spent edition never reaches here — it returns early as one line, above.)
   if(past.length){
-    h+='<details><summary>'+past.length+' item'+(past.length===1?'':'s')+' already passed</summary><ul>'+
-       past.map(function(x){return '<li>'+esc(String(x.title).split(' — ')[0])+' · '+esc(prettyNoYr(x.due))+'</li>';}).join('')+'</ul></details>';
+    h+='<details><summary>'+past.length+' earlier item'+(past.length===1?'':'s')+'</summary><ul>'+
+       past.map(function(x){return '<li>'+esc(String(x.title).split(' — ')[0])+' · '+esc(pastWhen(x))+'</li>';}).join('')+'</ul></details>';
   }
   if(flags.length){
-    h+='<details'+((!head&&!items.length)?' open':'')+'><summary>'+flags.length+' flag'+(flags.length===1?'':'s')+' — not on your calendar</summary><ul>'+
+    h+='<details><summary>'+flags.length+' flag'+(flags.length===1?'':'s')+' — not on your calendar</summary><ul>'+
        flags.map(function(f){return '<li>'+esc(f)+'</li>';}).join('')+'</ul>'+
        (n.flagNote?'<p>'+esc(n.flagNote)+'</p>':'')+'</details>';
   }
@@ -3608,7 +3949,7 @@ function linkifyContact(v){
    refresh parses it (dashboard/parse-school-pages.ps1), the dashboard reads it back. So a field note
    should not be prose that somebody re-types later — it should BE the row. The exact shape the
    parser's regexes require, in this order:
-     - **YYYY-MM-DD** — *(Visit|Conversation)* — occasion. Outcome: … Next: … (owner, by DATE). Delivered: … Done: DATE.
+     - **YYYY-MM-DD** — *(Visit|Conversation|BR meeting|Principal/BR meeting)* — occasion. Outcome: … Next: … (owner, by DATE). Delivered: … Done: DATE.
    Three composer rules, each protecting a parser rule:
      1. ONE line per value, ending in a sentence stop — a field value runs to the NEXT field marker,
         so a stray " — " separator would be swallowed into the value in front of it;
@@ -3623,7 +3964,8 @@ var JOT_KEYS=['jotSchool','jotType','jotDate','jotText','jotOutcome','jotNext','
 var JOT_MARKERS=['Outcome','Next','Delivered','Done'];
 var JOT_UNDO=null,JOT_CAPTURE='',JOT_PEND_ERROR=false;
 function jotCaptureId(){return 'capture-'+(typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+'-'+Math.random().toString(36).slice(2));}
-function jotIsRow(t){return t==='Visit'||t==='Conversation';}
+var JOT_ROW_TYPES={'Visit':'visit','Conversation':'conversation','BR meeting':'br','Principal/BR meeting':'principal-br'}; // tag text -> data type (build 2026-09-24.2)
+function jotIsRow(t){return JOT_ROW_TYPES.hasOwnProperty(t);}
 function jotV(id){var el=document.getElementById(id);return el?String(el.value==null?'':el.value).trim():'';}
 function jotChecked(id){var el=document.getElementById(id);return !!(el&&el.checked);}
 function jotFlat(s){return s.replace(/\s+/g,' ').trim();}
@@ -3684,7 +4026,7 @@ function jotWarnings(){
   if(date>todayIso())w.push('That date is in the future. A row is a record of something that happened; a future date reads as scheduled.');
   if(s&&Array.isArray(s.visits)){
     for(var i=0;i<s.visits.length;i++){
-      if(s.visits[i][0]===date&&String(s.visits[i][2]||'')===typ.toLowerCase()){
+      if(s.visits[i][0]===date&&String(s.visits[i][2]||'')===JOT_ROW_TYPES[typ]){
         w.push(sch+' already has a '+typ+' row for '+prettyNoYr(date)+' on the page — the same key. Add to that row rather than writing a second one.');break;
       }
     }
@@ -3694,8 +4036,11 @@ function jotWarnings(){
   if(stray.length)w.push('The occasion contains "'+stray.join('", "')+'" — the parser reads that as a field marker and splits the row there. Move it to its own box.');
   if(jotChecked('jotDeliv')&&sch){
     var r=jotCurrentRound();
-    if(r&&(!Array.isArray(r.received)||r.received.indexOf(sch)<0))
-      w.push(sch+' is not on the '+(r.period?r.period+' ':'')+(r.label||'delivery')+' list yet. The count moves only on your word, so say in the paste whether this is that delivery.');
+    // Any year of the same gear counts (build 2026-09-23.3): a school served in SY 25-26 already has them.
+    if(r&&!roundGot(r)[sch])
+      w.push(sch+' is not on the '+(r.label||'delivery')+' list yet. The count moves only on your word, so say in the paste whether this is that delivery.');
+    else if(r)
+      w.push(sch+' already has '+(r.label||'these')+' ('+roundWhen(r,sch)+'). Say in the paste whether this is more of the same gear.');
   }
   var dn=jotV('jotDone');
   if(dn){
@@ -3803,8 +4148,10 @@ function jotRefresh(){
   if(lbl)lbl.textContent=isRow?'Occasion — who you saw and what it was':'Note';
   var hint=document.getElementById('jotTypeHint');
   if(hint)hint.textContent=
-    typ==='Visit'?'Visit = you were in the building, whatever the occasion. A meeting with the Building Rep is a Conversation even inside the building, and so is a drop-off.'
-   :typ==='Conversation'?'Conversation = email, phone, text, a document received, any virtual meeting, a drop-off, or a meeting with the Building Rep.'
+    typ==='Visit'?'Visit = you were in the building, whatever the occasion. A meeting with the Building Rep there is a BR meeting instead, and a drop-off is a Conversation.'
+   :typ==='Conversation'?'Conversation = email, phone, text, a document received, any virtual meeting (a virtual BR meeting too), or a drop-off.'
+   :typ==='BR meeting'?'BR meeting = you met the Building Rep at the school. It does not count as a visit, but it sets the school\'s "Last BR meeting" date.'
+   :typ==='Principal/BR meeting'?'Principal/BR meeting = a joint meeting with the principal and the Building Rep at the school that is not a grievance meeting. It counts as a visit.'
    :'Not a log row — this reaches Claude as a plain note, with the time you wrote it.';
   // Native guard to match the composer's: the picker cannot offer a date this row could not close.
   var dnEl=document.getElementById('jotDone');
@@ -3960,13 +4307,15 @@ var linkFilterText='';
    to look authoritative, and this one would rot the moment a school is renamed.
    ORPHAN CHECK: a received name that matches no school is surfaced, never dropped. Dropping it
    would move that school back into "still owed" and send Mike to deliver twice. */
-function distGroupHtml(list){
+// withVisit (build 2026-09-23.5, audit item 17): the "still owed" list names each school's last visit,
+// so a delivery can ride along on a visit you were going to make anyway.
+function distGroupHtml(list,withVisit){
   var out='';
   orderedClusters().forEach(function(c){
     var g=list.filter(function(s){return s.cluster===c;}).sort(function(a,b){return a.name.localeCompare(b.name);});
     if(!g.length)return;
     out+='<div class="dist-row"><span class="dist-cl">Cluster '+esc(c)+'</span><span class="dist-names">'+
-      g.map(function(s){return schoolLink(s.name);}).join('<span class="dist-sep"> · </span>')+'</span></div>';
+      g.map(function(s){var lv=withVisit?lastVisit(s):null;return schoolLink(s.name)+(withVisit?'<span class="dist-lv"> ('+(lv?'last visit '+esc(dShort(lv)):NO_VISIT.toLowerCase())+')</span>':'');}).join('<span class="dist-sep"> · </span>')+'</span></div>';
   });
   return out;
 }
@@ -3974,56 +4323,58 @@ function renderDistribution(){
   var body=document.getElementById('distBody'),badge=document.getElementById('distBadge');
   if(!body)return;
   if(!DISTRIBUTION){var p=document.getElementById('panel-dist');if(p)p.style.display='none';return;}
-  var items=DISTRIBUTION.items||[],html='',firstBadge='',owed=0,roundBlocks=[];
-  items.forEach(function(it,roundIndex){
-    var historic=roundIndex<items.length-1;
-    var rec=Array.isArray(it.received)?it.received:[];
-    var units=Array.isArray(it.units)?it.units:[];
-    var known={};SCHOOLS.forEach(function(s){known[s.name]=1;});
-    var orphans=rec.filter(function(n){return !known[n];});
-    var got={};rec.forEach(function(n){got[n]=1;});
-    var delivered=SCHOOLS.filter(function(s){return got[s.name];});
-    var pending=SCHOOLS.filter(function(s){return !got[s.name];});
+  /* ONE BLOCK PER KIND OF GEAR (build 2026-09-23.3). Items sharing a `label` are the same gear handed
+     out over several school years (Mike, 2026-09-23), so they render as ONE cumulative block: owed =
+     on no year's list. Each year's own list follows as a record of when, with its provenance note.
+     This replaces the per-round blocks, which called every SY 25-26 school "owed" again in SY 26-27. */
+  var items=DISTRIBUTION.items||[],known={},labels=[],blocks=[],badgeTxt='',owedNow=0;
+  SCHOOLS.forEach(function(s){known[s.name]=1;});
+  items.forEach(function(it){var l=it.label||'Materials',k=labels.indexOf(l);if(k>-1)labels.splice(k,1);labels.push(l);}); // newest kind last
+  labels.forEach(function(l,li){
+    var its=items.filter(function(it){return (it.label||'Materials')===l;}),last=its[its.length-1];
+    var got=roundGot(last),units=roundUnits(last),span=roundSpan(last);
+    var orphans=[];its.forEach(function(it){(it.received||[]).forEach(function(n){if(!known[n]&&orphans.indexOf(n)<0)orphans.push(n);});});
+    var delivered=SCHOOLS.filter(function(s){return got[s.name];}),pending=SCHOOLS.filter(function(s){return !got[s.name];});
     var unitsGot=units.filter(function(u){return u.received;});
-    var n=delivered.length+unitsGot.length,tot=SCHOOLS.length+units.length;
-    owed+=pending.length+(units.length-unitsGot.length);
-    // CURRENT round, not the first one (build 2026-09-18.3). `items` runs oldest → newest, so the
-    // old `if(!firstBadge)` pinned the badge to SY 25-26 and the nav read last year's number all
-    // year — review finding D5's "first-round Materials badge". Fixed here rather than waiting for
-    // D5's full round-switch because the Brief's new gear stat reads the LAST item, and two
-    // surfaces printing different numbers for the same thing is the defect this review exists for.
-    firstBadge=n+' OF '+tot;
-    html+='<div class="cluster-h" style="margin-top:20px">'+esc(it.label||'Materials')+
-      '<span class="ch-meta">'+(it.period?esc(it.period)+' · ':'')+n+' of '+tot+' delivered'+(units.length?' ('+delivered.length+' schools + '+unitsGot.length+' unit'+(unitsGot.length===1?'':'s')+')':'')+'</span></div>';
-    // Provenance follows the working records in a disclosure.
-    html+='<div class="kpis" style="margin-bottom:6px">'+
-      '<div class="kpi"><div class="n">'+n+'</div><div class="l">delivered</div></div>'+
-      '<div class="kpi"><div class="n">'+pending.length+'</div><div class="l">'+(historic?'schools without recorded delivery':'schools still owed')+'</div></div>'+
-      '<div class="kpi"><div class="n">'+(tot?Math.round(n/tot*100):0)+'%</div><div class="l">of your turf</div></div>'+
+    /* ONE DENOMINATOR (build 2026-09-23.5, audit item 18): schools, the same "N of M schools" the Brief and
+       the Schools panel print. Units that are not schools are named beside it instead of being folded
+       into a combined count that appeared nowhere else. */
+    var n=delivered.length,tot=SCHOOLS.length;
+    var unitTxt=unitsGot.length?' + '+unitsGot.map(function(u){return esc(u.name);}).join(', '):'';
+    var h='<div class="cluster-h" style="margin-top:20px">'+esc(l)+
+      '<span class="ch-meta">'+(span?esc(span)+' · ':'')+n+' of '+tot+' schools'+unitTxt+'</span></div>';
+    h+='<div class="kpis" style="margin-bottom:6px">'+
+      '<div class="kpi"><div class="n">'+n+' / '+tot+'</div><div class="l">schools delivered</div></div>'+
+      '<div class="kpi"><div class="n">'+pending.length+'</div><div class="l">schools still owed</div></div>'+
+      '<div class="kpi"><div class="n">'+(tot?Math.round(n/tot*100):0)+'%</div><div class="l">of your schools</div></div>'+
       '</div>';
-    html+='<div class="sub-h">'+(historic?'No delivery recorded':'Still owed')+' — '+pending.length+' schools</div>';
-    html+=pending.length?distGroupHtml(pending):'<div class="empty">Every school on your turf has these.</div>';
-    html+='<div class="sub-h">Delivered — '+delivered.length+' schools</div>';
-    html+=delivered.length?distGroupHtml(delivered):'<div class="empty">Nothing delivered yet.</div>';
+    h+='<div class="sub-h">Still owed — '+pending.length+' schools</div>';
+    h+=pending.length?distGroupHtml(pending,true):'<div class="empty">Every school on your turf has these.</div>';
+    h+='<div class="sub-h">Delivered — '+delivered.length+' schools</div>';
+    h+=delivered.length?distGroupHtml(delivered):'<div class="empty">Nothing delivered yet.</div>';
     if(units.length){
-      html+='<div class="dist-unit">'+units.map(function(u){
-        return (u.received?'<span class="cov-yes">✓</span> ':'<span class="cov-warn">'+(historic?'no delivery recorded':'still owed')+'</span> ')+
-          '<b>'+esc(u.name)+'</b>'+(u.note?' — '+esc(u.note):'');
+      h+='<div class="dist-unit">'+units.map(function(u){
+        return (u.received?'<span class="cov-yes">✓</span> ':'<span class="cov-warn">still owed</span> ')+'<b>'+esc(u.name)+'</b>'+(u.note?' — '+esc(u.note):'');
       }).join('<br>')+'</div>';
     }
     if(orphans.length){
-      html+='<div class="dist-unit"><span class="cov-warn">check</span> '+orphans.length+
-        ' name'+(orphans.length===1?'':'s')+' on the delivered list match'+(orphans.length===1?'es':'')+
+      h+='<div class="dist-unit"><span class="cov-warn">check</span> '+orphans.length+
+        ' name'+(orphans.length===1?'':'s')+' on a delivered list match'+(orphans.length===1?'es':'')+
         ' no school page — '+orphans.map(esc).join(', ')+
         '. Fix the name in dashboard-data.json or the school would show as still owed.</div>';
     }
-    if(it.note)html+='<details class="dist-provenance"><summary>About these counts</summary><div class="dist-note">'+esc(it.note)+'</div></details>';
-    roundBlocks.push({label:[it.label,it.period].filter(Boolean).join(' '),received:n,pending:pending.length+(units.length-unitsGot.length),html:html});html='';
+    // Each year's own list: WHEN, not whether. Provenance notes live here.
+    h+=its.slice().reverse().map(function(it){
+      var rec=(it.received||[]).filter(function(x){return known[x];});
+      return '<details class="dist-provenance"><summary>'+esc(it.period||'Earlier')+' · '+rec.length+' school'+(rec.length===1?'':'s')+' delivered that year</summary>'+
+        distGroupHtml(SCHOOLS.filter(function(s){return rec.indexOf(s.name)>-1;}))+(it.note?'<div class="dist-note">'+esc(it.note)+'</div>':'')+'</details>';
+    }).join('');
+    if(li===labels.length-1){badgeTxt=n+' of '+tot+' schools';owedNow=pending.length+(units.length-unitsGot.length);}
+    blocks.push({label:l,received:n,pending:pending.length,html:h});
   });
-  html=roundBlocks.slice().reverse().map(function(b,i){return i===0?'<section class="current-round">'+b.html+'</section>':'<details class="round-history"><summary>'+esc(b.label)+' · '+b.received+' delivered · '+b.pending+' without recorded delivery</summary>'+b.html+'</details>';}).join('');
-  body.innerHTML=html;
-  if(badge)badge.textContent=(items.length&&items[items.length-1].period?items[items.length-1].period+' · ':'')+(firstBadge||'MATERIALS');
-  DASH_COUNTS.distOwed=owed;
+  body.innerHTML=blocks.slice().reverse().map(function(b,i){return i===0?'<section class="current-round">'+b.html+'</section>':'<details class="round-history"><summary>'+esc(b.label)+' · '+b.received+' delivered · '+b.pending+' owed</summary>'+b.html+'</details>';}).join('');
+  if(badge)badge.textContent=badgeTxt||'MATERIALS';
+  DASH_COUNTS.distOwed=owedNow;
   updateSidebarBadges();
 }
 function renderLinks(){
@@ -4033,12 +4384,26 @@ function renderLinks(){
   card.style.display='';if(tab)tab.style.display='';
   var badge=document.getElementById('lnkCount');if(badge)badge.textContent=LINKS.length+' LINKS';
   var q=linkFilterText.toLowerCase(),shown=0;
-  var h=LINKS.map(function(l){
-    if(q&&String(l.title||'').toLowerCase().indexOf(q)<0)return '';
+  /* GROUPS (build 2026-09-24.1): each link may carry an optional `group`, set from the spreadsheet's
+     Group column. Groups print in the order they first appear in the data, so the spreadsheet's row
+     order is the display order. A data file with no `group` on any link renders flat, exactly as before;
+     a link without one in a grouped file lands under "Other" rather than disappearing.
+     A bit.ly short link is printed under its title, because that is the address that gets read aloud
+     or typed into a text; a long SharePoint address is not, since nobody reads those. */
+  var grouped=LINKS.some(function(l){return l&&l.group;});
+  var order=[],byG={};
+  LINKS.forEach(function(l){
+    if(q&&String(l.title||'').toLowerCase().indexOf(q)<0&&String(l.group||'').toLowerCase().indexOf(q)<0)return;
     shown++;
-    return '<div class="lnkrow"><a class="lnk" href="'+esc(l.url)+'" target="_blank" rel="noopener">'+
-      '<span class="lnk-e">'+esc(l.emoji||'🔗')+'</span><span class="lnk-t">'+esc(l.title)+'</span></a>'+
-      '<button class="btn lnk-copy" type="button" data-copy="'+esc(l.url)+'" title="Copy link URL">Copy</button></div>';
+    var g=grouped?(l.group||'Other'):'';
+    if(!byG[g]){byG[g]=[];order.push(g);}
+    var u=String(l.url||''),m=u.match(/^https?:\/\/(bit\.ly\/[^\s?#]+)/i);
+    byG[g].push('<div class="lnkrow"><a class="lnk" href="'+esc(u)+'" target="_blank" rel="noopener">'+
+      '<span class="lnk-e">'+esc(l.emoji||'🔗')+'</span><span class="lnk-t">'+esc(l.title)+(m?'<span class="lnk-u">'+esc(m[1])+'</span>':'')+'</span></a>'+
+      '<button class="btn lnk-copy" type="button" data-copy="'+esc(u)+'" title="Copy link URL">Copy</button></div>');
+  });
+  var h=order.map(function(g){
+    return (g?'<div class="cluster-h">'+esc(g)+'<span class="ch-meta">'+byG[g].length+'</span></div>':'')+byG[g].join('');
   }).join('');
   document.getElementById('linksBox').innerHTML=shown?h:'<div class="empty" style="padding:10px 6px">No links match “'+esc(linkFilterText)+'”.</div>';
 }
@@ -4444,8 +4809,25 @@ function wireSearch(){
     if(topDialog()||e.key!=='/'||e.altKey||e.ctrlKey||e.metaKey)return;
     var tg=e.target,tag=(tg&&tg.tagName)||'';
     if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(tg&&tg.isContentEditable))return;
-    e.preventDefault();inp.focus();
+    e.preventDefault();gsSetOpen(true);inp.focus();
   });
+  // Phone search toggle (build 2026-09-23.2). Under 700px the field is hidden behind #gsToggle; the
+  // class is harmless on desktop, where CSS never hides the field. An empty field folds back away.
+  var tgl=document.getElementById('gsToggle'),hero=inp.closest&&inp.closest('header.hero');
+  function gsSetOpen(on){if(!hero||!tgl)return;hero.classList.toggle('search-open',on);tgl.setAttribute('aria-expanded',String(on));}
+  if(tgl&&hero){
+    tgl.innerHTML=icon('search');
+    tgl.addEventListener('click',function(){
+      var on=!hero.classList.contains('search-open');gsSetOpen(on);
+      if(on)inp.focus();else{gsClose();tgl.focus();}
+    });
+    inp.addEventListener('blur',function(){
+      setTimeout(function(){
+        var a=document.activeElement;
+        if(!inp.value&&a!==inp&&!box.contains(a)&&a!==tgl)gsSetOpen(false);
+      },200);
+    });
+  }
 }
 
 /* ===== LAPTOP LAYER (build .2): fixed sidebar + one-section-at-a-time view =====
@@ -4456,6 +4838,7 @@ function wireSearch(){
 /* Monochrome line icons (build .8): inherit currentColor so they're maroon in the sidebar/tabs and
    white on the active button. One SVG set drives both the JS-rendered sidebar and the tab bar. */
 var ICONS={
+  search:'<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>',
   brief:'<rect x="7" y="3" width="10" height="4" rx="1.5"/><path d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><path d="M8 12h8M8 16h5"/>',
   book:'<path d="M12 6.5a3 3 0 0 0-3-3H4v14.5h6a2 2 0 0 1 2 2z"/><path d="M12 6.5a3 3 0 0 1 3-3h5v14.5h-6a2 2 0 0 0-2 2z"/><path d="M6.5 7.5h3M6.5 10.5h3"/>',
   clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
@@ -4589,16 +4972,20 @@ function renderActionbar(){
 function renderTabbar(){
   var bar=document.getElementById('tabbar');if(!bar)return;
   var secs=visibleSections();
-  var want=['panel-brief','panel-schools','panel-griev','panel-links'];
+  // NOTES TAB (build 2026-09-23.2, Mike's pick). Capturing a field note is the phone's main job in the
+  // field, so when the synced page exists it takes the 4th slot and Links moves into More. Still five
+  // tabs ("no 7th phone tab" stands). No `todos` key = the old four, Links included.
+  var notesUrl=todosUrl();
+  var want=notesUrl?['panel-brief','panel-schools','panel-griev']:['panel-brief','panel-schools','panel-griev','panel-links'];
   var picked=[];
   want.forEach(function(id){var s=secs.filter(function(x){return x.id===id;})[0];if(s)picked.push(s);});
-  picked=picked.slice(0,4);
+  picked=picked.slice(0,notesUrl?3:4);
   // Everything the four tabs don't cover. With view switching on, a section with no route is
   // unreachable by browsing — links and search still find it, but nothing lets Mike go looking.
   TAB_MORE=secs.filter(function(s){return picked.indexOf(s)===-1;});
   bar.innerHTML=picked.map(function(s){
     return '<button data-jump="'+s.id+'"><span class="ti" data-ic="'+s.ic+'"></span>'+(s.short||s.label)+'</button>';
-  }).join('')+(TAB_MORE.length?'<button id="tabMore" type="button" aria-haspopup="true" aria-expanded="false"><span class="ti" data-ic="more"></span>More</button>':'');
+  }).join('')+(notesUrl?'<a class="tab-ext" href="'+esc(notesUrl)+'#notes" target="_blank" rel="noopener" aria-label="Field notes (opens on claude.ai)"><span class="ti" data-ic="pencil"></span>Notes</a>':'')+(TAB_MORE.length?'<button id="tabMore" type="button" aria-haspopup="true" aria-expanded="false"><span class="ti" data-ic="more"></span>More</button>':'');
   paintTabIcons();
   var mb=document.getElementById('tabMore');
   if(mb)mb.onclick=function(){toggleMoreSheet();};

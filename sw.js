@@ -17,7 +17,7 @@
 
    Opening with no signal is unaffected: activate only runs after the new script has been
    fetched, so offline there is no update, no purge, and the cached shell opens instantly. */
-var CACHE = 'dash-shell-2026-09-23.1';
+var CACHE = 'dash-shell-2026-09-24.2';
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
