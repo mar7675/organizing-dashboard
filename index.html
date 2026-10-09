@@ -603,22 +603,6 @@ footer{margin-top:22px;font-size:11px;color:var(--muted);text-align:center;line-
 body.nodata .card:not(#panel-import){display:none}
 body.nodata .actionbar,body.nodata footer,body.nodata .tabbar,body.nodata .sidebar{display:none}
 .imp-ta{width:100%;min-height:110px;margin-top:8px;padding:10px;font:12px/1.4 ui-monospace,Consolas,monospace;border:1px solid var(--edge);border-radius:10px;background:var(--card);color:var(--ink)}
-.jot-lbl{display:block;font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px}
-/* Jot & Share, K1 row capture (build 2026-09-17.3). One column of labelled fields, a read-only
-   preview of the row itself, and the pending list under it. No new colours: the warning uses the
-   same --warn-ink the status strip does, and a pending card is a --tint block, not a third card. */
-.jot-hint{font-size:11px;line-height:1.45;color:var(--muted);margin:6px 0 10px}
-.jot-opt{font-weight:400;color:var(--muted)}
-.jot-sm{min-height:56px}
-.jot-chk{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700;color:var(--ink);margin-top:12px;min-height:44px;cursor:pointer}
-.jot-chk input{width:18px;height:18px;flex:none}
-.jot-warn{font-size:12px;line-height:1.5;color:var(--warn-ink);margin-top:10px}
-.jot-warn:empty{margin-top:0}
-.jot-pend{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
-.jot-pend-h{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:12px;font-weight:700;color:var(--ink);margin-bottom:8px}
-.jot-p{border:1px solid var(--line);border-radius:10px;background:var(--tint);padding:9px 11px;margin-bottom:8px}
-.jot-p-m{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px}
-.jot-p-t{font:12px/1.5 ui-monospace,Consolas,monospace;color:var(--ink);overflow-wrap:anywhere;white-space:pre-wrap;margin-bottom:8px}
 /* important links page (build .4) */
 .lnkrow{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);min-height:44px}
 .lnkrow:last-child{border-bottom:none}
@@ -768,9 +752,6 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
   .wrap{padding:14px 12px calc(env(safe-area-inset-bottom,0px) + 92px)}
   .btn,.chip{min-height:44px;display:inline-flex;align-items:center}
   .calc input,.calc select,.schfilter,.imp-ta{font-size:17px}
-  /* Jot is the one panel used one-handed inside a building, so its controls take the 44px the
-     buttons already do — the shared .schfilter sits at 38-39px (build 2026-09-17.3). */
-  #panel-jot .schfilter{min-height:44px}
   .actionbar .grp-label,.actionbar button[data-jump],.actionbar .sep{display:none}
   .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;background:var(--card);border-top:2px solid var(--maroon);box-shadow:var(--shadow-up);padding:4px 2px calc(env(safe-area-inset-bottom,0px) + 4px)}
   .tabbar button,.tabbar a.tab-ext{flex:1;background:none;border:none;font:inherit;font-size:11px;font-weight:700;color:var(--muted);padding:5px 2px;min-height:44px;cursor:pointer}
@@ -924,7 +905,7 @@ button.pill{cursor:pointer;font:inherit} /* the theme toggle reuses the pill loo
 .hu-sel{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:7px 10px;font-size:12px;font-family:inherit;max-width:100%}
 .hu-log-row{display:flex;gap:10px;padding:7px 2px;border-top:1px solid var(--line);font-size:13px;align-items:baseline;flex-wrap:wrap}
 .hu-log-row .d{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap}
-@media print{#panel-import,#panel-jot,#panel-hustle,#panel-runbook,.tabbar,.lnk-copy{display:none !important}}
+@media print{#panel-import,#panel-hustle,#panel-runbook,.tabbar,.lnk-copy{display:none !important}}
 
 /* Build 2026-09-18.5: readable task hierarchy, shared across complete destinations. */
 .app-name{font-size:14px;font-weight:600;color:var(--muted)}
@@ -1408,42 +1389,6 @@ th,.mem-tbl th{font-size:12px;text-transform:none;letter-spacing:0}
     </div>
   </div>
 
-  <div class="card full" id="panel-jot" style="margin-top:16px">
-    <h1 class="sect-title">Jot &amp; Share <span class="badge snap">FIELD NOTE</span></h1>
-    <div class="sectnote" style="margin-top:8px">Capture it before you forget. A Visit or a Conversation builds the exact <b>Visit &amp; Conversation Log</b> row its school page takes, so pasting it to Claude at the desk logs it as written. Share or Copy sends it out (Mail, Messages, Notes) and keeps a copy here, <b>pending until logged</b> — nothing on this page writes to the dashboard or the school page.</div>
-    <div class="toolbar" style="align-items:flex-end">
-      <div><label class="jot-lbl" for="jotSchool">School</label><select id="jotSchool" class="schfilter" style="min-width:200px"></select></div>
-      <div><label class="jot-lbl" for="jotType">Type</label><select id="jotType" class="schfilter" style="min-width:150px"><option>Visit</option><option>Conversation</option><option>BR meeting</option><option>Principal/BR meeting</option><option>Issue</option><option>Contact update</option><option>Reminder</option></select></div>
-      <div id="jotDateWrap"><label class="jot-lbl" for="jotDate">Date</label><input type="date" id="jotDate" class="schfilter" style="min-width:150px"></div>
-    </div>
-    <div class="jot-hint" id="jotTypeHint"></div>
-    <label class="jot-lbl" for="jotText" id="jotTextLbl">Occasion</label>
-    <textarea class="imp-ta" id="jotText" placeholder="Chapter meeting — talked with the Building Rep about duty rotation."></textarea>
-    <div id="jotFields">
-      <label class="jot-lbl" for="jotOutcome" style="margin-top:12px">Outcome <span class="jot-opt">— optional; what the contact produced</span></label>
-      <textarea class="imp-ta jot-sm" id="jotOutcome" placeholder="Four members signed up; the principal agreed to put duty rotation on the SCAC agenda."></textarea>
-      <label class="jot-lbl" for="jotNext" style="margin-top:12px">Next <span class="jot-opt">— optional; one follow-up</span></label>
-      <textarea class="imp-ta jot-sm" id="jotNext" placeholder="Send the SCAC agenda kit."></textarea>
-      <div class="toolbar" style="align-items:flex-end">
-        <div><label class="jot-lbl" for="jotOwner">Whose move <span class="jot-opt">— optional</span></label><input id="jotOwner" class="schfilter" style="min-width:150px" placeholder="the BR, the SCAC, me"></div>
-        <div><label class="jot-lbl" for="jotBy">By <span class="jot-opt">— optional</span></label><input type="date" id="jotBy" class="schfilter" style="min-width:150px"></div>
-      </div>
-      <label class="jot-chk" for="jotDeliv"><input type="checkbox" id="jotDeliv"> Something was handed over</label>
-      <div id="jotDelivWrap" style="display:none"><label class="jot-lbl" for="jotDelivWhat">Delivered <span class="jot-opt">— leave blank for WTU sweatshirts</span></label><input id="jotDelivWhat" class="schfilter" style="min-width:230px" placeholder="WTU sweatshirts"></div>
-      <div style="margin-top:12px"><label class="jot-lbl" for="jotDone">Closes an earlier row's Next <span class="jot-opt">— optional; pick that earlier row's date, not today's</span></label><input type="date" id="jotDone" class="schfilter" style="min-width:150px"></div>
-    </div>
-    <div class="jot-warn" id="jotWarn"></div>
-    <label class="jot-lbl" for="jotOut" style="margin-top:14px">What you'll paste to Claude</label>
-    <textarea class="imp-ta" id="jotOut" readonly placeholder="Write the occasion and the row appears here, ready to paste."></textarea>
-    <div class="toolbar">
-      <button class="btn primary" id="jotShare">Share…</button>
-      <button class="btn" id="jotCopy">Copy</button>
-      <button class="btn" id="jotClear">Clear</button>
-    </div>
-    <div class="sectnote" id="jotStatus" role="status"></div>
-    <div id="jotPending"></div>
-  </div>
-
   <div class="card full" id="panel-import" style="margin-top:16px">
     <h1 class="sect-title">Data on This Device <span class="badge snap" id="importBadge">IMPORT</span></h1>
     <div class="sectnote" id="importStatus" style="margin-top:8px"></div>
@@ -1482,7 +1427,7 @@ th,.mem-tbl th{font-size:12px;text-transform:none;letter-spacing:0}
   <footer>
     Snapshot data: WTU workspace (school pages + Filed Grievances) + calendar entered from Outlook screenshots, captured <span id="snapFoot">—</span>. Ask to "refresh" or "update" anytime.<br>
     This is a working-aid, not the official record. The CBA controls all grievance timelines — verify any deadline day-by-day before filing.<br>
-    <span class="build-note" id="buildPill">build 2026-09-24.2</span>
+    <span class="build-note" id="buildPill">build 2026-09-25.1</span>
   </footer>
 </div>
 
@@ -1896,7 +1841,9 @@ function dataBits(){
   var s=sourcesAge();
   if(s){
     s.items.forEach(function(x){
-      var lbl=(x.label||'').indexOf('database snapshot')>-1?'members':x.short;
+      // "DB snapshot", not "members" (2026-09-28): what Mike wants from this bit is when he last
+      // uploaded the WTU database export, and "members Sep 15" read as a membership count date.
+      var lbl=(x.label||'').indexOf('database snapshot')>-1?'DB snapshot':x.short;
       // A STALE source is not review context — it is a warning, so it stays on the phone.
       add(lbl+' '+prettyNoYr(x.date)+' ('+(x.age===0?'today':x.age+'d')+')',!x.stale);
     });
@@ -2022,7 +1969,7 @@ function renderHeader(){
   var line=document.getElementById('whenLine');if(!line)return;
   // Cluster labels come from the data, not the markup — the hosted shell carries no identity (hardening item 8).
   // Phone (build 2026-09-23.2): a short date and no cluster list, so the line fits beside the search
-  // icon. Re-runs on resize (see the listener by the Jot constants), so a rotate picks the right form.
+  // icon. Re-runs on resize (see the resize listener), so a rotate picks the right form.
   var narrowHdr=!!(window.matchMedia&&window.matchMedia('(max-width:700px)').matches);
   var left=[new Date().toLocaleDateString('en-US',narrowHdr?{weekday:'short',month:'short',day:'numeric'}:{weekday:'long',month:'long',day:'numeric',year:'numeric'})];
   if(SCHOOLS.length&&!narrowHdr)left.push('Clusters '+orderedClusters().join(' · '));
@@ -2097,9 +2044,13 @@ function localIso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(
 // snapshotDate: that bumps on every refresh, including automated ones that never touch the
 // calendar, so it made week-old events look newly transcribed and an exhausted calendar look
 // like an ordinary quiet day. Deriving it from the events array cannot drift out of sync.
+// Build 2026-09-25.1: an event typed in by hand rather than transcribed from an Outlook export
+// carries `source: "added"`, and it does NOT extend coverage. One far-dated added event (a
+// month of evening meetings, say) otherwise moved "calendar through" weeks past the last week
+// actually transcribed and muted the ran-out notice. Added events still render on their day.
 function eventsThrough(){
   let m='';
-  EVENTS.forEach(function(e){if(e.date&&e.date>m)m=e.date;});
+  EVENTS.forEach(function(e){if(e.date&&e.source!=='added'&&e.date>m)m=e.date;});
   return m;
 }
 /* Build 2026-09-18.1: today's events no longer render here — they are today's ROW in the week,
@@ -2159,7 +2110,7 @@ function renderWeek(){
     // bolds its titles. Every other day stays a time and a title, which is all a glance needs.
     if(evs.length)cell=evs.map(function(e){
       return '<div class="wk-ev"><span class="tm">'+esc(e.time||'All day')+'</span><span><span class="nm">'+esc(e.summary)+'</span>'+((isT&&e.location)?' <span class="loc">&middot; '+esc(e.location)+'</span>':'')+'</span></div>';
-    }).join('');
+    }).join('')+((through&&ds>through)?'<div class="wk-none">&mdash; rest of the day not on file (calendar ends '+prettyNoYr(through)+')</div>':'');
     else if(through&&ds>through)cell='<div class="wk-none">&mdash; beyond the calendar on file (ends '+prettyNoYr(through)+')</div>';
     else cell='<div class="wk-none">&mdash;</div>';
     const row='<div class="wk-day'+(isT?' today':ds<t?' past':'')+'"><div class="wk-date'+(isT?' today':'')+'">'+lbl+'</div><div style="flex:1;min-width:0">'+cell+'</div></div>';
@@ -3935,7 +3886,6 @@ function wireButtons(){
   });
 }
 
-var JOT_DRAFT='dash.jot.draft',JOT_PEND='dash.jot.pending';
 function linkifyContact(v){
   var out=esc(v);
   out=out.replace(/(\(?\d{3}\)?[\s.-]?\d{3}[\s.-]\d{4})/g,function(m){return '<a href="tel:+1'+m.replace(/[^\d]/g,'')+'">'+m+'</a>';});
@@ -3943,295 +3893,6 @@ function linkifyContact(v){
   // The committee-line legend "(* = not yet a WTU member …)" is a footnote, not part of the name run (display only; the page text is untouched).
   out=out.replace(/\((\* = [^)]*)\)/,'<span class="ct-legend">($1)</span>');
   return out;
-}
-/* ===== Jot & Share — the field note that IS the school page's row (build 2026-09-17.3) =====
-   The "Visit & Conversation Log" row is the shared record: Claude writes it with the Edit tool, the
-   refresh parses it (dashboard/parse-school-pages.ps1), the dashboard reads it back. So a field note
-   should not be prose that somebody re-types later — it should BE the row. The exact shape the
-   parser's regexes require, in this order:
-     - **YYYY-MM-DD** — *(Visit|Conversation|BR meeting|Principal/BR meeting)* — occasion. Outcome: … Next: … (owner, by DATE). Delivered: … Done: DATE.
-   Three composer rules, each protecting a parser rule:
-     1. ONE line per value, ending in a sentence stop — a field value runs to the NEXT field marker,
-        so a stray " — " separator would be swallowed into the value in front of it;
-     2. the Next trailer's owner carries no parentheses or commas (the trailer regex excludes both);
-     3. a field marker typed inside free text is FLAGGED, never rewritten — silently editing his words
-        to protect a regex is worse than saying what the regex is about to do.
-   Issue / Contact update / Reminder are not log rows and keep the old plain-note format, timestamp
-   and all. Nothing here writes to the dashboard or to the page (review §A6: the file that owns an
-   action owns its completion). A copied or shared note is held as PENDING until Mike says it is
-   logged — a capture buffer with a one-level undo, on this device only, wiped with the device data. */
-var JOT_KEYS=['jotSchool','jotType','jotDate','jotText','jotOutcome','jotNext','jotOwner','jotBy','jotDelivWhat','jotDone'];
-var JOT_MARKERS=['Outcome','Next','Delivered','Done'];
-var JOT_UNDO=null,JOT_CAPTURE='',JOT_PEND_ERROR=false;
-function jotCaptureId(){return 'capture-'+(typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+'-'+Math.random().toString(36).slice(2));}
-var JOT_ROW_TYPES={'Visit':'visit','Conversation':'conversation','BR meeting':'br','Principal/BR meeting':'principal-br'}; // tag text -> data type (build 2026-09-24.2)
-function jotIsRow(t){return JOT_ROW_TYPES.hasOwnProperty(t);}
-function jotV(id){var el=document.getElementById(id);return el?String(el.value==null?'':el.value).trim():'';}
-function jotChecked(id){var el=document.getElementById(id);return !!(el&&el.checked);}
-function jotFlat(s){return s.replace(/\s+/g,' ').trim();}
-// A value ends in a stop so the next marker starts clean; the parser trims one trailing period itself.
-function jotStop(s){s=jotFlat(s).replace(/[\s.;,:—-]+$/,'');return s?(/[?!]$/.test(s)?s:s+'.'):'';}
-function jotDate(){return jotV('jotDate')||todayIso();}
-function jotSchoolRec(n){for(var i=0;i<SCHOOLS.length;i++){if(SCHOOLS[i].name===n)return SCHOOLS[i];}return null;}
-/* The newest delivery round — by `period` where the items carry one; the array itself is oldest-first
-   until D5 reverses it, so never just take items[0]. */
-function jotCurrentRound(){
-  if(!DISTRIBUTION||!Array.isArray(DISTRIBUTION.items)||!DISTRIBUTION.items.length)return null;
-  var best=DISTRIBUTION.items[DISTRIBUTION.items.length-1];
-  DISTRIBUTION.items.forEach(function(it){if(String(it.period||'')>String(best.period||''))best=it;});
-  return best;
-}
-function jotRowText(){
-  var typ=jotV('jotType');if(!jotIsRow(typ))return '';
-  var occ=jotStop(jotV('jotText'));if(!occ)return '';
-  var row='- **'+jotDate()+'** — *('+typ+')* — '+occ;
-  var out=jotStop(jotV('jotOutcome'));if(out)row+=' Outcome: '+out;
-  var nx=jotFlat(jotV('jotNext')).replace(/[\s.;,:—-]+$/,'');
-  if(nx){
-    var own=jotFlat(jotV('jotOwner')).replace(/[(),]/g,'').trim(),by=jotV('jotBy'),trailer='';
-    if(own&&by)trailer=' ('+own+', by '+by+')';
-    else if(by)trailer=' (by '+by+')';
-    else if(own)trailer=' ('+own+')';
-    row+=' Next: '+nx+trailer+'.';
-  }
-  if(jotChecked('jotDeliv'))row+=' Delivered: '+jotStop(jotV('jotDelivWhat')||'WTU sweatshirts');
-  // A `Done:` that is not EARLIER than this row closes nothing — the parser flags it and the record
-  // carries a field that means nothing. An earlier capture used the row's own date
-  // to mean "this is finished", despite the advisory warning,
-  // so an advisory line is not enough: an impossible value is not emitted at all (build 2026-09-17.4).
-  // A date that is merely unmatched in the imported data still goes in — the page may hold a row this
-  // device has not imported yet. Impossible is refused; unverifiable is warned about.
-  var dn=jotV('jotDone');if(dn&&dn<jotDate())row+=' Done: '+dn+'.';
-  return row;
-}
-function jotCompose(){
-  var sch=jotV('jotSchool'),typ=jotV('jotType');
-  if(jotIsRow(typ)){
-    var row=jotRowText();if(!row)return null;
-    return (sch||'(which school? — say so when you paste this)')+' — add to the Visit & Conversation Log, newest first:\n'+row;
-  }
-  var txt=document.getElementById('jotText').value.trim();
-  if(!txt)return null;
-  var n=new Date();
-  var stamp=n.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' '+n.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-  return typ+' — '+(sch||'(no school)')+' — '+stamp+': '+txt;
-}
-// A capture has its own identity. New compositions never replace another same-day note.
-// The school-page duplicate warning remains: capture identity does not change logging rules.
-function jotKey(){if(!JOT_CAPTURE)JOT_CAPTURE=jotCaptureId();return JOT_CAPTURE;}
-function jotWarnings(){
-  var w=[],typ=jotV('jotType'),sch=jotV('jotSchool'),date=jotDate(),s=sch?jotSchoolRec(sch):null;
-  if(!jotIsRow(typ))return w;
-  if(!sch)w.push('No school picked — a log row belongs to one school page.');
-  if(date>todayIso())w.push('That date is in the future. A row is a record of something that happened; a future date reads as scheduled.');
-  if(s&&Array.isArray(s.visits)){
-    for(var i=0;i<s.visits.length;i++){
-      if(s.visits[i][0]===date&&String(s.visits[i][2]||'')===JOT_ROW_TYPES[typ]){
-        w.push(sch+' already has a '+typ+' row for '+prettyNoYr(date)+' on the page — the same key. Add to that row rather than writing a second one.');break;
-      }
-    }
-  }
-  var stray=[];
-  JOT_MARKERS.forEach(function(k){if(new RegExp('\\b'+k+':').test(jotV('jotText')))stray.push(k+':');});
-  if(stray.length)w.push('The occasion contains "'+stray.join('", "')+'" — the parser reads that as a field marker and splits the row there. Move it to its own box.');
-  if(jotChecked('jotDeliv')&&sch){
-    var r=jotCurrentRound();
-    // Any year of the same gear counts (build 2026-09-23.3): a school served in SY 25-26 already has them.
-    if(r&&!roundGot(r)[sch])
-      w.push(sch+' is not on the '+(r.label||'delivery')+' list yet. The count moves only on your word, so say in the paste whether this is that delivery.');
-    else if(r)
-      w.push(sch+' already has '+(r.label||'these')+' ('+roundWhen(r,sch)+'). Say in the paste whether this is more of the same gear.');
-  }
-  var dn=jotV('jotDone');
-  if(dn){
-    if(dn>=date)w.push('Left out of the row: '+prettyNoYr(dn)+' is not earlier than '+prettyNoYr(date)+', so it would close nothing. That field closes the Next on an EARLIER row — pick that row’s date, or clear it and let the Outcome say the work is finished.');
-    else if(s&&Array.isArray(s.visits)){
-      var found=false;
-      for(var j=0;j<s.visits.length;j++){if(s.visits[j][0]===dn){found=true;break;}}
-      if(!found)w.push('No row dated '+prettyNoYr(dn)+' is on '+sch+"'s page, so Done: would close nothing.");
-    }
-  }
-  return w;
-}
-function jotSaveDraft(){
-  try{
-    var d={v:3,id:jotKey(),deliv:jotChecked('jotDeliv')};
-    JOT_KEYS.forEach(function(id){var el=document.getElementById(id);if(el)d[id]=el.value;});
-    localStorage.setItem(JOT_DRAFT,JSON.stringify(d));
-    jotStatus('Draft saved on this device only. Copy or Share when you are ready to log it.');return true;
-  }catch(e){jotStatus('Draft could not be saved on this device. Your text is still here — copy it before leaving.');return false;}
-}
-function jotLoadDraft(){
-  var d=null;try{d=JSON.parse(localStorage.getItem(JOT_DRAFT)||'null');}catch(e){jotStatus('The saved draft could not be read. Stored text has not been removed.');return;}
-  if(!d||typeof d!=='object')return;
-  if(d.v!==2&&d.v!==3)d={jotSchool:d.s||'',jotType:(d.t==='Visit note'?'Visit':(d.t||'Visit')),jotText:d.x||''};
-  JOT_CAPTURE=typeof d.id==='string'?d.id:jotCaptureId();
-  JOT_KEYS.forEach(function(id){var el=document.getElementById(id);if(el&&typeof d[id]==='string')el.value=d[id];});
-  var chk=document.getElementById('jotDeliv');if(chk)chk.checked=!!d.deliv;
-}
-function jotClearDraft(){
-  try{localStorage.removeItem(JOT_DRAFT);}catch(e){jotStatus('Could not clear the saved draft. Your text is still here.');return false;}
-  JOT_KEYS.forEach(function(id){var el=document.getElementById(id);if(el&&id!=='jotType'&&id!=='jotSchool')el.value='';});
-  var chk=document.getElementById('jotDeliv');if(chk)chk.checked=false;
-  var dt=document.getElementById('jotDate');if(dt)dt.value=todayIso();
-  JOT_CAPTURE='';jotRefresh();return true;
-}
-function jotStatus(msg){var el=document.getElementById('jotStatus');if(el)el.textContent=msg;}
-function jotPendRead(){
-  try{
-    var a=JSON.parse(localStorage.getItem(JOT_PEND)||'[]');
-    if(!Array.isArray(a)||a.some(function(e){return !e||typeof e.k!=='string'||typeof e.text!=='string';}))throw Error('Invalid pending list');
-    JOT_PEND_ERROR=false;return a;
-  }catch(e){JOT_PEND_ERROR=true;return [];}
-}
-function jotPendWrite(a){
-  if(JOT_PEND_ERROR){jotStatus('Pending notes could not be read. They have not been overwritten. Keep a separate copy of your new text.');return false;}
-  try{localStorage.setItem(JOT_PEND,JSON.stringify(a));return true;}
-  catch(e){jotStatus('Could not save the pending copy on this device. Your text is still here — keep a separate copy.');return false;}
-}
-function jotPendAdd(){
-  var text=jotCompose();if(!text)return '';
-  var k=jotKey(),a=jotPendRead(),typ=jotV('jotType');
-  var e={k:k,school:jotV('jotSchool'),type:typ,date:jotIsRow(typ)?jotDate():todayIso(),text:text,at:new Date().toISOString()};
-  var at=-1;for(var i=0;i<a.length;i++){if(a[i].k===k){at=i;break;}}
-  if(at>=0)a[at]=e;else a.unshift(e);
-  if(!jotPendWrite(a))return '';
-  renderJotPending();return at>=0?'updated':'added';
-}
-function jotPendRemove(k,logged){
-  var a=jotPendRead(),keep=[],gone=null;
-  a.forEach(function(e){if(e.k===k&&!gone)gone=e;else keep.push(e);});
-  if(!gone||!jotPendWrite(keep))return;
-  JOT_UNDO=gone;renderJotPending();
-  jotStatus(logged?'Removed based on your confirmation that you logged it. This app cannot verify the school page. Undo is below.'
-                 :'Pending copy deleted. Undo is below.');
-  var u=document.getElementById('jotPendUndo');if(u)u.focus();
-}
-function renderJotPending(){
-  var box=document.getElementById('jotPending');if(!box)return;
-  var a=jotPendRead();
-  if(JOT_PEND_ERROR){box.innerHTML='<p role="alert">Pending notes could not be read. Stored notes have not been overwritten.</p>';return;}
-  if(!a.length&&!JOT_UNDO){box.innerHTML='';return;}
-  var h='<div class="jot-pend"><div class="jot-pend-h"><span>Pending until logged — '+a.length+'</span>';
-  if(a.length)h+='<button class="btn" id="jotPendAll" data-act="all">Copy all</button>';
-  if(JOT_UNDO)h+='<button class="btn" id="jotPendUndo" data-act="undo">Undo remove</button>';
-  h+='</div>';
-  if(a.length)h+='<div class="sectnote" style="margin-bottom:8px">On this device only. They land in the record when you paste them to Claude — mark one logged once it is on the school page.</div>';
-  a.forEach(function(e){
-    h+='<div class="jot-p"><div class="jot-p-m">'+esc(e.school||'no school')+' · '+esc(e.type)+' · '+esc(e.date)+
-       ' · captured '+esc(new Date(e.at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}))+'</div>'+
-       '<div class="jot-p-t">'+esc(e.text)+'</div>'+
-       '<div class="toolbar" style="margin-top:0">'+
-       '<button class="btn" data-act="copy" data-k="'+esc(e.k)+'">Copy</button>'+
-       '<button class="btn" data-act="logged" data-k="'+esc(e.k)+'">I have logged this</button>'+
-       '<button class="btn" data-act="del" data-k="'+esc(e.k)+'">Delete</button>'+
-       '</div></div>';
-  });
-  box.innerHTML=h+'</div>';
-}
-function jotClip(text,ok,fail){
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(ok)['catch'](fail);return;}
-  fail();
-}
-function jotFallback(text){
-  var out=document.getElementById('jotOut');
-  if(out){out.value=text;out.focus();out.select();}
-}
-function jotRefresh(){
-  var typ=jotV('jotType'),isRow=jotIsRow(typ);
-  var f=document.getElementById('jotFields'),dw=document.getElementById('jotDateWrap');
-  if(f)f.style.display=isRow?'':'none';
-  if(dw)dw.style.display=isRow?'':'none';
-  var dv=document.getElementById('jotDelivWrap');
-  if(dv)dv.style.display=(isRow&&jotChecked('jotDeliv'))?'block':'none';
-  var lbl=document.getElementById('jotTextLbl');
-  if(lbl)lbl.textContent=isRow?'Occasion — who you saw and what it was':'Note';
-  var hint=document.getElementById('jotTypeHint');
-  if(hint)hint.textContent=
-    typ==='Visit'?'Visit = you were in the building, whatever the occasion. A meeting with the Building Rep there is a BR meeting instead, and a drop-off is a Conversation.'
-   :typ==='Conversation'?'Conversation = email, phone, text, a document received, any virtual meeting (a virtual BR meeting too), or a drop-off.'
-   :typ==='BR meeting'?'BR meeting = you met the Building Rep at the school. It does not count as a visit, but it sets the school\'s "Last BR meeting" date.'
-   :typ==='Principal/BR meeting'?'Principal/BR meeting = a joint meeting with the principal and the Building Rep at the school that is not a grievance meeting. It counts as a visit.'
-   :'Not a log row — this reaches Claude as a plain note, with the time you wrote it.';
-  // Native guard to match the composer's: the picker cannot offer a date this row could not close.
-  var dnEl=document.getElementById('jotDone');
-  if(dnEl){var c=parseD(jotDate());c.setDate(c.getDate()-1);dnEl.max=localIso(c);}
-  var out=document.getElementById('jotOut');if(out&&document.activeElement!==out)out.value=jotCompose()||'';
-  var wb=document.getElementById('jotWarn');
-  if(wb){var w=jotWarnings();wb.innerHTML=w.map(function(t){return '⚠ '+esc(t);}).join('<br>');}
-}
-function renderJot(){
-  var card=document.getElementById('panel-jot');if(!card)return;
-  if(DATA_MODE==='embedded'){card.style.display='none';return;}
-  card.style.display='';
-  var sel=document.getElementById('jotSchool');
-  var html='<option value="">— no school —</option>';
-  orderedClusters().forEach(function(c){
-    html+='<optgroup label="Cluster '+c+'">'+SCHOOLS.filter(function(s){return s.cluster===c;}).sort(function(a,b){return a.name.localeCompare(b.name);}).map(function(s){return '<option>'+esc(s.name)+'</option>';}).join('')+'</optgroup>';
-  });
-  sel.innerHTML=html;
-  var dt=document.getElementById('jotDate');if(dt)dt.value=todayIso();
-  jotLoadDraft();
-  jotRefresh();
-  renderJotPending();
-}
-function wireJot(){
-  var txt=document.getElementById('jotText');if(!txt)return;
-  JOT_KEYS.concat(['jotDeliv']).forEach(function(id){
-    var el=document.getElementById(id);if(!el)return;
-    el.addEventListener('input',function(){jotSaveDraft();jotRefresh();});
-    el.addEventListener('change',function(){jotSaveDraft();jotRefresh();});
-  });
-  document.getElementById('jotClear').onclick=function(){if(jotClearDraft())jotStatus('Draft cleared. Anything pending below is untouched.');};
-  document.getElementById('jotCopy').onclick=function(){
-    var note=jotCompose();
-    if(!note){jotStatus('Nothing to copy yet — write the occasion first.');return;}
-    var kept=jotPendAdd(),tail=!kept?' No pending copy was saved on this device. Keep the copied text.':(kept==='updated'?' The pending copy is updated.':' A copy is pending below until you log it.');
-    jotClip(note,
-      function(){jotStatus('Copied ✓ — paste it to Claude at the desk.'+tail);},
-      function(){jotFallback(note);jotStatus('Copy blocked by the browser — the text is selected in the box above; copy it by hand.'+tail);});
-  };
-  document.getElementById('jotShare').onclick=function(){
-    var note=jotCompose();
-    if(!note){jotStatus('Nothing to share yet — write the occasion first.');return;}
-    if(navigator.share){
-      var kept=jotPendAdd(),capture=JOT_CAPTURE;
-      navigator.share({text:note}).then(function(){
-        if(!kept){jotStatus('Shared, but no pending copy was saved on this device. Your draft is still here — keep a separate copy.');return;}
-        if(JOT_CAPTURE!==capture||jotCompose()!==note){jotStatus('Shared. That version is pending below; your newer edits remain in the draft.');return;}
-        if(jotClearDraft())jotStatus('Shared ✓ — a copy is pending below until you log it.');
-      })['catch'](function(e){jotStatus((e&&e.name==='AbortError'?'Share cancelled.':'Share failed.')+(kept?' A copy is pending below; your draft is still here.':' No pending copy was saved; your text is still here.'));});
-    }else{document.getElementById('jotCopy').onclick();}
-  };
-  var box=document.getElementById('jotPending');
-  if(box)box.addEventListener('click',function(ev){
-    var b=ev.target&&ev.target.closest?ev.target.closest('button[data-act]'):null;if(!b)return;
-    var act=b.getAttribute('data-act'),k=b.getAttribute('data-k');
-    if(act==='undo'){
-      if(!JOT_UNDO)return;
-      var a=jotPendRead();
-      if(!a.some(function(e){return e.k===JOT_UNDO.k;}))a.unshift(JOT_UNDO);
-      if(!jotPendWrite(a))return;
-      JOT_UNDO=null;renderJotPending();
-      jotStatus('Put back — still pending until logged.');
-      var first=box.querySelector('button[data-act]');if(first)first.focus();
-      return;
-    }
-    if(act==='all'){
-      var all=jotPendRead().map(function(e){return e.text;}).join('\n\n');
-      if(!all)return;
-      jotClip(all,function(){jotStatus('All pending notes copied ✓ — paste them to Claude at the desk.');},
-                  function(){jotFallback(all);jotStatus('Copy blocked by the browser — the notes are selected in the box above.');});
-      return;
-    }
-    var hit=null;jotPendRead().forEach(function(e){if(e.k===k&&!hit)hit=e;});
-    if(!hit)return;
-    if(act==='copy'){
-      jotClip(hit.text,function(){jotStatus('Copied ✓');},function(){jotFallback(hit.text);jotStatus('Copy blocked by the browser — the note is selected in the box above.');});
-      return;
-    }
-    if(act==='logged'||act==='del')jotPendRemove(k,act==='logged');
-  });
 }
 function renderImport(){
   document.body.classList.toggle('nodata',DATA_MODE==='none');
@@ -4285,12 +3946,8 @@ function wireImport(){
   if(clr){
     clr.style.display=(DATA_MODE==='imported')?'':'none';
     clr.onclick=function(){
-      // The pending captures go with it — they are the one thing here that exists nowhere else yet,
-      // so the count is named in the prompt rather than discovered afterwards (build 2026-09-17.3).
-      var np=jotPendRead().length;
-      var extra=np?(' This also deletes '+np+' field note'+(np===1?'':'s')+' still marked pending — copy '+(np===1?'it':'them')+' out first if '+(np===1?'it is':'they are')+' not logged yet.'):'';
-      if(!window.confirm('Remove the imported dashboard data (and any jot draft) from this device?'+extra+' The original stays in OneDrive — re-import anytime.'))return;
-      try{localStorage.removeItem(LS_DATA);localStorage.removeItem(LS_META);localStorage.removeItem(JOT_DRAFT);localStorage.removeItem(JOT_PEND);localStorage.removeItem('spike.state');}catch(e){}
+      if(!window.confirm('Remove the imported dashboard data from this device?'+' The original stays in OneDrive — re-import anytime.'))return;
+      try{localStorage.removeItem(LS_DATA);localStorage.removeItem(LS_META);localStorage.removeItem('dash.jot.draft');localStorage.removeItem('dash.jot.pending');localStorage.removeItem('spike.state');}catch(e){}
       location.reload();
     };
   }
@@ -4876,7 +4533,6 @@ var SECTIONS=[
   // Resource Hub panel went. The card stays in the document because it IS the content store:
   // runbookIndex() reads its DOM, so deleting the markup would delete the search results with it.
   {id:'panel-runbook',ic:'steps',label:'Runbook',short:'Runbook',desktop:true,navHidden:true},
-  {id:'panel-jot',ic:'pencil',label:'Jot &amp; Share',short:'Jot',hosted:true},
   {id:'panel-import',ic:'data',label:'Data on This Device',short:'Data',hosted:true,util:true}
 ];
 var ACTIVE_SECT='panel-brief'; // default on every open: the morning driver
@@ -4892,7 +4548,7 @@ function isLaptop(){return !!(mqLaptop&&mqLaptop.matches&&DATA_MODE!=='none');}
 var mqPhone=window.matchMedia?window.matchMedia('(max-width:700px)'):null;
 function isPhone(){return !!(mqPhone&&mqPhone.matches&&DATA_MODE!=='none');}
 function isSwitched(){return isLaptop()||isPhone();}
-// Jot and the import card exist only on the hosted/phone build (renderJot/renderImport hide them when embedded).
+// The import card exists only on the hosted/phone build (renderImport hides it when embedded).
 /* availableSections() = "exists on THIS surface"; visibleSections() = "and gets a nav row".
    Split 2026-08-24 for the Runbook, which is now reachable only through search: it must stay
    *available* (so search may index it and showSection may reveal it) while owning no nav row.
@@ -5126,7 +4782,7 @@ function boot(){
   paintTabIcons(); // phone tab-bar SVG icons (harmless when the tab bar is hidden)
   var fns=DATA_MODE==='none'
     ?[renderHeader,renderImport,wireImport,wireTheme]
-    :[renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderNewsletter,renderAugustPush,renderIssues,renderSchoolKpis,renderChips,renderSchoolViews,renderSchools,renderBrElection,renderMembership,renderCoverage,renderVisitPlan,renderVisitClusters,renderVisits,renderSharedActivity,renderDistribution,renderAttention,renderBriefStats,renderTodos,renderLinks,renderHustle,wireHustle,renderActionbar,renderTabbar,wireCalc,wireButtons,wireSearch,renderImport,wireImport,renderJot,wireJot,wireLinks,wireRunbook,renderSidebar,wireTheme,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
+    :[renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderNewsletter,renderAugustPush,renderIssues,renderSchoolKpis,renderChips,renderSchoolViews,renderSchools,renderBrElection,renderMembership,renderCoverage,renderVisitPlan,renderVisitClusters,renderVisits,renderSharedActivity,renderDistribution,renderAttention,renderBriefStats,renderTodos,renderLinks,renderHustle,wireHustle,renderActionbar,renderTabbar,wireCalc,wireButtons,wireSearch,renderImport,wireImport,wireLinks,wireRunbook,renderSidebar,wireTheme,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
   fns.forEach(function(fn){
     // Log the failure point but never the exception content — an error message must not echo member data (hardening).
     try{fn();}catch(e){console.error('dash:'+fn.name+' failed ('+((e&&e.name)||'error')+')');}
