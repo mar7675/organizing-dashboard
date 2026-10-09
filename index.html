@@ -215,7 +215,7 @@ header.hero{background:var(--card);border:1px solid var(--line);border-top:4px s
 .act summary:hover,.nws summary:hover,.notes-more>summary:hover,.count-detail summary:hover,.gr-note summary:hover{color:var(--ink);text-decoration:underline}
 .act.standing{color:var(--muted)}
 .act.standing .t{font-weight:600}
-/* Touch comfort on the phone. Not the 44px used for the Jot composer's real controls — a disclosure
+/* Touch comfort on the phone. Not the 44px used for real form controls — a disclosure
    and an inline title are text, and padding them to 44px would read as buttons — but enough that a
    thumb lands on them reliably. */
 @media(max-width:700px){.act{padding-top:11px;padding-bottom:11px}.act summary{padding:5px 0;display:inline-block}.act a.t{padding:3px 0;display:inline-block}}
@@ -1097,7 +1097,6 @@ th,.mem-tbl th{font-size:12px;text-transform:none;letter-spacing:0}
 @media print{.school-toolbar{display:none}.source-status>div,.round-history>div{display:block}.school-table{display:table}.school-table thead{display:table-header-group;position:static;width:auto;height:auto;clip-path:none}.school-table .schrow{display:table-row}}
 
 
-.shared-activity{margin:0 0 20px;padding-bottom:12px;border-bottom:1px solid var(--line)}.shared-entry{display:flex;align-items:center;justify-content:space-between;gap:16px}.shared-entry p{margin:0;font-size:14px}.shared-entry .btn{min-height:44px;display:inline-flex;align-items:center;white-space:nowrap}.shared-activity li{overflow-wrap:anywhere;margin:10px 0}.shared-activity summary{min-height:44px;cursor:pointer;padding:10px 0}@media(max-width:600px){.shared-entry{align-items:flex-start;flex-direction:column;gap:10px}}
 /* ===== Build 2026-09-23.5: full design audit, items 14, 15, 17, 20, 24, 25 ===== */
 /* 15: Membership at phone width keeps name, members out of total and the ranking rate */
 .mc-tot{display:none}
@@ -1427,7 +1426,7 @@ th,.mem-tbl th{font-size:12px;text-transform:none;letter-spacing:0}
   <footer>
     Snapshot data: WTU workspace (school pages + Filed Grievances) + calendar entered from Outlook screenshots, captured <span id="snapFoot">—</span>. Ask to "refresh" or "update" anytime.<br>
     This is a working-aid, not the official record. The CBA controls all grievance timelines — verify any deadline day-by-day before filing.<br>
-    <span class="build-note" id="buildPill">build 2026-09-25.1</span>
+    <span class="build-note" id="buildPill">build 2026-10-09.2</span>
   </footer>
 </div>
 
@@ -1486,7 +1485,7 @@ var NEWSLETTER=null;
    dashboard cannot see the list, so it must not claim to. */
 var TODOS=null;
 var DATA_MODE='none'; // 'embedded' | 'imported' | 'none'
-var SHARED_ACTIVITY=null;
+// Build 2026-10-09.2: the Codex capture pilot's shared-activity card is retired with the pilot (Mike, 2026-10-09).
 var DATA_META=null;   // {importedAt, source} for imported mode
 /* Which BUILD of the data file this device is holding (build 2026-09-17.5). snapshotDate is a DAY,
    so two files written on the same day were indistinguishable from in here — and on 2026-09-17 that
@@ -1513,7 +1512,6 @@ function validateData(d){
   return null;
 }
 function adoptData(d){
-  SHARED_ACTIVITY=d.sharedActivity||null;
   if(d.calendar&&Array.isArray(d.calendar.duty)&&Array.isArray(d.calendar.nonWorking)){NON_WORKING=new Set(d.calendar.nonWorking);DUTY=d.calendar.duty;}
   SNAPSHOT_DATE=d.snapshotDate;EVENTS=d.events||[];SCHOOLS=d.schools||[];GRIEVANCES=(d.grievances||[]).map(splitMeetingStatus);
   LINKS=Array.isArray(d.links)?d.links:[]; // optional key (added build .4) — older data files simply hide the Links section
@@ -2288,9 +2286,6 @@ function schoolDetailHtml(s){
   var lbm=lastBrMeeting(s);
   h+='<div class="d-br"><span class="lbl">Building Rep</span><div class="v">'+brTxt+'</div>'+
     '<div class="d-brm">'+(lbm?'Last BR meeting at the school: '+esc(dShort(lbm)):'No BR meeting at the school logged yet')+'</div></div>';
-  // Per-school capture entry point removed 2026-09-20. The capture site's hostname is identifying and
-  // this file publishes to a PUBLIC repo, so the URL cannot be a literal here. If the button returns,
-  // inject the address from the data file at build time and render only when that key is present.
   h+='<div class="facts">';
   h+='<div class="fact"><span class="lbl">Members</span><div class="v">'+(m
     ?(Math.round((1-(m.nonRate||0))*100)+'% · '+m.members+'/'+m.total+'<small>'+m.potential+' potential'+(MEMBERSHIP_DATE?' · WTU snapshot '+esc(prettyNoYr(MEMBERSHIP_DATE)):'')+'</small>')
@@ -3946,7 +3941,13 @@ function wireImport(){
   if(clr){
     clr.style.display=(DATA_MODE==='imported')?'':'none';
     clr.onclick=function(){
-      if(!window.confirm('Remove the imported dashboard data from this device?'+' The original stays in OneDrive — re-import anytime.'))return;
+      // Build 2026-10-09.1: the Jot & Share composer is retired (Mike, 2026-10-09), but a phone that used
+      // it can still hold its draft and its pending notes under the two dash.jot.* keys removed below.
+      // Pending notes existed nowhere else, so their count is still named before they go — the guard
+      // build 2026-09-17.3 added, kept when the composer itself was removed.
+      var np=0;try{var jp=JSON.parse(localStorage.getItem('dash.jot.pending')||'[]');np=Array.isArray(jp)?jp.length:0;}catch(e){}
+      var extra=np?(' This also deletes '+np+' unlogged field note'+(np===1?'':'s')+' left from the retired Jot panel. Cancel and tell Claude if you want '+(np===1?'it':'them')+' back.'):'';
+      if(!window.confirm('Remove the imported dashboard data from this device?'+extra+' The original stays in OneDrive — re-import anytime.'))return;
       try{localStorage.removeItem(LS_DATA);localStorage.removeItem(LS_META);localStorage.removeItem('dash.jot.draft');localStorage.removeItem('dash.jot.pending');localStorage.removeItem('spike.state');}catch(e){}
       location.reload();
     };
@@ -4767,22 +4768,12 @@ window.addEventListener('resize',applyLaptopMode);
 window.addEventListener('resize',function(){try{renderHeader();}catch(e){}});
 
 
-function renderSharedActivity(){
- var panel=document.getElementById('panel-visits');if(!panel)return;
- var box=document.getElementById('sharedActivityCard');if(!box){box=document.createElement('div');box.id='sharedActivityCard';box.className='shared-activity';panel.querySelector('.sect-title').insertAdjacentElement('afterend',box);}
- var a=SHARED_ACTIVITY,actions=a&&a.actions||[];if(!a){box.remove();return;} // nothing connected: no dead-end card, and no capture link to offer
- var h='<div class="shared-entry"><p>Approved activity included through '+esc(a.fetchedAt?builtStamp(a.fetchedAt):'the last connected build')+'.</p></div>';
- if(a&&a.warnings&&a.warnings.length)h+='<p class="warn">'+esc(a.warnings.join(' '))+'</p>';
- if(actions.length)h+='<details><summary>Shared follow-ups · '+actions.filter(function(x){return !x.done;}).length+' open</summary><ul>'+actions.map(function(x){return '<li><strong>'+esc(x.school)+'</strong> — '+esc(x.next)+' · '+esc(x.owner)+' · '+(x.done?'completed '+esc(x.done):'due '+esc(x.by))+'</li>';}).join('')+'</ul></details>';
- box.innerHTML=h;
-}
-
 function boot(){
   resolveData();
   paintTabIcons(); // phone tab-bar SVG icons (harmless when the tab bar is hidden)
   var fns=DATA_MODE==='none'
     ?[renderHeader,renderImport,wireImport,wireTheme]
-    :[renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderNewsletter,renderAugustPush,renderIssues,renderSchoolKpis,renderChips,renderSchoolViews,renderSchools,renderBrElection,renderMembership,renderCoverage,renderVisitPlan,renderVisitClusters,renderVisits,renderSharedActivity,renderDistribution,renderAttention,renderBriefStats,renderTodos,renderLinks,renderHustle,wireHustle,renderActionbar,renderTabbar,wireCalc,wireButtons,wireSearch,renderImport,wireImport,wireLinks,wireRunbook,renderSidebar,wireTheme,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
+    :[renderHeader,renderStatusStrip,renderCalendar,renderWeek,renderGrievances,renderRunway,renderNewsletter,renderAugustPush,renderIssues,renderSchoolKpis,renderChips,renderSchoolViews,renderSchools,renderBrElection,renderMembership,renderCoverage,renderVisitPlan,renderVisitClusters,renderVisits,renderDistribution,renderAttention,renderBriefStats,renderTodos,renderLinks,renderHustle,wireHustle,renderActionbar,renderTabbar,wireCalc,wireButtons,wireSearch,renderImport,wireImport,wireLinks,wireRunbook,renderSidebar,wireTheme,applyLaptopMode,updateSidebarBadges,openSchoolFromUrl];
   fns.forEach(function(fn){
     // Log the failure point but never the exception content — an error message must not echo member data (hardening).
     try{fn();}catch(e){console.error('dash:'+fn.name+' failed ('+((e&&e.name)||'error')+')');}
